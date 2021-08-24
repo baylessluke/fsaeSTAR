@@ -117,6 +117,7 @@ def clumped(file_list, config_list, command):
 
 def generatecommand(config_list):
     command = "srun hostname | sort -u > nodefile.$SLURM_JOB_ID; rm /tmp/size.${SLURM_JOB_ID}; du -ms /tmp > /tmp/size.${SLURM_JOB_ID} \n"
+    command = command + 'export REAL_PROCS=$(squeue -j $SLURM_JOB_ID -O "MaxCPUs" --noheader)\n'
     command = command + "export DISPLAY=$(head -n 1 nodefile.$SLURM_JOB_ID):0.0\n"
     command = command + '"' + "$STARLOC" + '"'
     command = command + " -licpath " + "$LICPATH" + " -collab "
@@ -124,7 +125,7 @@ def generatecommand(config_list):
     command = command + '"' + "$FILENAME" + '"'
     if 'PROCS' in config_list:
         if float(config_list['PROCS']) != 1:
-            command = command + " -np " + "$JOB_PROCS"
+            command = command + " -np " + "$REAL_PROCS"
     if 'PODKEY' in config_list and "cd-adapco" in config_list['LICPATH']:
         command = command + " -power -podkey " + "$PODKEY"
     command = command + " -batch " + '"' + "$CP" + os.sep + "$MACRO" + '"'
@@ -146,7 +147,7 @@ def parseWalltime(walltime):
 
 def generateqsub(config_list):
     if config_list['CLUSTER'] != "LOCAL":
-        qsub = 'sbatch -A $CLUSTER --ntasks=$PROCS --time=$WALLTIME --exclusive '
+        qsub = 'sbatch -A $CLUSTER --constraint=$SUB_CLUSTER --ntasks=$PROCS --time=$WALLTIME --exclusive '
         if len(sys.argv) > 1:
             qsub += ' --dependency=afterany'
             for i in range(1, len(sys.argv)):
