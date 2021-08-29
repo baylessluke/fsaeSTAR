@@ -286,7 +286,8 @@ public class PostProc extends StarMacro {
             plot.encode(plotsImagePath, "png", 4000, 2000);
 
         }
-        
+
+        /* don't export Cf plots!
         // Export Cf Plots
         XYPlot cfPlot = ((XYPlot) sim.activeSim.getPlotManager().getPlot("Skin Friction Coefficient"));
         cfPlot.getParts().setObjects(sim.crossSection);
@@ -294,6 +295,7 @@ public class PostProc extends StarMacro {
         this.cfExport(sim, cfPlot, sim.profileLimits, 1, "RW");
         this.cfExport(sim, cfPlot, sim.profileLimits, 1, "SW");
         this.cfExport(sim, cfPlot, sim.profileLimits, 1, "UT");
+         */
     }
     
     /**
