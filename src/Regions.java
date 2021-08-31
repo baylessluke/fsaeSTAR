@@ -4,8 +4,6 @@ import star.common.*;
 import star.flow.*;
 import star.motion.BoundaryReferenceFrameSpecification;
 import star.motion.ReferenceFrameOption;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -50,7 +48,7 @@ public class Regions extends StarMacro {
         // This can be made much cleaner by using vars for some of these object returns.
         // Some of these calls will need to be modified if coordinate systems change in the future.
 
-        //Set up boundaries for the radiator inlets and outlest.
+        //Set up boundaries for the radiator inlets and outlets.
         if (activeSim.radInlet == null || activeSim.radOutlet == null || activeSim.domainRadInlet == null || activeSim.domainRadOutlet == null)
         {
             throw new IllegalStateException("Could not assign radiator surfaces. Did you split radiator surfaces?");
@@ -61,30 +59,29 @@ public class Regions extends StarMacro {
         }
         activeSim.massFlowInterfaceInlet = activeSim.activeSim.getInterfaceManager().
                 createBoundaryInterface(activeSim.domainRadInlet, activeSim.radInlet,
-                        activeSim.RAD_INLET_STRING);
+                        SimComponents.RAD_INLET_STRING);
 
         activeSim.massFlowInterfaceOutlet = activeSim.activeSim.getInterfaceManager().
                 createBoundaryInterface(activeSim.domainRadOutlet, activeSim.radOutlet,
-                        activeSim.RAD_OUTLET_STRING);
+                        SimComponents.RAD_OUTLET_STRING);
 
         if (activeSim.dualRadFlag)
         {
             activeSim.dualMassFlowInterfaceInlet = activeSim.activeSim.getInterfaceManager().
                     createBoundaryInterface(activeSim.domainDualRadInlet, activeSim.dualRadInlet,
-                            activeSim.RAD_INLET_STRING);
+                            SimComponents.RAD_INLET_STRING);
 
             activeSim.dualMassFlowInterfaceOutlet = activeSim.activeSim.getInterfaceManager().
                     createBoundaryInterface(activeSim.domainDualRadOutlet, activeSim.dualRadOutlet,
-                            activeSim.RAD_OUTLET_STRING);
+                            SimComponents.RAD_OUTLET_STRING);
         }
 
-        activeSim.fanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanInlet, activeSim.fanInlet, activeSim.FAN_INLET_STRING);
-        activeSim.fanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanOutlet, activeSim.fanOutlet, activeSim.FAN_OUTLET_STRING);
-
+        activeSim.fanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanInlet, activeSim.fanInlet, SimComponents.FAN_INLET_STRING);
+        activeSim.fanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanOutlet, activeSim.fanOutlet, SimComponents.FAN_OUTLET_STRING);
         if (activeSim.dualFanFlag)
         {
-            activeSim.dualFanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanInlet, activeSim.dualFanInlet, activeSim.FAN_INLET_STRING);
-            activeSim.dualFanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanOutlet, activeSim.dualFanOutlet, activeSim.FAN_OUTLET_STRING);
+            activeSim.dualFanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanInlet, activeSim.dualFanInlet, SimComponents.FAN_INLET_STRING);
+            activeSim.dualFanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanOutlet, activeSim.dualFanOutlet, SimComponents.FAN_OUTLET_STRING);
         }
 
         //Assign viscous properties to the radiator regions.
@@ -98,10 +95,33 @@ public class Regions extends StarMacro {
     //This handles assigning a fan curve csv file to the fan curve table in STAR, and assigns that table to the fan boundary (passed as a parameter)
     public void setUpFan(SimComponents activeSim, Region fanRegion)
     {
+        Collection<Boundary> fanRegionBounds = fanRegion.getBoundaryManager().getBoundaries();
+        Boundary inletBound = null;
+        Boundary outletBound = null;
+
+        for (Boundary bound : fanRegionBounds)
+        {
+            String presName = bound.getPresentationName();
+            if (presName.contains("Interface"))
+            {
+                if (presName.contains(SimComponents.FAN_INLET_STRING))
+                    inletBound = bound;
+                else if (presName.contains(SimComponents.FAN_OUTLET_STRING))
+                    outletBound = bound;
+            }
+        }
+
+        if (inletBound == null || outletBound == null)
+        {
+            throw new IllegalStateException("Could not detect inlet or outlet boundary for the fan region. check SetUpFan in Regions.java");
+        }
+
         fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.FAN);
         MomentumFanSource fanModel = fanRegion.getValues().get(MomentumFanSource.class);
         fanModel.setTable(activeSim.fan_curve_table);
         fanModel.setTableVolDot(SimComponents.volDot);
+        fanModel.setUpstreamBoundary(inletBound);
+        fanModel.setDownstreamBoundary(outletBound);
         if (activeSim.fanFlag)
             fanModel.setTableP(SimComponents.delP);
         else
@@ -196,7 +216,7 @@ public class Regions extends StarMacro {
         activeSim.topPlane.setBoundaryType(SymmetryBoundary.class);
         activeSim.fsInlet.setBoundaryType(InletBoundary.class);
         activeSim.fsInlet.getValues().get(VelocityMagnitudeProfile.class).
-                getMethod(ConstantScalarProfileMethod.class).getQuantity().setDefinition("${" + activeSim.FREESTREAM_PARAMETER_NAME + "}");
+                getMethod(ConstantScalarProfileMethod.class).getQuantity().setDefinition("${" + SimComponents.FREESTREAM_PARAMETER_NAME + "}");
         activeSim.groundPlane.getConditions().get(WallSlidingOption.class).
                 setSelected(WallSlidingOption.Type.VECTOR);
         if (activeSim.wtFlag)
