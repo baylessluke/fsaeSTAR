@@ -68,6 +68,19 @@ public class SimComponents {
     public static final String USER_ROLL = "User Roll";
     public static final String CONFIG_ROLL = "roll";
     public static final String LIFT_COEFFICIENT_PLOT = "Lift Coefficient Monitor Plot";
+    public static final String RAD_INLET_STRING = "Inlet interface";
+    public static final String RAD_OUTLET_STRING = "Outlet interface";
+    public static final String DUAL_RAD_INLET_STRING = "Dual inlet interface";
+    public static final String DUAL_RAD_OUTLET_STRING = "Dual outlet interface";
+    public static final String FAN_REGION = "Fan";
+    public static final String FAN_INLET_STRING = "Fan Inlet";
+    public static final String FAN_OUTLET_STRING = "Fan Outlet";
+    public static final String DUAL_FAN_REGION = "Dual Fan";
+    public static final String FAN_PART_STRING = "CFD_FAN";
+    public static final String DUAL_FAN_PART_STRING = "CFD_DUAL_FAN";
+    public static final String volDot = "m^3/s";
+    public static final String delP = "dP";
+    public static final String noFan = "no_fan";
 
     //A bunch of declarations. Don't read too much into the access modifiers, they're not a big deal for a project like this.
     // I'm not going to comment all of these. there are way too many (future improvement suggestion: use fewer variables)
@@ -88,10 +101,12 @@ public class SimComponents {
     public Collection<Boundary> freestreamBounds;
     public Collection<Boundary> partBounds;
     public Collection<Boundary> wheelBounds;
+    public Collection<Boundary> fanBounds;
+    public Collection<Boundary> dualFanBounds;
     public Map<String, Collection<Boundary>> partSpecBounds;
     private Collection<GeometryPart> allParts;
-    private Collection<GeometryPart> radiator;
-    private Collection<GeometryPart> dualRadiator;
+    public GeometryPart fanPart;
+    public GeometryPart dualFanPart = null;
 
     //Double arrays to hold ranges for scenes and plane section sweeps. Limits are in inches, and control how far the cross sections will go. Pressures are Cps.
     public double[] profileLimits = {-29, 29};
@@ -163,6 +178,7 @@ public class SimComponents {
     public double freestreamVal;
     public double corneringRadius;
     public boolean dualRadFlag;
+    public boolean dualFanFlag;
     public boolean fanFlag;
     public boolean corneringFlag;
     public FileTable fan_curve_table;
@@ -171,16 +187,16 @@ public class SimComponents {
     public Region radiatorRegion;
     public Region dualRadiatorRegion;
     public Region domainRegion;
+    public Region fanRegion;
+    public Region dualFanRegion;
     public BoundaryInterface massFlowInterfaceInlet;
     public BoundaryInterface massFlowInterfaceOutlet;
-    public BoundaryInterface fanInterface;
-    public BoundaryInterface dualFanInterface;
-    public String massFlowInterfaceNameInlet;
-    public String massFlowInterfaceNameOutlet;
-    public String dualMassFlowInterfaceNameInlet;
-    public String dualMassFlowInterfaceNameOutlet;
     public BoundaryInterface dualMassFlowInterfaceInlet;
     public BoundaryInterface dualMassFlowInterfaceOutlet;
+    public BoundaryInterface fanInterfaceInlet;
+    public BoundaryInterface dualFanInterfaceInlet;
+    public BoundaryInterface fanInterfaceOutlet;
+    public BoundaryInterface dualFanInterfaceOutlet;
     public CylindricalCoordinateSystem frontWheelCoord;
     public CylindricalCoordinateSystem rearWheelCoord;
     public CylindricalCoordinateSystem frontWheelSteering;
@@ -206,11 +222,16 @@ public class SimComponents {
     public Boundary domainRadOutlet;
     public Boundary domainDualRadInlet;
     public Boundary domainDualRadOutlet;
-    public Boundary domainFanBound;
     public Boundary radFanBound;
     public Boundary dualRadFanBound;
-    public Boundary dualDomainFanBound;
-
+    public Boundary fanInlet;
+    public Boundary fanOutlet;
+    public Boundary dualFanInlet;
+    public Boundary dualFanOutlet;
+    public Boundary domainDualFanInlet;
+    public Boundary domainDualFanOutlet;
+    public Boundary domainFanInlet;
+    public Boundary domainFanOutlet;
 
     //Scenes and displayers
     public PlaneSection crossSection;
@@ -221,9 +242,7 @@ public class SimComponents {
     public String dir;
     public String simName;
     public Scene meshScene;
-    public Screenplay aftFore;
     public Screenplay profile;
-    public Screenplay topBottom;
 
     //Mesh controls
     public AutoMeshOperation autoMesh;
@@ -250,7 +269,7 @@ public class SimComponents {
     public SurfaceWrapperAutoMeshOperation surfaceWrapOperationPPM;
     public SurfaceCustomMeshControl aeroSurfaceWrapper;
     public SurfaceCustomMeshControl aeroSurfaceWrapperPPM;
-    public GeometryPart dualRadPart;
+    public GeometryPart dualRadPart = null;
     public GeometryPart radPart;
     public GeometryPart volumetricWake;
     public GeometryPart volumetricCar;
@@ -295,8 +314,6 @@ public class SimComponents {
         aeroParts = new ArrayList<>();
         nonAeroParts = new ArrayList<>();
         wheels = new ArrayList<>();
-        radiator = new ArrayList<>();
-        dualRadiator = new ArrayList<>();
         liftGenerators = new ArrayList<>();
         //This does all the filtering.
         for (GeometryPart prt : allParts) {
@@ -320,24 +337,26 @@ public class SimComponents {
                 }
             }
             if (prtName.startsWith(RADIATOR_NAME))
-                radiator.add(prt);
-
+                radPart = prt;
             if (prtName.startsWith(DUAL_RADIATOR_NAME))
-                dualRadiator.add(prt);
-        }
-        dualRadFlag = dualRadiator.size() != 0;     //Sets dual rad flag to true if populateAllParts finds something for dualRadFlag
+                dualRadPart = prt;
+            if (prtName.startsWith(FAN_PART_STRING))
+                fanPart = prt;
+            if (prtName.startsWith(DUAL_FAN_PART_STRING))
+                dualFanPart = prt;
 
+        }
+        dualRadFlag = dualRadPart != null;     //Sets dual rad flag to true if dual rad part has a part assigned to it
+        dualFanFlag = dualFanPart != null;     //Sets dual fan flag to true if dual fan part has a part assigned to it
         // Set up radiator regions
         try {
             domainRegion = assignRegion(DOMAIN_REGION);
             radiatorRegion = assignRegion(RADIATOR_REGION);
-            massFlowInterfaceNameInlet = "Inlet interface";
-            massFlowInterfaceNameOutlet = "Outlet interface";
-            if (dualRadFlag) {
+            fanRegion = assignRegion(FAN_REGION);
+            if (dualRadFlag)
                 dualRadiatorRegion = assignRegion(DUAL_RADIATOR_REGION);
-                dualMassFlowInterfaceNameInlet = "Dual inlet interface";
-                dualMassFlowInterfaceNameOutlet = "Dual outlet interface";
-            }
+            if (dualFanFlag)
+                dualFanRegion = assignRegion(DUAL_FAN_REGION);
         } catch (Exception e) {
             activeSim.println("SimComponents.java - Couldn't find/create domain or radiator region");
         }
@@ -345,11 +364,16 @@ public class SimComponents {
 
         // Extract radiator boundaries from radiator regions.
         domainBounds = Objects.requireNonNull(domainRegion).getBoundaryManager().getBoundaries();
+        radBounds = new ArrayList<>();
         dualRadBounds = new ArrayList<>();
+        fanBounds = new ArrayList<>();
+        dualFanBounds = new ArrayList<>();
         radBounds = Objects.requireNonNull(radiatorRegion).getBoundaryManager().getBoundaries();
+        fanBounds = Objects.requireNonNull(fanRegion).getBoundaryManager().getBoundaries();
         if (dualRadFlag)
             dualRadBounds = Objects.requireNonNull(dualRadiatorRegion).getBoundaryManager().getBoundaries();
-
+        if (dualFanFlag)
+            dualFanBounds = Objects.requireNonNull(dualFanRegion).getBoundaryManager().getBoundaries();
         // Takes all boundaries, filters them into freestream, parts, and wheels.
         freestreamBounds = new ArrayList<>();
         wheelBounds = new ArrayList<>();
@@ -388,10 +412,7 @@ public class SimComponents {
 
 
         // Miscellaneous constructor things
-        radPart = activeSim.get(SimulationPartManager.class).getObject(RADIATOR_NAME);
         subtractPart = (MeshOperationPart) activeSim.get(SimulationPartManager.class).getPart(SUBTRACT_NAME);
-        if (dualRadFlag)
-            dualRadPart = activeSim.get(SimulationPartManager.class).getObject(DUAL_RADIATOR_NAME);
 
         // Plots
         plots = activeSim.getPlotManager().getPlots();
@@ -467,12 +488,6 @@ public class SimComponents {
             if (partFlag == 0) {
                 partBounds.add(bound);
             }
-            // here we filter for the radiator
-            if (partFlag == 0) {
-                if (boundName.contains("RADIATOR")) {
-                    domainRadBounds.add(bound);
-                }
-            }
         }
 
 
@@ -491,12 +506,19 @@ public class SimComponents {
                 else if (boundName.contains(DUAL_RADIATOR_NAME))
                     domainDualRadOutlet = bound;
             }
-            else if (boundName.contains("Fan Outlet"))
+            else if (boundName.contains(FAN_PART_STRING))
             {
-                if (boundName.contains(RADIATOR_NAME))
-                    domainFanBound = bound;
-                else if (boundName.contains(DUAL_RADIATOR_NAME))
-                    dualDomainFanBound = bound;
+                if (boundName.contains(FAN_INLET_STRING))
+                    domainFanInlet = bound;
+                else if (boundName.contains(FAN_OUTLET_STRING))
+                    domainFanOutlet = bound;
+            }
+            else if (boundName.contains(DUAL_FAN_PART_STRING))
+            {
+                if (boundName.contains(FAN_INLET_STRING))
+                    domainDualFanInlet = bound;
+                else if (boundName.contains(FAN_OUTLET_STRING))
+                    domainDualFanOutlet = bound;
             }
 
             //Positively select aero parts, and throw them into partSpecBounds
@@ -519,26 +541,37 @@ public class SimComponents {
         //This is for the radiator region now.
         for (Boundary bound : radBounds) {
             String boundName = bound.getPresentationName();
-
             if (boundName.contains("Inlet"))
                 radInlet = bound;
-            if (boundName.contains("Outlet") && !boundName.contains("Fan"))
+            if (boundName.contains("Outlet"))
                 radOutlet = bound;
-            if (boundName.contains("Fan"))
-                radFanBound = bound;
         }
 
         //Now for the other radiator.
         for (Boundary bound : dualRadBounds) {
-
             String boundName = bound.getPresentationName();
-
             if (boundName.contains("Inlet"))
                 dualRadInlet = bound;
-            if (boundName.contains("Outlet") && !boundName.contains("Fan"))
+            if (boundName.contains("Outlet"))
                 dualRadOutlet = bound;
-            if (boundName.contains("Fan"))
-                dualRadFanBound = bound;
+        }
+        //now for fans
+        for (Boundary bound : fanBounds){
+            String boundName = bound.getPresentationName();
+            if (boundName.contains(FAN_INLET_STRING))
+                fanInlet = bound;
+            else if (boundName.contains(FAN_OUTLET_STRING))
+                fanOutlet = bound;
+        }
+
+        //do it again for the other fan
+        for (Boundary bound: dualFanBounds)
+        {
+            String boundName = bound.getPresentationName();
+            if (boundName.contains(FAN_INLET_STRING))
+                dualFanInlet = bound;
+            else if (boundName.contains(FAN_OUTLET_STRING))
+                dualFanOutlet = bound;
         }
 
         //Filter out freestream boundaries to make it easier to set up boundary conditions later.
@@ -805,22 +838,19 @@ public class SimComponents {
     public void regionSwap() {
 
         removeAllRegions();
-
-        try {
-            radPart = activeSim.get(SimulationPartManager.class).getObject(RADIATOR_NAME);
-            subtractPart = (MeshOperationPart) activeSim.get(SimulationPartManager.class).getPart(SUBTRACT_NAME);
-            if (dualRadFlag)
-                dualRadPart = activeSim.get(SimulationPartManager.class).getObject(DUAL_RADIATOR_NAME);
-        } catch (Exception e) {
-            activeSim.println("Can't create new regions");
-        }
         try {
             if (dualRadFlag) {
-                activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart, dualRadPart}),
+                activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart, dualRadPart, fanPart}),
                         "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
                         "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
             } else {
-                activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart}),
+                activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart, fanPart}),
+                        "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
+                        "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
+            }
+            if (dualFanFlag)
+            {
+                activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{dualFanPart}),
                         "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
                         "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
             }
@@ -830,10 +860,17 @@ public class SimComponents {
 
         domainRegion = assignRegion(DOMAIN_REGION);
         radiatorRegion = assignRegion(RADIATOR_NAME);
+        fanRegion = assignRegion(FAN_PART_STRING);
+        fanRegion.setPresentationName(FAN_REGION);
         radiatorRegion.setPresentationName(RADIATOR_REGION);
         if (dualRadFlag) {
             dualRadiatorRegion = assignRegion(DUAL_RADIATOR_NAME);
             dualRadiatorRegion.setPresentationName(DUAL_RADIATOR_REGION);
+        }
+        if (dualFanFlag)
+        {
+            dualFanRegion = assignRegion(DUAL_FAN_PART_STRING);
+            dualFanRegion.setPresentationName(DUAL_FAN_REGION);
         }
 
     }
@@ -874,11 +911,6 @@ public class SimComponents {
 
     public void clearHistory() {
         activeSim.getSolution().clearSolution(Solution.Clear.History);
-    }
-
-    public void clearSoln() {
-        activeSim.getSolution().clearSolution(Solution.Clear.Fields);
-        clearHistory();
     }
 
     //If a region named regName exists, it'll return that region, otherwise it'll create a new empty region and name it regName
