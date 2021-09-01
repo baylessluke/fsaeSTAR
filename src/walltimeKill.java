@@ -11,7 +11,7 @@ public class walltimeKill extends StarMacro
         SimComponents sim = new SimComponents(getActiveSimulation());
         long walltime = getWalltime(SimComponents.valEnvString("WALLTIME"));
         try {
-            Thread.sleep((long) ((walltime - 180) * 1000));
+            Thread.sleep((walltime - 180) * 1000);
             sim.saveSim();
         } catch (InterruptedException e) {
             sim.activeSim.println("Could not force save sim at 95% of walltime");

@@ -27,13 +27,13 @@ public class oneOffBenPitches extends StarMacro {
 
     momentCoefficientReport_0.getReferenceRadius().setValue(1.0);
 
-    Units units_1 = 
-      ((Units) simulation_0.getUnitsManager().getObject("m"));
+    Units units_1 =
+            simulation_0.getUnitsManager().getObject("m");
 
     momentCoefficientReport_0.getReferenceRadius().setUnits(units_1);
 
-    Units units_0 = 
-      ((Units) simulation_0.getUnitsManager().getObject("in"));
+    Units units_0 =
+            simulation_0.getUnitsManager().getObject("in");
 
     momentCoefficientReport_0.getOrigin().setUnits(units_0);
 

@@ -99,7 +99,7 @@ public class GenReports extends StarMacro {
 
         //Go through aeroPrefixes and assign them to their appropriate lift and drag reports. Set the flag to 1, essentially exiting out of the loop before double counting.
         String repName = rep.getPresentationName();
-        for (String prefix : activeSim.AERO_PREFIXES)
+        for (String prefix : SimComponents.AERO_PREFIXES)
         {
             if (repName.contains(prefix) && flag != 1)          //repName only contains prefix if it is a part specific report (eg "RW Lift")
             {

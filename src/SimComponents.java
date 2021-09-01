@@ -87,7 +87,7 @@ public class SimComponents {
 
     //Version check. An easy way to make sure the sim and the macros are the same version. Throw an error at the beginning, rather than an uncaught NPE later.
     // This needs to match the version parameter in STAR. This is really just a way so people don't bug me with macro problems that can be solved with pulling the correct branch/tag
-    private double version = 5.0;
+    private final double version = 5.0;
 
     // Simulation object
     public Simulation activeSim;
@@ -95,7 +95,7 @@ public class SimComponents {
     public Collection<GeometryPart> aeroParts;
     public Collection<GeometryPart> nonAeroParts;
     public Collection<GeometryPart> wheels;
-    private Collection<GeometryPart> liftGenerators;
+    private final Collection<GeometryPart> liftGenerators;
     public Collection<Boundary> domainBounds;
     public Collection<Boundary> radBounds;
     public Collection<Boundary> freestreamBounds;
@@ -104,7 +104,7 @@ public class SimComponents {
     public Collection<Boundary> fanBounds;
     public Collection<Boundary> dualFanBounds;
     public Map<String, Collection<Boundary>> partSpecBounds;
-    private Collection<GeometryPart> allParts;
+    private final Collection<GeometryPart> allParts;
     public GeometryPart fanPart;
     public GeometryPart dualFanPart = null;
 
@@ -213,7 +213,7 @@ public class SimComponents {
     public CartesianCoordinateSystem dualRadCoord;
     public BoundaryInterface yawInterface;              //This is necessary for doing yaw correctly.
     private Collection<Boundary> dualRadBounds;
-    private Collection<Boundary> domainRadBounds;
+    private final Collection<Boundary> domainRadBounds;
     public Boundary dualRadInlet;
     public Boundary dualRadOutlet;
     public Boundary radInlet;            // There are two sets of these corresponding to the two regions. Need these for interfacing

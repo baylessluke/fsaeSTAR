@@ -325,7 +325,7 @@ public class PostProc extends StarMacro {
 		for (double sectionVal = limits[0]; sectionVal <= limits[1]; sectionVal += increment) {
 			sim.crossSection.getSingleValue().setValue(sectionVal);
 			
-			plotName = partKey + " Skin Friction Coefficient Y = " + Double.toString(sectionVal);
+			plotName = partKey + " Skin Friction Coefficient Y = " + sectionVal;
             plotsImagePath = plotsPath + sim.separator + plotName + ".png";
             plotsPathText = plotsPath + sim.separator + plotName + ".txt";
 

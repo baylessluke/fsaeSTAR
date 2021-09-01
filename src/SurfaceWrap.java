@@ -30,7 +30,7 @@ public class SurfaceWrap extends StarMacro {
         simObject.surfaceWrapOperationPPM.setMeshPartByPart(true);
         //simObject.surfaceWrapOperationPPM.getInputGeometryObjects().removePart(simObject.radPart);
         //if (simObject.dualRadFlag) simObject.surfaceWrapOperationPPM.getInputGeometryObjects().removePart(simObject.dualRadPart);
-        //simObject.surfaceWrapOperationPPM.getInputGeometryObjects().setObjects();
+        simObject.surfaceWrapOperationPPM.getInputGeometryObjects().setObjects();
         simObject.surfaceWrapOperationPPM.execute();
 
         surfaceWrapSetup(simObject, simObject.surfaceWrapOperation, simObject.aeroSurfaceWrapper);
