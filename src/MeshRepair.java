@@ -51,12 +51,6 @@ public class MeshRepair extends StarMacro {
         }
         Vector<Region> contigSplitVector = new Vector<>();
         contigSplitVector.add(activeSim.domainRegion);
-        /*
-        contigSplitVector.add(activeSim.radiatorRegion);
-        if (activeSim.dualRadFlag)
-            contigSplitVector.add(activeSim.dualRadiatorRegion);
-
-         */
         meshManager_0.splitNonContiguousRegions(contigSplitVector);
         for (Region reg : activeSim.activeSim.getRegionManager().getRegions())
         {

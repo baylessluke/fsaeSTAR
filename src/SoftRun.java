@@ -15,6 +15,5 @@ public class SoftRun extends StarMacro
         obj.initFans(sim);
         sim.activeSim.getSimulationIterator().step(1);
 
-        return;
     }
 }

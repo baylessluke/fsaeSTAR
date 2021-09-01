@@ -31,10 +31,8 @@ public class ExportReports extends StarMacro {
         PostProc esObj = new PostProc();
 
         // Set file path for reports
-        if (activeSim.isUnix())
-            prefix = activeSim.separator + "tmp";
-        else
-            prefix = activeSim.dir;
+        if (activeSim.isUnix()) {
+        }
 
         path = esObj.getFolderPath("Reports", activeSim, activeSim.isUnix());
         activeSim.activeSim.println("Writing reports to: " + path);

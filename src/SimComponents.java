@@ -799,9 +799,9 @@ public class SimComponents {
     public static boolean boolEnv(String env) {
 
         // Read the sys environment to figure out if you want a full car or a half car sim
-        if (env.equals("domainSet") && System.getenv(env) != null && System.getenv(env).toLowerCase().equals("half"))
+        if (env.equals("domainSet") && System.getenv(env) != null && System.getenv(env).equalsIgnoreCase("half"))
             return true;
-        return System.getenv(env) != null && System.getenv(env).toLowerCase().equals("true");
+        return System.getenv(env) != null && System.getenv(env).equalsIgnoreCase("true");
 
     }
 
@@ -962,8 +962,7 @@ public class SimComponents {
     public double calculateSideslip()
     {
         double sideslipAngle = valEnv(CONFIGSIDESLIP);
-        double yVal = freestreamVal * Math.tan(Math.toRadians(sideslipAngle));
-        return yVal;
+        return freestreamVal * Math.tan(Math.toRadians(sideslipAngle));
     }
 
     public boolean isUnix() throws IOException {

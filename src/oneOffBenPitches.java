@@ -39,8 +39,7 @@ public class oneOffBenPitches extends StarMacro {
 
     momentCoefficientReport_0.getOrigin().setComponents(0.0, 0.0, 0.35);
 
-    Report rep = momentCoefficientReport_0;
-    rep.printReport(resolvePath(simulation_0.getSessionDir() + File.separator + rep.getPresentationName().replaceAll("[\\/]", "") + ".txt"), false);
+    momentCoefficientReport_0.printReport(resolvePath(simulation_0.getSessionDir() + File.separator + momentCoefficientReport_0.getPresentationName().replaceAll("[\\/]", "") + ".txt"), false);
 
   }
 }
