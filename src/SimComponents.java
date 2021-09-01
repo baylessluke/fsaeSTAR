@@ -842,17 +842,17 @@ public class SimComponents {
             if (dualRadFlag) {
                 activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart, dualRadPart, fanPart}),
                         "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
-                        "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
+                        "OneFeatureCurve", null, false);
             } else {
                 activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{radPart, subtractPart, fanPart}),
                         "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
-                        "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
+                        "OneFeatureCurve", null, false);
             }
             if (dualFanFlag)
             {
                 activeSim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[]{dualFanPart}),
                         "OneRegionPerPart", null, "OneBoundaryPerPartSurface", null,
-                        "OneFeatureCurve", null, RegionManager.CreateInterfaceMode.BOUNDARY);
+                        "OneFeatureCurve", null, false);
             }
         } catch (NullPointerException e) {
             activeSim.println(this.getClass().getName() + " - Region swap failed");
