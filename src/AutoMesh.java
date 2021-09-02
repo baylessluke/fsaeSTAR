@@ -18,11 +18,13 @@ public class AutoMesh extends StarMacro {
         activeSim.activeSim.println("--- AUTOMESHING ---");
 
         activeSim.activeSim.println("Assigning surface controls");
-        // Set input objects for auto mehser
+        // Set input objects for auto mesher
         if (activeSim.dualRadFlag)
-            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.dualRadPart);
+            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.dualRadPart, activeSim.fanPart);
         else
-            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart);
+            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.fanPart);
+        if (activeSim.fanFlag)
+            activeSim.autoMesh.getInputGeometryObjects().addObjects(activeSim.dualFanPart);
 
         //Clear all existing control nodes. Want to make sure the macros start from a well-defined entry point.
         activeSim.groundControl.getGeometryObjects().setObjects();

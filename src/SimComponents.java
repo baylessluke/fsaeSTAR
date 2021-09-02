@@ -497,27 +497,27 @@ public class SimComponents {
             if (boundName.contains("Inlet")) {
                 if (boundName.contains(RADIATOR_NAME))
                     domainRadInlet = bound;
-                else if (boundName.contains(DUAL_RADIATOR_NAME))
+                if (boundName.contains(DUAL_RADIATOR_NAME))
                     domainDualRadInlet = bound;
             }
-            else if (boundName.contains("Outlet") && !boundName.contains("Fan")) {
+            if (boundName.contains("Outlet")) {
                 if (boundName.contains(RADIATOR_NAME))
                     domainRadOutlet = bound;
-                else if (boundName.contains(DUAL_RADIATOR_NAME))
+                if (boundName.contains(DUAL_RADIATOR_NAME))
                     domainDualRadOutlet = bound;
             }
-            else if (boundName.contains(FAN_PART_STRING))
+            if (boundName.contains(FAN_PART_STRING))
             {
                 if (boundName.contains(FAN_INLET_STRING))
                     domainFanInlet = bound;
-                else if (boundName.contains(FAN_OUTLET_STRING))
+                if (boundName.contains(FAN_OUTLET_STRING))
                     domainFanOutlet = bound;
             }
-            else if (boundName.contains(DUAL_FAN_PART_STRING))
+            if (boundName.contains(DUAL_FAN_PART_STRING))
             {
                 if (boundName.contains(FAN_INLET_STRING))
                     domainDualFanInlet = bound;
-                else if (boundName.contains(FAN_OUTLET_STRING))
+                if (boundName.contains(FAN_OUTLET_STRING))
                     domainDualFanOutlet = bound;
             }
 
