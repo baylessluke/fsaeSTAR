@@ -320,7 +320,7 @@ public class SimComponents {
         for (GeometryPart prt : allParts) {
             String prtName = prt.getPresentationName();
             for (String prefix : AERO_PREFIXES) {
-                if (prtName.startsWith(aeroParent) && prtName.contains(prefix)) {
+                if (prtName.startsWith(aeroParent)) {
                     aeroParts.add(prt);
                 }
             }

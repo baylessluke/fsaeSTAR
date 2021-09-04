@@ -102,7 +102,7 @@ public class Regions extends StarMacro {
         for (Boundary bound : fanRegionBounds)
         {
             String presName = bound.getPresentationName();
-            if (presName.contains("Interface"))
+            if (bound instanceof InterfaceBoundary)
             {
                 if (presName.contains(SimComponents.FAN_INLET_STRING))
                     inletBound = bound;
