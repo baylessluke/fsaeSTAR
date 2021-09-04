@@ -26,7 +26,7 @@ public class GenReports extends StarMacro {
             if (rep instanceof StatisticsReport)
                 setupStatisticsReport(activeSim, (StatisticsReport) rep);
             else
-                setupUnkownReport(activeSim, rep);
+                setupUnknownReport(activeSim, rep);
         }
 
         //Set up the report for max velocity. Need this to make sure the MeshRepair trigger works. Assign the whole domain to it (might want to do radiator regions too, but no...)
@@ -59,7 +59,7 @@ public class GenReports extends StarMacro {
         }
     }
 
-    private void setupUnkownReport(SimComponents activeSim, Report rep)
+    private void setupUnknownReport(SimComponents activeSim, Report rep)
     {
         // Setting up flags and casted vars to manage logic and part assignments. The flag var is essentially a break, without using a break.
         int flag = 0;

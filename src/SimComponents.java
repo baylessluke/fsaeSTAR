@@ -320,7 +320,7 @@ public class SimComponents {
         for (GeometryPart prt : allParts) {
             String prtName = prt.getPresentationName();
             for (String prefix : AERO_PREFIXES) {
-                if (prtName.startsWith(prefix)) {
+                if (prtName.startsWith(aeroParent) && prtName.contains(prefix)) {
                     aeroParts.add(prt);
                 }
             }
@@ -525,8 +525,7 @@ public class SimComponents {
             //Positively select aero parts, and throw them into partSpecBounds
 
             for (String prefix : AERO_PREFIXES) {
-                if (boundName.contains(prefix) && !boundName.toLowerCase().contains("suspension"))      // Janky code so CFD_SUSPENSION doesn't trigger the NS prefix.
-
+                if (boundName.contains(prefix) && boundName.contains(aeroParent))      // Janky code so CFD_SUSPENSION doesn't trigger the NS prefix.
                 {
                     Collection<Boundary> temp = new ArrayList<>();
                     //Part spec bounds keys based on prefix, helps when setting up reports
