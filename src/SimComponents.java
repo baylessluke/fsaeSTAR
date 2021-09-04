@@ -81,6 +81,7 @@ public class SimComponents {
     public static final String volDot = "m^3/s";
     public static final String delP = "dP";
     public static final String noFan = "no_fan";
+    public static final String aeroParent = "CFD_AERODYNAMICS_830250079";
 
     //A bunch of declarations. Don't read too much into the access modifiers, they're not a big deal for a project like this.
     // I'm not going to comment all of these. there are way too many (future improvement suggestion: use fewer variables)

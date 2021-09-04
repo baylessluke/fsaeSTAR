@@ -23,7 +23,7 @@ public class AutoMesh extends StarMacro {
             activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.dualRadPart, activeSim.fanPart);
         else
             activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.fanPart);
-        if (activeSim.fanFlag)
+        if (activeSim.dualFanFlag)
             activeSim.autoMesh.getInputGeometryObjects().addObjects(activeSim.dualFanPart);
 
         //Clear all existing control nodes. Want to make sure the macros start from a well-defined entry point.
@@ -48,17 +48,18 @@ public class AutoMesh extends StarMacro {
                 else
                     activeSim.freestreamControl.getGeometryObjects().add(surf);
             }
-
-            if (surf.getPresentationName().contains("RW"))
-                activeSim.rearWingControl.getGeometryObjects().add(surf);
-            if (surf.getPresentationName().contains("FW"))
-                activeSim.frontWingControl.getGeometryObjects().add(surf);
-            if (surf.getPresentationName().contains("SW"))
-                activeSim.sideWingControl.getGeometryObjects().add((surf));
-            if (surf.getPresentationName().contains("NS") || surf.getPresentationName().contains("EC") || surf.getPresentationName().contains("CHASSIS"))
-                activeSim.bodyworkControl.getGeometryObjects().add(surf);
-            if (surf.getPresentationName().contains("UT"))
-                activeSim.undertrayControl.getGeometryObjects().add(surf);
+            if (surf.getPresentationName().contains(SimComponents.aeroParent)) {
+                if (surf.getPresentationName().contains("RW"))
+                    activeSim.rearWingControl.getGeometryObjects().add(surf);
+                if (surf.getPresentationName().contains("FW"))
+                    activeSim.frontWingControl.getGeometryObjects().add(surf);
+                if (surf.getPresentationName().contains("SW"))
+                    activeSim.sideWingControl.getGeometryObjects().add((surf));
+                if (surf.getPresentationName().contains("NS") || surf.getPresentationName().contains("EC") || surf.getPresentationName().contains("CHASSIS"))
+                    activeSim.bodyworkControl.getGeometryObjects().add(surf);
+                if (surf.getPresentationName().contains("UT"))
+                    activeSim.undertrayControl.getGeometryObjects().add(surf);
+            }
             //if (surf.getPresentationName().contains("RADIATOR"))
                 //activeSim.radiatorControlSurface.getGeometryObjects().add(surf);
         }
