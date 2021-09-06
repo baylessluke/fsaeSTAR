@@ -5,7 +5,9 @@ import star.flow.*;
 import star.motion.BoundaryReferenceFrameSpecification;
 import star.motion.ReferenceFrameOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 
 /*
 Sets up regions and boundary conditions. Also holds a few functions used by other macros for boundary conditions.
@@ -329,19 +331,22 @@ public class Regions extends StarMacro {
 
     //Make sure all regions are set to the correct physics model.
     public static void setTurbulence(SimComponents activeSim) {
+        Collection<Region> always_enabled_regions = Arrays.asList(
+                activeSim.domainRegion,
+                activeSim.radiatorRegion,
+                activeSim.fanRegion
+        );
 
-        activeSim.domainRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
-        activeSim.radiatorRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
+        PhysicsContinuum selectedPhysics = activeSim.DESFlag ? activeSim.desPhysics : activeSim.steadyStatePhysics;
+
+        for (Region reg: always_enabled_regions)
+            reg.setPhysicsContinuum(selectedPhysics);
+
         if (activeSim.dualRadFlag)
-            activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
+            activeSim.dualRadiatorRegion.setPhysicsContinuum(selectedPhysics);
 
-
-        if (activeSim.DESFlag) {
-            activeSim.domainRegion.setPhysicsContinuum(activeSim.desPhysics);
-            activeSim.radiatorRegion.setPhysicsContinuum(activeSim.desPhysics);
-            if (activeSim.dualRadFlag)
-                activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.desPhysics);
-        }
+        if (activeSim.dualFanFlag)
+            activeSim.dualFanRegion.setPhysicsContinuum(selectedPhysics);
     }
 
     //this is really important for PostProc. 2D PostProc is very slow if you don't reduce the total number of boundaries. This merges boundaries. This could be done just before meshing, but I don't like doing that since you lose flexibility with reports. This is safe to do just before 2D PostProc, so long as you understand that this function will destory the mesh.
