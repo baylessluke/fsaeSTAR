@@ -78,8 +78,9 @@ public class AutoMesh extends StarMacro {
         activeSim.volControlUnderbody.getGeometryObjects().setObjects(activeSim.volumetricUnderbody);
         activeSim.volControlRearWing.getGeometryObjects().setObjects(activeSim.volumetricRearWing);
         activeSim.volControlCar.getGeometryObjects().setObjects(activeSim.volumetricCar);
-        activeSim.radiatorControlVolume.getGeometryObjects().setObjects(activeSim.radPart);
+        activeSim.radiatorControlVolume.getGeometryObjects().setObjects(activeSim.radPart, activeSim.fanPart);
         if (activeSim.dualRadFlag) activeSim.radiatorControlVolume.getGeometryObjects().add(activeSim.dualRadPart);
+        if (activeSim.dualFanFlag) activeSim.radiatorControlVolume.getGeometryObjects().add(activeSim.dualFanPart);
         activeSim.farWakeControl.getGeometryObjects().setObjects(activeSim.farWakePart);
 
         //Don't need these next two lines. I like them though, so kept them.
