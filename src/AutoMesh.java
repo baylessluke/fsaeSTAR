@@ -49,15 +49,15 @@ public class AutoMesh extends StarMacro {
                     activeSim.freestreamControl.getGeometryObjects().add(surf);
             }
             if (surf.getPresentationName().contains(SimComponents.aeroParent)) {
-                if (surf.getPresentationName().contains("RW"))
+                if (surf.getPresentationName().contains("RW_"))
                     activeSim.rearWingControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("FW"))
+                if (surf.getPresentationName().contains("FW_"))
                     activeSim.frontWingControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("SW"))
+                if (surf.getPresentationName().contains("SW_"))
                     activeSim.sideWingControl.getGeometryObjects().add((surf));
-                if (surf.getPresentationName().contains("NS") || surf.getPresentationName().contains("EC") || surf.getPresentationName().contains("CHASSIS"))
+                if (surf.getPresentationName().contains("NS_") || surf.getPresentationName().contains("EC_") || surf.getPresentationName().contains("CHASSIS_"))
                     activeSim.bodyworkControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("UT"))
+                if (surf.getPresentationName().contains("UT_"))
                     activeSim.undertrayControl.getGeometryObjects().add(surf);
             }
             if (surf.getPresentationName().contains("RADIATOR") || surf.getPresentationName().contains("FAN"))
