@@ -9,7 +9,7 @@ if len(sys.argv) > 1:
         importPath = sys.argv[1]
         newArgv = []
         for i in range(0, len(sys.argv)):
-            if i is not 1:
+            if i != 1:
                 newArgv.append(sys.argv[i])
     else:
         importPath = os.getcwd()

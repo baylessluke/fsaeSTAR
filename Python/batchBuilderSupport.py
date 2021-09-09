@@ -61,7 +61,7 @@ def get_env_vals(file):
 
     for line in lines:
         line = line.strip()
-        if line is "":
+        if line == "":
             break
         val = line.split("=")[0].strip()
         var_dict[val] = get_config_var(val, file)
