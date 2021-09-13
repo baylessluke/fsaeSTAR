@@ -50,6 +50,14 @@ public class SurfaceWrap extends StarMacro {
         {
             aeroSurface.getGeometryObjects().addObjects(x.getPartSurfaces());
         }
+        if (sWrap.getInputGeometryObjects().has(simObject.fanPart))
+            sWrap.getInputGeometryObjects().remove(simObject.fanPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.dualFanPart))
+            sWrap.getInputGeometryObjects().remove(simObject.dualFanPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.radPart))
+            sWrap.getInputGeometryObjects().remove(simObject.radPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.dualRadPart))
+            sWrap.getInputGeometryObjects().remove(simObject.dualRadPart);
     }
 
 }

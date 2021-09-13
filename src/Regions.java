@@ -95,17 +95,14 @@ public class Regions extends StarMacro {
     }
 
     //This handles assigning a fan curve csv file to the fan curve table in STAR, and assigns that table to the fan boundary (passed as a parameter)
-    public void setUpFan(SimComponents activeSim, Region fanRegion)
-    {
+    public void setUpFan(SimComponents activeSim, Region fanRegion) {
         Collection<Boundary> fanRegionBounds = fanRegion.getBoundaryManager().getBoundaries();
         Boundary inletBound = null;
         Boundary outletBound = null;
 
-        for (Boundary bound : fanRegionBounds)
-        {
+        for (Boundary bound : fanRegionBounds) {
             String presName = bound.getPresentationName();
-            if (bound instanceof InterfaceBoundary)
-            {
+            if (bound instanceof InterfaceBoundary) {
                 if (presName.contains(SimComponents.FAN_INLET_STRING))
                     inletBound = bound;
                 else if (presName.contains(SimComponents.FAN_OUTLET_STRING))
@@ -113,21 +110,22 @@ public class Regions extends StarMacro {
             }
         }
 
-        if (inletBound == null || outletBound == null)
-        {
+        if (inletBound == null || outletBound == null) {
             throw new IllegalStateException("Could not detect inlet or outlet boundary for the fan region. check SetUpFan in Regions.java");
         }
 
-        fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.FAN);
-        MomentumFanSource fanModel = fanRegion.getValues().get(MomentumFanSource.class);
-        fanModel.setTable(activeSim.fan_curve_table);
-        fanModel.setTableVolDot(SimComponents.volDot);
-        fanModel.setUpstreamBoundary(inletBound);
-        fanModel.setDownstreamBoundary(outletBound);
-        if (activeSim.fanFlag)
+        if (activeSim.fanFlag) {
+            fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.FAN);
+            MomentumFanSource fanModel = fanRegion.getValues().get(MomentumFanSource.class);
+            fanModel.setTable(activeSim.fan_curve_table);
+            fanModel.setTableVolDot(SimComponents.volDot);
+            fanModel.setUpstreamBoundary(inletBound);
+            fanModel.setDownstreamBoundary(outletBound);
             fanModel.setTableP(SimComponents.delP);
-        else
-            fanModel.setTableP(SimComponents.noFan);
+        } else
+        {
+            fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.NONE);
+        }
     }
 
     private void setTyreRotation(SimComponents activeSim) {
@@ -363,7 +361,7 @@ public class Regions extends StarMacro {
                 if (coll.contains(x))
                     mergeBounds.remove(x);
             }
-            if (x.getPresentationName().toLowerCase().contains("interface") || x.getPresentationName().toLowerCase().contains("radiator") || x.getBoundaryType() instanceof InvalidCellBoundary)
+            if (x.getBoundaryType() instanceof InvalidCellBoundary || x instanceof InterfaceBoundary || x.getPresentationName().toLowerCase().contains("fan") || x.getPresentationName().toLowerCase().contains("radiator"))
                 mergeBounds.remove(x);
         }
         activeSim.activeSim.println("merging: " + mergeBounds);
