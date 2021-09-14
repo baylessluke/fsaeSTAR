@@ -146,7 +146,7 @@ def parseWalltime(walltime):
 
 def generateqsub(config_list):
     if config_list['CLUSTER'] != "LOCAL":
-        qsub = 'sbatch -A $CLUSTER -N = $NODES --constraint=$SUB_CLUSTER --time=$WALLTIME --exclusive '
+        qsub = 'sbatch -A $CLUSTER -N $NODES --constraint=$SUB_CLUSTER --time=$WALLTIME --exclusive '
         if len(sys.argv) > 1:
             qsub += ' --dependency=afterany'
             for i in range(1, len(sys.argv)):
