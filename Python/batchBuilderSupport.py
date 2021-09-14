@@ -123,9 +123,8 @@ def generatecommand(config_list):
     command = command + " -licpath " + "$LICPATH" + " -collab "
     command = command + " -classpath " + '"' + "$CP" + '" '
     command = command + '"' + "$FILENAME" + '"'
-    if 'PROCS' in config_list:
-        if float(config_list['PROCS']) != 1:
-            command = command + " -np " + "$REAL_PROCS"
+    command = command + " -np " + "$REAL_PROCS"
+
     if 'PODKEY' in config_list and "cd-adapco" in config_list['LICPATH']:
         command = command + " -power -podkey " + "$PODKEY"
     command = command + " -batch " + '"' + "$CP" + os.sep + "$MACRO" + '"'
@@ -147,7 +146,7 @@ def parseWalltime(walltime):
 
 def generateqsub(config_list):
     if config_list['CLUSTER'] != "LOCAL":
-        qsub = 'sbatch -A $CLUSTER --constraint=$SUB_CLUSTER --ntasks=$PROCS --time=$WALLTIME --exclusive '
+        qsub = 'sbatch -A $CLUSTER -N=$NODES --constraint=$SUB_CLUSTER --time=$WALLTIME --exclusive '
         if len(sys.argv) > 1:
             qsub += ' --dependency=afterany'
             for i in range(1, len(sys.argv)):

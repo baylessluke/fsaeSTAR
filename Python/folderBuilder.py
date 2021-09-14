@@ -31,15 +31,6 @@ for contents in os.listdir(importPath):
         if ('JOBS_IN_PARALLEL' not in controllerVars.keys()) or (controllerVars['CLUMPED'] != "true"):
             controllerVars['JOBS_IN_PARALLEL'] = 1
 
-        if controllerVars['CLUSTER'] != "LOCAL":
-            if int(controllerVars['PROCS']) < 20:
-                controllerVars['NODES'] = 1
-            else:
-                controllerVars['NODES'] = int(int(controllerVars['PROCS']) / 20)
-
-            controllerVars['PPN'] = int(int(controllerVars['PROCS']) / controllerVars['NODES'])
-            controllerVars['JOB_PROCS'] = int(controllerVars['PROCS']) // int(controllerVars['JOBS_IN_PARALLEL'])
-
         path = controllerVars['SIMPATH']
 
         # Get command strings
