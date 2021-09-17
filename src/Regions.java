@@ -7,7 +7,6 @@ import star.motion.ReferenceFrameOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
 
 /*
 Sets up regions and boundary conditions. Also holds a few functions used by other macros for boundary conditions.

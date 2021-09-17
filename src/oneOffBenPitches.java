@@ -4,7 +4,6 @@
 import java.io.File;
 
 import star.common.*;
-import star.base.report.*;
 import star.flow.*;
 
 public class oneOffBenPitches extends StarMacro {

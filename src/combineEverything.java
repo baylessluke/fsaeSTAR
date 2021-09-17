@@ -1,11 +1,7 @@
-import star.cadmodeler.SolidModelPart;
 import star.common.CompositePart;
 import star.common.GeometryPart;
 import star.common.StarMacro;
-import star.material.SolidModel;
-import star.meshing.MeshPart;
 import star.meshing.MeshPartFactory;
-import star.meshing.SimpleBlockPart;
 
 import java.util.ArrayList;
 import java.util.Collection;

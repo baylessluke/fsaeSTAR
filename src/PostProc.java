@@ -52,12 +52,17 @@ public class PostProc extends StarMacro {
         {
             String key = getSecondKey(view)[0];
 
-            if (key.equals("Profile"))
-                profileViews.add(view);
-            else if (key.equals("AftFore"))
-                aftForeViews.add(view);
-            else if (key.equals("TopBottom"))
-                topBottomViews.add(view);
+            switch (key) {
+                case "Profile":
+                    profileViews.add(view);
+                    break;
+                case "AftFore":
+                    aftForeViews.add(view);
+                    break;
+                case "TopBottom":
+                    topBottomViews.add(view);
+                    break;
+            }
         }
 
         //Export mesh and 3D scenes before destroying the mesh.

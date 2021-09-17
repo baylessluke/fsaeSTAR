@@ -1,12 +1,8 @@
-import star.cadmodeler.SolidModelPart;
 import star.common.CompositePart;
 import star.common.GeometryPart;
 import star.common.Simulation;
 import star.common.StarMacro;
-import star.material.SolidModel;
-import star.meshing.MeshPartFactory;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 public class explodeEverything extends StarMacro {
