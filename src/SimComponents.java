@@ -82,6 +82,13 @@ public class SimComponents {
     public static final String delP = "dP";
     public static final String noFan = "no_fan";
     public static final String aeroParent = "CFD_AERODYNAMICS_830250079";
+    public static final String RADIATOR_AXIS_NAME = "Radiator Cartesian";
+    public static final String STEERING_AXIS_NAME = "Front Wheel Steering";
+    public static final String FRONT_WHEEL_CYLINDRICAL_NAME = "Front Wheel Cylindrical";
+    public static final String REAR_WHEEL_CYLINDRICAL_NAME = "Rear Wheel Cylindrical";
+    public static final String DUAL_RADIATOR_CARTESIAN_NAME = "Dual Radiator Cartesian";
+    public static final String FAN_CYLINDRICAL_AXIS_NAME = "Fan Cylindrical";
+    public static final String DUAL_FAN_CYLINDRICAL_AXIS_NAME = "Dual Fan Cylindrical";
 
     //A bunch of declarations. Don't read too much into the access modifiers, they're not a big deal for a project like this.
     // I'm not going to comment all of these. there are way too many (future improvement suggestion: use fewer variables)
@@ -202,6 +209,8 @@ public class SimComponents {
     public CylindricalCoordinateSystem rearWheelCoord;
     public CylindricalCoordinateSystem frontWheelSteering;
     public CylindricalCoordinateSystem domainAxis;
+    public CylindricalCoordinateSystem fanAxis;
+    public CylindricalCoordinateSystem dualFanAxis;
     public UserRotatingAndTranslatingReferenceFrame rotatingFrame;
     public Boundary fsInlet;                            //fs refers to freestream here
     public Boundary leftPlane;
@@ -809,13 +818,15 @@ public class SimComponents {
     //Initialize coordinate systems with their STAR objects.
     private void setupCoordinates() {
         try {
-            radiatorCoord = (CartesianCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem("Radiator Cartesian");
-            frontWheelSteering = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem("Front Wheel Steering");
-            frontWheelCoord = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem("Front Wheel Cylindrical");
-            rearWheelCoord = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem("Rear Wheel Cylindrical");
+            radiatorCoord = (CartesianCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(RADIATOR_AXIS_NAME);
+            frontWheelSteering = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(STEERING_AXIS_NAME);
+            frontWheelCoord = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(FRONT_WHEEL_CYLINDRICAL_NAME);
+            rearWheelCoord = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(REAR_WHEEL_CYLINDRICAL_NAME);
+            fanAxis = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(FAN_CYLINDRICAL_AXIS_NAME);
+            dualFanAxis = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(DUAL_FAN_CYLINDRICAL_AXIS_NAME);
             if (dualRadFlag)
                 dualRadCoord = (CartesianCoordinateSystem) activeSim.getCoordinateSystemManager().
-                        getCoordinateSystem("Dual Radiator Cartesian");
+                        getCoordinateSystem(DUAL_RADIATOR_CARTESIAN_NAME);
             if (corneringFlag)
             {
                 rotatingFrame = (UserRotatingAndTranslatingReferenceFrame) activeSim.getReferenceFrameManager().getObject(ROTATING);

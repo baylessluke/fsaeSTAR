@@ -94,7 +94,7 @@ public class Regions extends StarMacro {
     }
 
     //This handles assigning a fan curve csv file to the fan curve table in STAR, and assigns that table to the fan boundary (passed as a parameter)
-    public void setUpFan(SimComponents activeSim, Region fanRegion) {
+    public void setUpFan(SimComponents activeSim, Region fanRegion, CylindricalCoordinateSystem fanAxis) {
         Collection<Boundary> fanRegionBounds = fanRegion.getBoundaryManager().getBoundaries();
         Boundary inletBound = null;
         Boundary outletBound = null;
@@ -121,6 +121,8 @@ public class Regions extends StarMacro {
             fanModel.setUpstreamBoundary(inletBound);
             fanModel.setDownstreamBoundary(outletBound);
             fanModel.setTableP(SimComponents.delP);
+            fanModel.getSolver().setIStart(10);
+            fanModel.setCoordinateSystem(fanAxis);
         } else
         {
             fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.NONE);
@@ -370,8 +372,8 @@ public class Regions extends StarMacro {
     //Quick and dirty method to set up fans, and only fans when needed by run.java, and fan boundaries aren't already known.
     public void initFans(SimComponents activeSim)
     {
-        setUpFan(activeSim, activeSim.fanRegion);
+        setUpFan(activeSim, activeSim.fanRegion, activeSim.fanAxis);
         if (activeSim.dualFanFlag)
-            setUpFan(activeSim, activeSim.dualFanRegion);
+            setUpFan(activeSim, activeSim.dualFanRegion, activeSim.dualFanAxis);
     }
 }
