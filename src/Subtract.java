@@ -26,12 +26,14 @@ public class Subtract extends StarMacro {
             simObject.activeSim.get(SimulationPartManager.class).updateParts(new NeoObjectVector(new Object[] {domain, simObject.farWakePart}));
         }
         subtractManager.setObjects(domain);
-        subtractManager.addObjects(surfaceWrap, simObject.radPart, simObject.fanPart);
-        if (simObject.dualFanFlag) subtractManager.addObjects(simObject.dualFanPart);
-        if (simObject.dualRadFlag) subtractManager.addObjects(simObject.dualRadPart);
+        subtractManager.addObjects(surfaceWrap);
+        //subtractManager.addObjects(surfaceWrap, simObject.radPart, simObject.fanPart);
+        //if (simObject.dualFanFlag) subtractManager.addObjects(simObject.dualFanPart);
+        //if (simObject.dualRadFlag) subtractManager.addObjects(simObject.dualRadPart);
 
         simObject.subtract.getTargetPartManager().setObjects(domain);
         simObject.subtract.execute();
+        simObject.saveSim();
     }
 
 }
