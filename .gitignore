@@ -20,4 +20,5 @@ scripts/
 intellIJsettings.jar
 Python/__pycache__/
 Python/deleteEverything.bat
+*.log
 ~$*
