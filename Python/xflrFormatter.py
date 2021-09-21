@@ -26,9 +26,9 @@ argv_length = len(sys.argv)
 
 # set defaults here. alpha in degrees.
 filepath = r"C:\Users\rauna\OneDrive\Formula SAE\2022\NX_Open_Trials\FW_F_1-1.dat" if argv_length <= 1 else sys.argv[1]
-alpha = 5 if argv_length <= 2 else sys.argv[2]
-chord = 10 if argv_length <= 3 else sys.argv[3]
-y_offset = 4 if argv_length <= 4 else sys.argv[4]
+alpha = 5 if argv_length <= 2 else float(sys.argv[2])
+chord = 10 if argv_length <= 3 else float(sys.argv[3])
+y_offset = 4 if argv_length <= 4 else float(sys.argv[4])
 alpha = math.radians(alpha)
 rot_mat = numpy.matrix([[math.cos(alpha), -math.sin(alpha)], [math.sin(alpha), math.cos(alpha)]])
 
