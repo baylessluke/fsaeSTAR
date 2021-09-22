@@ -3,6 +3,8 @@ import star.base.neo.NeoObjectVector;
 import star.common.*;
 import star.flow.*;
 import star.motion.BoundaryReferenceFrameSpecification;
+import star.motion.MotionSpecification;
+import star.motion.ReferenceFrameBase;
 import star.motion.ReferenceFrameOption;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -206,11 +208,13 @@ public class Regions extends StarMacro {
 
     //Sets up boundary conditions for the domain boundaries. Ground, inlet, outlet, symmetry, symmetry, symmetry.
     private void setDomainBoundaries(SimComponents activeSim) {
-        if (activeSim.corneringFlag)
-        {
+        if (activeSim.corneringFlag) {
             setDomainBoundaries_Cornering(activeSim);
+            setRegionReferenceFrames(activeSim, activeSim.rotatingFrame);
             return;
         }
+
+        setRegionReferenceFrames(activeSim, activeSim.labReferenceFrame);
         String yVal = String.valueOf(activeSim.calculateSideslip());
         activeSim.leftPlane.setBoundaryType(SymmetryBoundary.class);
         activeSim.symPlane.setBoundaryType(SymmetryBoundary.class);
@@ -227,6 +231,15 @@ public class Regions extends StarMacro {
             activeSim.groundPlane.getValues().get(WallRelativeVelocityProfile.class).
                     getMethod(ConstantVectorProfileMethod.class).getQuantity().setDefinition("[${Freestream}," + yVal + ", 0]");
         activeSim.fsOutlet.setBoundaryType(PressureBoundary.class);
+
+    }
+
+    private void setRegionReferenceFrames(SimComponents activeSim, ReferenceFrameBase refFrame) {
+        for (Region reg : activeSim.activeSim.getRegionManager().getRegions()) {
+            if (reg.getPhysicsContinuum().isEmpty())
+                continue;
+            reg.getValues().get(MotionSpecification.class).setReferenceFrame(refFrame);
+        }
     }
 
     //Same thing as the method above, except for a cornering case.

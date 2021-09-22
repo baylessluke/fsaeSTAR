@@ -13,6 +13,8 @@ import star.cadmodeler.SolidModelPart;
 import star.common.*;
 import star.flow.AccumulatedForceTable;
 import star.meshing.*;
+import star.motion.LabReferenceFrame;
+import star.motion.ReferenceFrameManager;
 import star.motion.UserRotatingAndTranslatingReferenceFrame;
 import star.screenplay.Screenplay;
 import star.surfacewrapper.SurfaceWrapperAutoMeshOperation;
@@ -212,6 +214,7 @@ public class SimComponents {
     public CylindricalCoordinateSystem fanAxis;
     public CylindricalCoordinateSystem dualFanAxis;
     public UserRotatingAndTranslatingReferenceFrame rotatingFrame;
+    public LabReferenceFrame labReferenceFrame;
     public Boundary fsInlet;                            //fs refers to freestream here
     public Boundary leftPlane;
     public Boundary groundPlane;
@@ -824,6 +827,7 @@ public class SimComponents {
             rearWheelCoord = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(REAR_WHEEL_CYLINDRICAL_NAME);
             fanAxis = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(FAN_CYLINDRICAL_AXIS_NAME);
             dualFanAxis = (CylindricalCoordinateSystem) activeSim.getCoordinateSystemManager().getCoordinateSystem(DUAL_FAN_CYLINDRICAL_AXIS_NAME);
+            labReferenceFrame = (LabReferenceFrame) activeSim.get(ReferenceFrameManager.class).getObject("Lab Reference Frame");
             if (dualRadFlag)
                 dualRadCoord = (CartesianCoordinateSystem) activeSim.getCoordinateSystemManager().
                         getCoordinateSystem(DUAL_RADIATOR_CARTESIAN_NAME);
