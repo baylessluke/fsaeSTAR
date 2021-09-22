@@ -4,10 +4,10 @@ import batchBuilderSupport as bbs
 import os
 import sys
 
-path = r"D:\Archive\Formula"
+path = r"E:\2022 Simulations"
 sizeLimit = 400e6
 fileList = bbs.get_file_list(path, sizeLimit)
-starPath = r'"C:\Program Files\Siemens\15.06.008-R8\STAR-CCM+15.06.008-R8\star\bin\starccm+.exe"'
+starPath = r'"D:\Software\STAR\16.04.012-R8\STAR-CCM+16.04.012-R8\star\lib\win64\intel20.1vc14.2-r8\lib\starccmw.exe'
 macroPath = [r"C:\Users\rauna\Documents\GitHub\fsaeSTAR\src\universalMeshClear.java"]
 classPath = r"C:\Users\rauna\Documents\GitHub\fsaeSTAR\src"
 outputFile = "deleteEverything.bat"
@@ -15,7 +15,7 @@ output = open(outputFile, "w")
 for x in fileList:
     print("Writing line for ", x)
     for y in macroPath:
-        cmdString = starPath + " -power -podkey " + "ejp6DLYl3MCoXIiuatSpAg" + " -classpath " + bbs.add_quotes(classPath) + " -batch " + bbs.add_quotes(y) + " " + bbs.add_quotes(x)
+        cmdString = starPath + " -power -podkey " + "Raxpoq5iIFqgy7DwEH4HrA" + " -classpath " + bbs.add_quotes(classPath) + " -batch " + bbs.add_quotes(y) + " " + bbs.add_quotes(x)
         output.write(cmdString)
         output.write(os.linesep)
 output.close()
