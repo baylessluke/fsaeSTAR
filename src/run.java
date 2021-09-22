@@ -59,7 +59,7 @@ public class run extends StarMacro {
         if (!activeSim.convergenceCheck && !activeSim.abortFile.getIsSatisfied())
             activeSim.activeSim.getSimulationIterator().run();
 
-        //If we're doing convergence checks, check for convergence every 100 iterations.
+        //If we're doing convergence checks, check for convergence every 50 iterations.
         do
         {
             ConvergenceChecker obj = new ConvergenceChecker(activeSim);
