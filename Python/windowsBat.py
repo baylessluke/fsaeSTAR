@@ -7,9 +7,9 @@ import sys
 path = r"E:\2022 Simulations"
 sizeLimit = 400e6
 fileList = bbs.get_file_list(path, sizeLimit)
-starPath = r'"D:\Software\STAR\16.04.012-R8\STAR-CCM+16.04.012-R8\star\lib\win64\intel20.1vc14.2-r8\lib\starccmw.exe'
-macroPath = [r"C:\Users\rauna\Documents\GitHub\fsaeSTAR\src\universalMeshClear.java"]
-classPath = r"C:\Users\rauna\Documents\GitHub\fsaeSTAR\src"
+starPath = r'"D:\Software\STAR\16.04.012-R8\STAR-CCM+16.04.012-R8\star\lib\win64\intel20.1vc14.2-r8\lib\starccm+.exe"'
+macroPath = [r"C:\Users\Raunaq Kumaran\Documents\GitHub\fsaeSTAR\src\universalMeshClear.java"]
+classPath = r"C:\Users\Raunaq Kumaran\Documents\GitHub\fsaeSTAR\src"
 outputFile = "deleteEverything.bat"
 output = open(outputFile, "w")
 for x in fileList:
