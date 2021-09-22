@@ -236,7 +236,7 @@ public class Regions extends StarMacro {
 
     private void setRegionReferenceFrames(SimComponents activeSim, ReferenceFrameBase refFrame) {
         for (Region reg : activeSim.activeSim.getRegionManager().getRegions()) {
-            if (reg.getPhysicsContinuum().isEmpty())
+            if (reg.getPhysicsContinuum() == null)
                 continue;
             reg.getValues().get(MotionSpecification.class).setReferenceFrame(refFrame);
         }
