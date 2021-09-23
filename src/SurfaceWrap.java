@@ -32,9 +32,7 @@ public class SurfaceWrap extends StarMacro {
         //if (simObject.dualRadFlag) simObject.surfaceWrapOperationPPM.getInputGeometryObjects().removePart(simObject.dualRadPart);
         simObject.surfaceWrapOperationPPM.getInputGeometryObjects().setObjects();
         simObject.surfaceWrapOperationPPM.execute();
-
         surfaceWrapSetup(simObject, simObject.surfaceWrapOperation, simObject.aeroSurfaceWrapper);
-
         simObject.surfaceWrapOperation.getMesherParallelModeOption().setSelected(MesherParallelModeOption.Type.SERIAL);
         simObject.surfaceWrapOperation.setMeshPartByPart(false);
         simObject.surfaceWrapOperation.execute();
@@ -52,6 +50,16 @@ public class SurfaceWrap extends StarMacro {
         {
             aeroSurface.getGeometryObjects().addObjects(x.getPartSurfaces());
         }
+        /*
+        if (sWrap.getInputGeometryObjects().has(simObject.fanPart))
+            sWrap.getInputGeometryObjects().remove(simObject.fanPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.dualFanPart))
+            sWrap.getInputGeometryObjects().remove(simObject.dualFanPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.radPart))
+            sWrap.getInputGeometryObjects().remove(simObject.radPart);
+        if (sWrap.getInputGeometryObjects().has(simObject.dualRadPart))
+            sWrap.getInputGeometryObjects().remove(simObject.dualRadPart);
+         */
     }
 
 }

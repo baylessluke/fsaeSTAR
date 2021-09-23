@@ -56,7 +56,7 @@ public class MacroController extends StarMacro {
         String[] adjointPostProc = {
         		"AdjointPostProc.java"
         };
- 
+        
         List<String> runMacros = new ArrayList<>();
 
         //Get the sysenvs.

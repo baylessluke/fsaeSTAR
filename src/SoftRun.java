@@ -14,7 +14,5 @@ public class SoftRun extends StarMacro
         Regions obj = new Regions();
         obj.initFans(sim);
         sim.activeSim.getSimulationIterator().step(1);
-
-        return;
     }
 }
