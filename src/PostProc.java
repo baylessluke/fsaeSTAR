@@ -286,50 +286,6 @@ public class PostProc extends StarMacro {
             plot.encode(plotsImagePath, "png", 4000, 2000);
 
         }
-        
-        // Export Cf Plots
-        XYPlot cfPlot = ((XYPlot) sim.activeSim.getPlotManager().getPlot("Skin Friction Coefficient"));
-        cfPlot.getParts().setObjects(sim.crossSection);
-        this.cfExport(sim, cfPlot, sim.profileLimits, 1, "FW");
-        this.cfExport(sim, cfPlot, sim.profileLimits, 1, "RW");
-        this.cfExport(sim, cfPlot, sim.profileLimits, 1, "SW");
-        this.cfExport(sim, cfPlot, sim.profileLimits, 1, "UT");
-    }
-    
-    /**
-     * Exports cf plot for each wing
-     * @param sim
-     * @param plot
-     * @param limits
-     * @param increment
-     */
-    private void cfExport(SimComponents sim, XYPlot plot, double[] limits, double increment, String partKey) throws IOException {
-    	
-    	// New region for to select part from
-    	Region subtractRegion = sim.activeSim.getRegionManager().getRegion(SimComponents.SUBTRACT_NAME);
-    	
-    	// Select parts
-    	Collection<Boundary> selectedParts = new ArrayList<Boundary>();
-		for (Boundary bdry : subtractRegion.getBoundaryManager().getBoundaries()) {
-			if (bdry.getPresentationName().contains("Surface wrapper." + partKey)) {
-				selectedParts.add(bdry);
-			}
-		}
-		sim.crossSection.getInputParts().setObjects(selectedParts);
-		
-		// Export Plots
-		String plotsPath, plotsPathText, plotName, plotsImagePath;
-		plotsPath = getFolderPath("Plots", sim, sim.isUnix());
-		for (double sectionVal = limits[0]; sectionVal <= limits[1]; sectionVal += increment) {
-			sim.crossSection.getSingleValue().setValue(sectionVal);
-			
-			plotName = partKey + " Skin Friction Coefficient Y = " + Double.toString(sectionVal);
-            plotsImagePath = plotsPath + sim.separator + plotName + ".png";
-            plotsPathText = plotsPath + sim.separator + plotName + ".txt";
-
-            plot.export(plotsPathText);
-            plot.encode(plotsImagePath, "png", 4000, 2000);
-		}
     }
 
     public String getFolderPath(String folderName, SimComponents sim, boolean unix)
