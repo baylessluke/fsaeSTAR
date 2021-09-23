@@ -18,7 +18,7 @@ public class FreestreamFix extends StarMacro {
                 ((SimpleBlockPart) simulation_0.get(SimulationPartManager.class).getPart("Freestream"));
 
         Units units_0 =
-                simulation_0.getUnitsManager().getObject("m");
+                ((Units) simulation_0.getUnitsManager().getObject("m"));
 
         simpleBlockPart_0.getCorner1().setCoordinate(units_0, units_0, units_0, new DoubleVector(new double[]{-16.0, 0.0, 0.00889}));
 

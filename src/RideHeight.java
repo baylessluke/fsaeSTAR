@@ -39,6 +39,10 @@ public class RideHeight extends StarMacro {
             return;
 
         //DEBUG
+        /*
+        frh = -5.5;
+        rrh = -5.5;
+        */
         frontRot = Math.atan(rrh / sim.wheelBase);
         rearRot = -Math.atan(frh / sim.wheelBase);
 

@@ -14,8 +14,6 @@ public class ConvergenceChecker {
     public static final int MIN_MAX_WINDOW = 750;
     public HashMap<String, Boolean> convergenceResults;
 
-    //TODO: SWITCH THIS TO A P-NORM OF SOME SORT
-
     public ConvergenceChecker(SimComponents activeSim)
     {
         convergenceResults = new HashMap<>();

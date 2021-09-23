@@ -4,6 +4,7 @@
 import java.io.File;
 
 import star.common.*;
+import star.base.report.*;
 import star.flow.*;
 
 public class oneOffBenPitches extends StarMacro {
@@ -26,19 +27,20 @@ public class oneOffBenPitches extends StarMacro {
 
     momentCoefficientReport_0.getReferenceRadius().setValue(1.0);
 
-    Units units_1 =
-            simulation_0.getUnitsManager().getObject("m");
+    Units units_1 = 
+      ((Units) simulation_0.getUnitsManager().getObject("m"));
 
     momentCoefficientReport_0.getReferenceRadius().setUnits(units_1);
 
-    Units units_0 =
-            simulation_0.getUnitsManager().getObject("in");
+    Units units_0 = 
+      ((Units) simulation_0.getUnitsManager().getObject("in"));
 
     momentCoefficientReport_0.getOrigin().setUnits(units_0);
 
     momentCoefficientReport_0.getOrigin().setComponents(0.0, 0.0, 0.35);
 
-    momentCoefficientReport_0.printReport(resolvePath(simulation_0.getSessionDir() + File.separator + momentCoefficientReport_0.getPresentationName().replaceAll("[\\/]", "") + ".txt"), false);
+    Report rep = momentCoefficientReport_0;
+    rep.printReport(resolvePath(simulation_0.getSessionDir() + File.separator + rep.getPresentationName().replaceAll("[\\/]", "") + ".txt"), false);
 
   }
 }

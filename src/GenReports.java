@@ -26,7 +26,7 @@ public class GenReports extends StarMacro {
             if (rep instanceof StatisticsReport)
                 setupStatisticsReport(activeSim, (StatisticsReport) rep);
             else
-                setupUnknownReport(activeSim, rep);
+                setupUnkownReport(activeSim, rep);
         }
 
         //Set up the report for max velocity. Need this to make sure the MeshRepair trigger works. Assign the whole domain to it (might want to do radiator regions too, but no...)
@@ -59,7 +59,7 @@ public class GenReports extends StarMacro {
         }
     }
 
-    private void setupUnknownReport(SimComponents activeSim, Report rep)
+    private void setupUnkownReport(SimComponents activeSim, Report rep)
     {
         // Setting up flags and casted vars to manage logic and part assignments. The flag var is essentially a break, without using a break.
         int flag = 0;
@@ -99,7 +99,7 @@ public class GenReports extends StarMacro {
 
         //Go through aeroPrefixes and assign them to their appropriate lift and drag reports. Set the flag to 1, essentially exiting out of the loop before double counting.
         String repName = rep.getPresentationName();
-        for (String prefix : SimComponents.AERO_PREFIXES)
+        for (String prefix : activeSim.AERO_PREFIXES)
         {
             if (repName.contains(prefix) && flag != 1)          //repName only contains prefix if it is a part specific report (eg "RW Lift")
             {

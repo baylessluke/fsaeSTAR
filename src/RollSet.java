@@ -21,6 +21,9 @@ public class RollSet extends StarMacro {
 
         rollAngle = Math.toRadians(sim.valEnv("roll"));
 
+        //Debug
+        //rollAngle = Math.toRadians(0);
+
         if (rollAngle!=0)
         {
             sim.activeSim.get(SimulationPartManager.class).rotateParts(sim.nonAeroParts,

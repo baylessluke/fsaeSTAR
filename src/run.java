@@ -56,7 +56,7 @@ public class run extends StarMacro {
         activeSim.activeSim.println("Enable maxVel attempted");
 
         //If we're not doing convergence checks, keep running indefinitely
-        if (!activeSim.convergenceCheck && !activeSim.abortFile.getIsSatisfied())
+        if (activeSim.convergenceCheck == false && !activeSim.abortFile.getIsSatisfied())
             activeSim.activeSim.getSimulationIterator().run();
 
         //If we're doing convergence checks, check for convergence every 100 iterations.
@@ -67,7 +67,7 @@ public class run extends StarMacro {
             {
                 if (key.contains(SimComponents.LIFT_COEFFICIENT_PLOT))
                 {
-                    if (obj.convergenceResults.get(key) && activeSim.convergenceCheck) {
+                    if (obj.convergenceResults.get(key) == true && activeSim.convergenceCheck == true) {
                         CONVERGED = true;
                         return;
                     }
@@ -75,7 +75,7 @@ public class run extends StarMacro {
             }
             if (!activeSim.maxStepStop.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied())
                 activeSim.activeSim.getSimulationIterator().run(50);
-        } while(!CONVERGED && !activeSim.maxStepStop.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied() && !activeSim.maxVel.getIsSatisfied());
+        } while(CONVERGED != true && !activeSim.maxStepStop.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied() && !activeSim.maxVel.getIsSatisfied());
 
         //If maximum velocity is triggered, run mesh repair, then continue iterating again.
         if (activeSim.maxVel.getIsSatisfied())

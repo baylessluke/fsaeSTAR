@@ -18,13 +18,11 @@ public class AutoMesh extends StarMacro {
         activeSim.activeSim.println("--- AUTOMESHING ---");
 
         activeSim.activeSim.println("Assigning surface controls");
-        // Set input objects for auto mesher
+        // Set input objects for auto mehser
         if (activeSim.dualRadFlag)
-            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.dualRadPart, activeSim.fanPart);
+            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.dualRadPart);
         else
-            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart, activeSim.fanPart);
-        if (activeSim.dualFanFlag)
-            activeSim.autoMesh.getInputGeometryObjects().addObjects(activeSim.dualFanPart);
+            activeSim.autoMesh.getInputGeometryObjects().setObjects(activeSim.radPart, activeSim.subtractPart);
 
         //Clear all existing control nodes. Want to make sure the macros start from a well-defined entry point.
         activeSim.groundControl.getGeometryObjects().setObjects();
@@ -41,34 +39,30 @@ public class AutoMesh extends StarMacro {
 
         for (PartSurface surf :  activeSim.subtractPart.getPartSurfaceManager().getPartSurfaces())
         {
-            if (surf.getPresentationName().contains(SimComponents.FREESTREAM_PREFIX))
+            if (surf.getPresentationName().contains(activeSim.FREESTREAM_PREFIX))
             {
                 if (surf.getPresentationName().contains("Ground"))
                     activeSim.groundControl.getGeometryObjects().add(surf);
                 else
                     activeSim.freestreamControl.getGeometryObjects().add(surf);
             }
-            if (surf.getPresentationName().contains(SimComponents.aeroParent)) {
-                if (surf.getPresentationName().contains("RW_"))
-                    activeSim.rearWingControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("FW_"))
-                    activeSim.frontWingControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("SW_"))
-                    activeSim.sideWingControl.getGeometryObjects().add((surf));
-                if (surf.getPresentationName().contains("NS_") || surf.getPresentationName().contains("EC_") || surf.getPresentationName().contains("CHASSIS_"))
-                    activeSim.bodyworkControl.getGeometryObjects().add(surf);
-                if (surf.getPresentationName().contains("UT_"))
-                    activeSim.undertrayControl.getGeometryObjects().add(surf);
-            }
-            if (surf.getPresentationName().contains("RADIATOR") || surf.getPresentationName().contains("FAN"))
-                activeSim.radiatorControlSurface.getGeometryObjects().add(surf);
+
+            if (surf.getPresentationName().contains("RW"))
+                activeSim.rearWingControl.getGeometryObjects().add(surf);
+            if (surf.getPresentationName().contains("FW"))
+                activeSim.frontWingControl.getGeometryObjects().add(surf);
+            if (surf.getPresentationName().contains("SW"))
+                activeSim.sideWingControl.getGeometryObjects().add((surf));
+            if (surf.getPresentationName().contains("NS") || surf.getPresentationName().contains("EC") || surf.getPresentationName().contains("CHASSIS"))
+                activeSim.bodyworkControl.getGeometryObjects().add(surf);
+            if (surf.getPresentationName().contains("UT"))
+                activeSim.undertrayControl.getGeometryObjects().add(surf);
+            //if (surf.getPresentationName().contains("RADIATOR"))
+                //activeSim.radiatorControlSurface.getGeometryObjects().add(surf);
         }
 
-        activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.radPart.getPartSurfaces());
-        if (activeSim.dualRadFlag) activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.dualRadPart.getPartSurfaces());
-
-        activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.fanPart.getPartSurfaces());
-        if (activeSim.dualFanFlag) activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.dualFanPart.getPartSurfaces());
+        //activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.radPart.getPartSurfaces());
+        //if (activeSim.dualRadFlag) activeSim.radiatorControlSurface.getGeometryObjects().addObjects(activeSim.dualRadPart.getPartSurfaces());
 
         //Assign block parts to the associated volume controls. Whether or not these are used is dependent on whether or not the nodes are enabled in the sim file.
         activeSim.activeSim.println("Assigning volumetric controls");
@@ -78,9 +72,8 @@ public class AutoMesh extends StarMacro {
         activeSim.volControlUnderbody.getGeometryObjects().setObjects(activeSim.volumetricUnderbody);
         activeSim.volControlRearWing.getGeometryObjects().setObjects(activeSim.volumetricRearWing);
         activeSim.volControlCar.getGeometryObjects().setObjects(activeSim.volumetricCar);
-        activeSim.radiatorControlVolume.getGeometryObjects().setObjects(activeSim.radPart, activeSim.fanPart);
+        activeSim.radiatorControlVolume.getGeometryObjects().setObjects(activeSim.radPart);
         if (activeSim.dualRadFlag) activeSim.radiatorControlVolume.getGeometryObjects().add(activeSim.dualRadPart);
-        if (activeSim.dualFanFlag) activeSim.radiatorControlVolume.getGeometryObjects().add(activeSim.dualFanPart);
         activeSim.farWakeControl.getGeometryObjects().setObjects(activeSim.farWakePart);
 
         //Don't need these next two lines. I like them though, so kept them.

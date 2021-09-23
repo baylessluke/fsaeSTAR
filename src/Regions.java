@@ -6,8 +6,9 @@ import star.motion.BoundaryReferenceFrameSpecification;
 import star.motion.MotionSpecification;
 import star.motion.ReferenceFrameBase;
 import star.motion.ReferenceFrameOption;
+
+import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 /*
@@ -51,40 +52,35 @@ public class Regions extends StarMacro {
         // This can be made much cleaner by using vars for some of these object returns.
         // Some of these calls will need to be modified if coordinate systems change in the future.
 
-        //Set up boundaries for the radiator inlets and outlets.
+        //Set up boundaries for the radiator inlets and outlest.
         if (activeSim.radInlet == null || activeSim.radOutlet == null || activeSim.domainRadInlet == null || activeSim.domainRadOutlet == null)
         {
             throw new IllegalStateException("Could not assign radiator surfaces. Did you split radiator surfaces?");
         }
-        if (activeSim.fanInlet == null || activeSim.domainFanInlet == null || activeSim.fanOutlet == null || activeSim.domainFanOutlet == null)
-        {
-            throw new IllegalStateException("Could not assign fan surfaces. Did you split fan surfaces?");
-        }
         activeSim.massFlowInterfaceInlet = activeSim.activeSim.getInterfaceManager().
                 createBoundaryInterface(activeSim.domainRadInlet, activeSim.radInlet,
-                        SimComponents.RAD_INLET_STRING);
+                        activeSim.massFlowInterfaceNameInlet);
 
         activeSim.massFlowInterfaceOutlet = activeSim.activeSim.getInterfaceManager().
                 createBoundaryInterface(activeSim.domainRadOutlet, activeSim.radOutlet,
-                        SimComponents.RAD_OUTLET_STRING);
+                        activeSim.massFlowInterfaceNameOutlet);
 
-        if (activeSim.dualRadFlag)
-        {
+        //Setting up fans
+        activeSim.fanInterface = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.radFanBound, activeSim.domainFanBound, "Fan Interface");
+        setUpFan(activeSim, activeSim.fanInterface);
+        if (activeSim.dualRadFlag && activeSim.domainDualRadInlet != null && activeSim.domainDualRadOutlet != null) {
             activeSim.dualMassFlowInterfaceInlet = activeSim.activeSim.getInterfaceManager().
                     createBoundaryInterface(activeSim.domainDualRadInlet, activeSim.dualRadInlet,
-                            SimComponents.RAD_INLET_STRING);
-
+                            activeSim.dualMassFlowInterfaceNameInlet);
             activeSim.dualMassFlowInterfaceOutlet = activeSim.activeSim.getInterfaceManager().
                     createBoundaryInterface(activeSim.domainDualRadOutlet, activeSim.dualRadOutlet,
-                            SimComponents.RAD_OUTLET_STRING);
-        }
-
-        activeSim.fanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanInlet, activeSim.fanInlet, SimComponents.FAN_INLET_STRING);
-        activeSim.fanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanOutlet, activeSim.fanOutlet, SimComponents.FAN_OUTLET_STRING);
-        if (activeSim.dualFanFlag)
-        {
-            activeSim.dualFanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanInlet, activeSim.dualFanInlet, SimComponents.FAN_INLET_STRING);
-            activeSim.dualFanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanOutlet, activeSim.dualFanOutlet, SimComponents.FAN_OUTLET_STRING);
+                            activeSim.dualMassFlowInterfaceNameOutlet);
+            activeSim.dualFanInterface = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.dualRadFanBound, activeSim.dualDomainFanBound, "Dual Fan Interface");
+            setUpFan(activeSim, activeSim.dualFanInterface);
+            if (activeSim.fanFlag == false) {
+                if (activeSim.dualRadFlag) activeSim.dualFanInterface.setInterfaceType(InternalInterface.class);
+                activeSim.fanInterface.setInterfaceType(InternalInterface.class);
+            }
         }
 
         //Assign viscous properties to the radiator regions.
@@ -96,39 +92,45 @@ public class Regions extends StarMacro {
     }
 
     //This handles assigning a fan curve csv file to the fan curve table in STAR, and assigns that table to the fan boundary (passed as a parameter)
-    public void setUpFan(SimComponents activeSim, Region fanRegion, CylindricalCoordinateSystem fanAxis) {
-        Collection<Boundary> fanRegionBounds = fanRegion.getBoundaryManager().getBoundaries();
-        Boundary inletBound = null;
-        Boundary outletBound = null;
+    public void setUpFan(SimComponents activeSim, BoundaryInterface fanInterface)
+    {
+        //Make sure the fan interface is set to use a table
+        fanInterface.setInterfaceType(FanInterface.class);
+        fanInterface.getConditions().get(InterfaceFanCurveSpecification.class).getFanCurveTypeOption().setSelected(FanCurveTypeOption.Type.TABLE);
+        FanCurveTableLeaf node = fanInterface.getValues().get(FanCurveTable.class).getModelPartValue();
 
-        for (Boundary bound : fanRegionBounds) {
-            String presName = bound.getPresentationName();
-            if (bound instanceof InterfaceBoundary) {
-                if (presName.contains(SimComponents.FAN_INLET_STRING))
-                    inletBound = bound;
-                else if (presName.contains(SimComponents.FAN_OUTLET_STRING))
-                    outletBound = bound;
-            }
-        }
+        //assign fan curve table to fan interface
+        node.setVolumeFlowTable(activeSim.fan_curve_table);
+        File fanfile = new File(activeSim.dir + activeSim.separator + SimComponents.FAN_CURVE_CSV_FN);
 
-        if (inletBound == null || outletBound == null) {
-            throw new IllegalStateException("Could not detect inlet or outlet boundary for the fan region. check SetUpFan in Regions.java");
-        }
+        //If the csv file exists, set the fan curve table to use that csv, otherwise try to find it somewhere else.
+        if (fanfile.exists())
+            activeSim.fan_curve_table.setFile(fanfile);
 
-        if (activeSim.fanFlag) {
-            fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.FAN);
-            MomentumFanSource fanModel = fanRegion.getValues().get(MomentumFanSource.class);
-            fanModel.setTable(activeSim.fan_curve_table);
-            fanModel.setTableVolDot(SimComponents.volDot);
-            fanModel.setUpstreamBoundary(inletBound);
-            fanModel.setDownstreamBoundary(outletBound);
-            fanModel.setTableP(SimComponents.delP);
-            fanModel.getSolver().setIStart(10);
-            fanModel.setCoordinateSystem(fanAxis);
-        } else
+        //If there isn't a csv file in the sim's working directory, check the classpath. if there isn't one in the classpath, kill the sim.
+        else
         {
-            fanRegion.getConditions().get(MomentumUserSourceOption.class).setSelected(MomentumUserSourceOption.Type.NONE);
+            activeSim.activeSim.println("Cannot find fan_curve.csv in working directory, attempting to find file in classpath");
+            String classPath = SimComponents.valEnvString("CP");
+            String filePath = classPath + File.separator + SimComponents.FAN_CURVE_CSV_FN;
+            fanfile = new File(filePath);
+            if (!fanfile.exists())
+                throw new IllegalStateException("No fan table found at " + filePath + " Terminating");
+            else
+                activeSim.fan_curve_table.setFile(fanfile);
         }
+
+        //Extract the fan curve table, make sure it's populated from the csv file before using it to enforce the fan boundary condition.
+        activeSim.fan_curve_table.extract();
+        node.setVolumeFlowTableX("m^3/s");
+        node.setVolumeFlowUnitsX(activeSim.activeSim.getUnitsManager().getUnits("m^3/s"));
+
+        //If the fan flag is on, use the fan's pressure drop, otherwise set the pressure drop to zero. There's technically always a fan enabled in the sim, but a fan with no pressure drop isn't much of a fan...
+        if (activeSim.fanFlag)
+            node.setVolumeFlowTableP("dP");
+        else
+            node.setVolumeFlowTableP("no_fan");
+        node.setVolumeFlowUnitsP(activeSim.activeSim.getUnitsManager().getUnits("Pa"));
     }
 
     private void setTyreRotation(SimComponents activeSim) {
@@ -221,7 +223,7 @@ public class Regions extends StarMacro {
         activeSim.topPlane.setBoundaryType(SymmetryBoundary.class);
         activeSim.fsInlet.setBoundaryType(InletBoundary.class);
         activeSim.fsInlet.getValues().get(VelocityMagnitudeProfile.class).
-                getMethod(ConstantScalarProfileMethod.class).getQuantity().setDefinition("${" + SimComponents.FREESTREAM_PARAMETER_NAME + "}");
+                getMethod(ConstantScalarProfileMethod.class).getQuantity().setDefinition("${" + activeSim.FREESTREAM_PARAMETER_NAME + "}");
         activeSim.groundPlane.getConditions().get(WallSlidingOption.class).
                 setSelected(WallSlidingOption.Type.VECTOR);
         if (activeSim.wtFlag)
@@ -343,22 +345,27 @@ public class Regions extends StarMacro {
 
     //Make sure all regions are set to the correct physics model.
     public static void setTurbulence(SimComponents activeSim) {
-        Collection<Region> always_enabled_regions = Arrays.asList(
-                activeSim.domainRegion,
-                activeSim.radiatorRegion,
-                activeSim.fanRegion
-        );
 
-        PhysicsContinuum selectedPhysics = activeSim.DESFlag ? activeSim.desPhysics : activeSim.steadyStatePhysics;
-
-        for (Region reg: always_enabled_regions)
-            reg.setPhysicsContinuum(selectedPhysics);
-
+        activeSim.domainRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
+        activeSim.radiatorRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
         if (activeSim.dualRadFlag)
-            activeSim.dualRadiatorRegion.setPhysicsContinuum(selectedPhysics);
+            activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.steadyStatePhysics);
 
-        if (activeSim.dualFanFlag)
-            activeSim.dualFanRegion.setPhysicsContinuum(selectedPhysics);
+
+        if (activeSim.DESFlag) {
+            activeSim.domainRegion.setPhysicsContinuum(activeSim.desPhysics);
+            activeSim.radiatorRegion.setPhysicsContinuum(activeSim.desPhysics);
+            if (activeSim.dualRadFlag)
+                activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.desPhysics);
+        }
+        
+        if (activeSim.adjointFlag) {
+        	activeSim.domainRegion.setPhysicsContinuum(activeSim.adjointPhysics);
+        	activeSim.radiatorRegion.setPhysicsContinuum(activeSim.adjointPhysics);
+        	if (activeSim.dualRadFlag)
+        		activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.adjointPhysics);
+        	
+        }
     }
 
     //this is really important for PostProc. 2D PostProc is very slow if you don't reduce the total number of boundaries. This merges boundaries. This could be done just before meshing, but I don't like doing that since you lose flexibility with reports. This is safe to do just before 2D PostProc, so long as you understand that this function will destory the mesh.
@@ -375,7 +382,7 @@ public class Regions extends StarMacro {
                 if (coll.contains(x))
                     mergeBounds.remove(x);
             }
-            if (x.getBoundaryType() instanceof InvalidCellBoundary || x instanceof InterfaceBoundary || x.getPresentationName().toLowerCase().contains("fan") || x.getPresentationName().toLowerCase().contains("radiator"))
+            if (x.getPresentationName().toLowerCase().contains("interface") || x.getPresentationName().toLowerCase().contains("radiator") || x.getBoundaryType() instanceof InvalidCellBoundary)
                 mergeBounds.remove(x);
         }
         activeSim.activeSim.println("merging: " + mergeBounds);
@@ -385,8 +392,25 @@ public class Regions extends StarMacro {
     //Quick and dirty method to set up fans, and only fans when needed by run.java, and fan boundaries aren't already known.
     public void initFans(SimComponents activeSim)
     {
-        setUpFan(activeSim, activeSim.fanRegion, activeSim.fanAxis);
-        if (activeSim.dualFanFlag)
-            setUpFan(activeSim, activeSim.dualFanRegion, activeSim.dualFanAxis);
+        if (activeSim.fanFlag)
+        {
+            try
+            {
+                activeSim.fanInterface.setInterfaceType(FanInterface.class);
+                if (activeSim.dualRadFlag) activeSim.dualFanInterface.setInterfaceType(FanInterface.class);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                activeSim.activeSim.println("Tried to set fan interfaces to fan type....but something went wrong, check initFans(SimComponents activeSim)");
+            }
+        }
+        for (Interface x : activeSim.activeSim.getInterfaceManager().getObjects())
+        {
+            if (x.getInterfaceType() instanceof FanInterface)
+            {
+                setUpFan(activeSim, (BoundaryInterface) x);
+            }
+        }
     }
 }

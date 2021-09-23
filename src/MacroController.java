@@ -46,13 +46,25 @@ public class MacroController extends StarMacro {
                 "ExportReports.java",
                 "PostProc.java"
         };
-
+        
+        String[] adjointMacros = {
+        		"AdjointPrereqCheck.java",
+        		"SetAdjointCostFunc.java",
+        		"SolveAdjoint.java",
+        };
+        
+        String[] adjointPostProc = {
+        		"AdjointPostProc.java"
+        };
+ 
         List<String> runMacros = new ArrayList<>();
 
         //Get the sysenvs.
         boolean process = SimComponents.boolEnv("process");
         boolean postprocess = SimComponents.boolEnv("postprocess");
         boolean preprocess = SimComponents.boolEnv("preprocess");
+        boolean adjointProc = SimComponents.boolEnv("adjoint_solve");
+        boolean adjointPost = SimComponents.boolEnv("adjoint_postproc");
 
         //Set up run order based on which flags are true and which aren't.
         if (preprocess)
@@ -63,6 +75,12 @@ public class MacroController extends StarMacro {
 
         if (postprocess)
             runMacros.addAll(Arrays.asList(postprocessMacros));
+        
+        if (adjointProc)
+        	runMacros.addAll(Arrays.asList(adjointMacros));
+        
+        if (adjointPost)
+        	runMacros.addAll(Arrays.asList(adjointPostProc));
 
         getActiveSimulation().println("Macros to run: \n" + runMacros);
 

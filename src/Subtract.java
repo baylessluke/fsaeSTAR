@@ -27,13 +27,9 @@ public class Subtract extends StarMacro {
         }
         subtractManager.setObjects(domain);
         subtractManager.addObjects(surfaceWrap);
-        //subtractManager.addObjects(surfaceWrap, simObject.radPart, simObject.fanPart);
-        //if (simObject.dualFanFlag) subtractManager.addObjects(simObject.dualFanPart);
-        //if (simObject.dualRadFlag) subtractManager.addObjects(simObject.dualRadPart);
 
         simObject.subtract.getTargetPartManager().setObjects(domain);
         simObject.subtract.execute();
-        simObject.saveSim();
     }
 
 }
