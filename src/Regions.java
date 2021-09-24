@@ -359,6 +359,13 @@ public class Regions extends StarMacro {
 
         if (activeSim.dualFanFlag)
             activeSim.dualFanRegion.setPhysicsContinuum(selectedPhysics);
+        
+        if (activeSim.adjointFlag) {
+        	activeSim.domainRegion.setPhysicsContinuum(activeSim.adjointPhysics);
+        	activeSim.radiatorRegion.setPhysicsContinuum(activeSim.adjointPhysics);
+        	if (activeSim.dualRadFlag)
+        		activeSim.dualRadiatorRegion.setPhysicsContinuum(activeSim.adjointPhysics);	
+        }
     }
 
     //this is really important for PostProc. 2D PostProc is very slow if you don't reduce the total number of boundaries. This merges boundaries. This could be done just before meshing, but I don't like doing that since you lose flexibility with reports. This is safe to do just before 2D PostProc, so long as you understand that this function will destory the mesh.
