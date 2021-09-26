@@ -11,7 +11,9 @@ import star.base.report.MaxReport;
 import star.base.report.Report;
 import star.cadmodeler.SolidModelPart;
 import star.common.*;
+import star.coupledflow.ConvergenceAcceleratorOption;
 import star.coupledflow.CoupledFlowModel;
+import star.coupledflow.CoupledImplicitSolver;
 import star.flow.AccumulatedForceTable;
 import star.flow.FlowUpwindOption;
 import star.meshing.*;
@@ -662,6 +664,8 @@ public class SimComponents {
         
         // Define adjoint physics
         this.adjointPhysics = (PhysicsContinuum) activeSim.getContinuumManager().getContinuum(ADJOINT_PHYSICS_NAME);
+        CoupledImplicitSolver cps = activeSim.getSolverManager().getSolver(CoupledImplicitSolver.class);
+        cps.getConvergenceAcceleratorManager().getConvergenceAcceleratorOption().setSelected(ConvergenceAcceleratorOption.Type.CONTINUITY_CONVERGENCE_ACCELERATOR); // CCA is required for coupled solver to converge as of fsaeSTAR V5.2
         if (this.secondOrderFlag)
         	this.adjointPhysics.getModelManager().getModel(CoupledFlowModel.class).getUpwindOption().setSelected(FlowUpwindOption.Type.SECOND_ORDER);
         else
