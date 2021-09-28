@@ -331,24 +331,23 @@ public class SimComponents {
         //This does all the filtering.
         for (GeometryPart prt : allParts) {
             String prtName = prt.getPresentationName();
-            for (String prefix : AERO_PREFIXES) {
-                if (prtName.startsWith(aeroParent)) {
-                    aeroParts.add(prt);
+            if (prtName.startsWith(aeroParent))
+            {
+                aeroParts.add(prt);
+                for (String prefix : LIFT_GENERATOR_PREFIXES) {
+                    if (prtName.startsWith(prefix)) {
+                        liftGenerators.add(prt);
+                    }
                 }
-            }
-            for (String prefix : NON_AERO_PREFIXES) {
-                if (prtName.startsWith(prefix))
-                    nonAeroParts.add(prt);
+                continue;
             }
             for (String prefix : WHEEL_NAMES) {
-                if (prtName.startsWith(prefix))
-                    wheels.add(prt);
-            }
-            for (String prefix : LIFT_GENERATOR_PREFIXES) {
                 if (prtName.startsWith(prefix)) {
-                    liftGenerators.add(prt);
+                    wheels.add(prt);
+                    continue;
                 }
             }
+            nonAeroParts.add(prt);
             if (prtName.startsWith(RADIATOR_NAME))
                 radPart = prt;
             if (prtName.startsWith(DUAL_RADIATOR_NAME))
