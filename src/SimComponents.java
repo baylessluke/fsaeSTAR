@@ -330,6 +330,7 @@ public class SimComponents {
         liftGenerators = new ArrayList<>();
         //This does all the filtering.
         for (GeometryPart prt : allParts) {
+            int exitFlag = 0;
             String prtName = prt.getPresentationName();
             if (prtName.startsWith(aeroParent))
             {
@@ -344,9 +345,11 @@ public class SimComponents {
             for (String prefix : WHEEL_NAMES) {
                 if (prtName.startsWith(prefix)) {
                     wheels.add(prt);
-                    continue;
+                    exitFlag = 1;
                 }
             }
+            if (exitFlag == 1)
+                continue;
             if (prtName.startsWith(FREESTREAM_PREFIX))
                 continue;
             nonAeroParts.add(prt);
