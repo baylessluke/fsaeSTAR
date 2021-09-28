@@ -1,6 +1,8 @@
 import star.base.neo.DoubleVector;
 import star.base.neo.NeoObjectVector;
 import star.common.*;
+import star.coupledflow.ConvergenceAcceleratorOption;
+import star.coupledflow.CoupledImplicitSolver;
 import star.flow.*;
 import star.motion.BoundaryReferenceFrameSpecification;
 import star.motion.MotionSpecification;
@@ -365,6 +367,11 @@ public class Regions extends StarMacro {
 
         if (activeSim.dualFanFlag)
             activeSim.dualFanRegion.setPhysicsContinuum(selectedPhysics);
+        
+        if (activeSim.adjointFlag) {
+        	CoupledImplicitSolver cps = activeSim.activeSim.getSolverManager().getSolver(CoupledImplicitSolver.class);
+            cps.getConvergenceAcceleratorManager().getConvergenceAcceleratorOption().setSelected(ConvergenceAcceleratorOption.Type.CONTINUITY_CONVERGENCE_ACCELERATOR); // CCA is required for coupled solver to converge as of fsaeSTAR V5.2
+        }
     }
 
     //this is really important for PostProc. 2D PostProc is very slow if you don't reduce the total number of boundaries. This merges boundaries. This could be done just before meshing, but I don't like doing that since you lose flexibility with reports. This is safe to do just before 2D PostProc, so long as you understand that this function will destory the mesh.
