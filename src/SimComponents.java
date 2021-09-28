@@ -629,9 +629,8 @@ public class SimComponents {
         corneringRadius = valEnv(CORNERING);
         DESFlag = boolEnv("DES");
         wtFlag = boolEnv("windTunnel");
-        adjointFlag = boolEnv("adjoint");
+        adjointFlag = boolEnv("adjoint_physics");
         setFreestreamParameterValue();
-        activeSim.println("Physics set: " + adjointFlag);
 
         //Stopping criteria
         maxSteps = (int) valEnv("maxSteps");
