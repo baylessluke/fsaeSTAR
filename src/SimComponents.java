@@ -631,6 +631,7 @@ public class SimComponents {
         wtFlag = boolEnv("windTunnel");
         adjointFlag = boolEnv("adjoint");
         setFreestreamParameterValue();
+        activeSim.println("Physics set: " + adjointFlag);
 
         //Stopping criteria
         maxSteps = (int) valEnv("maxSteps");
