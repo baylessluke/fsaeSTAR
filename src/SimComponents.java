@@ -347,6 +347,8 @@ public class SimComponents {
                     continue;
                 }
             }
+            if (prtName.startsWith(FREESTREAM_PREFIX))
+                continue;
             nonAeroParts.add(prt);
             if (prtName.startsWith(RADIATOR_NAME))
                 radPart = prt;
