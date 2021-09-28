@@ -345,6 +345,9 @@ public class Regions extends StarMacro {
 
     //Make sure all regions are set to the correct physics model.
     public static void setTurbulence(SimComponents activeSim) {
+    	
+    	activeSim.activeSim.println("This is working.");
+    	
         Collection<Region> always_enabled_regions = Arrays.asList(
                 activeSim.domainRegion,
                 activeSim.radiatorRegion,
