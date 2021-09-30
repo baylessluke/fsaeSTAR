@@ -21,6 +21,7 @@ public class SolveAdjoint extends StarMacro {
 		this.initial(sim);
 		this.solve(sim, solver);
 		this.calcSrfSensitivity(sim, solver);
+		sim.saveSim();
 	}
 	
 	/**
