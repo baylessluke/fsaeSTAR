@@ -3,6 +3,7 @@ import java.io.File;
 import star.common.AdjointSolver;
 import star.common.AdjointSteadySolver;
 import star.common.FixedStepsStoppingCriterion;
+import star.common.MonitorIterationStoppingCriterion;
 import star.common.MonitorIterationStoppingCriterionMaxLimitType;
 import star.common.StarMacro;
 
@@ -16,7 +17,10 @@ public class SolveAdjoint extends StarMacro {
 		
         SimComponents sim = new SimComponents(getActiveSimulation());
         sim.activeSim.getSceneManager().setVerbose(true);
-		AdjointSolver solver = ((AdjointSolver) sim.activeSim.getSolverManager().getSolver(AdjointSolver.class));
+        MonitorIterationStoppingCriterion clCrit = (MonitorIterationStoppingCriterion) sim.activeSim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Lift Coefficient Criterion");
+        clCrit.setIsUsed(false);
+        AdjointSolver solver = ((AdjointSolver) sim.activeSim.getSolverManager().getSolver(AdjointSolver.class));
+        clCrit.setIsUsed(true);
         
 		this.initial(sim);
 		this.solve(sim, solver);
