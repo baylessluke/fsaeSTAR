@@ -20,11 +20,12 @@ public class SolveAdjoint extends StarMacro {
         MonitorIterationStoppingCriterion clCrit = (MonitorIterationStoppingCriterion) sim.activeSim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Lift Coefficient Criterion");
         clCrit.setIsUsed(false);
         AdjointSolver solver = ((AdjointSolver) sim.activeSim.getSolverManager().getSolver(AdjointSolver.class));
-        clCrit.setIsUsed(true);
         
 		this.initial(sim);
 		this.solve(sim, solver);
 		this.calcSrfSensitivity(sim, solver);
+		
+        clCrit.setIsUsed(true);
 		sim.saveSim();
 	}
 	
