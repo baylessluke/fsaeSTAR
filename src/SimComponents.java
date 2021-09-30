@@ -57,7 +57,7 @@ public class SimComponents {
     public static final String SUBTRACT_NAME = "Subtract";
     public static final String[] AERO_PREFIXES = {"RW", "FW", "UT", "EC", "MOUNT", "SW", "FC"};                                       //These prefixes will be used to decide what an aero component is.
     public static final String[] LIFT_GENERATOR_PREFIXES = {"RW", "FW", "UT", "SW", "FC"};                                            //These prefixes generate lift. Aero surface wrap control needs to know this.
-    public static final String[] NON_AERO_PREFIXES = {"CFD", "DONTGIVE", "NS"};                                                       //These are prefixes for non-aero parts. Everything other than aero and tyres must have one of these prefixes.
+    public static final String[] NON_AERO_PREFIXES = {"CFD"};                                                       //These are prefixes for non-aero parts. Everything other than aero and tyres must have one of these prefixes.
     public static final String[] WHEEL_NAMES = {FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT};                                      //Names for wheels. Must be exact.
     public static final String FREESTREAM_PREFIX = "Freestream";                                                                      //This is the domain. Good way to make sure the macros filter out domain surfaces later on. Just make sure no actual parts include the term "freestream"
     public static final String FREESTREAM_CORNERING = "Freestream_C";
@@ -352,7 +352,11 @@ public class SimComponents {
                 continue;
             if (prtName.startsWith(FREESTREAM_PREFIX))
                 continue;
-            nonAeroParts.add(prt);
+            for (String prefix: NON_AERO_PREFIXES)
+            {
+                if (prtName.startsWith(prefix))
+                    nonAeroParts.add(prt);
+            }
             if (prtName.startsWith(RADIATOR_NAME))
                 radPart = prt;
             if (prtName.startsWith(DUAL_RADIATOR_NAME))
