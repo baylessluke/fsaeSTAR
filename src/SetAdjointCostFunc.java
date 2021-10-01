@@ -1,3 +1,6 @@
+import java.util.Collection;
+
+import star.common.AdjointCostFunction;
 import star.common.AdjointCostFunctionManager;
 import star.common.ReportCostFunction;
 import star.common.StarMacro;
@@ -18,20 +21,13 @@ public class SetAdjointCostFunc extends StarMacro {
 	 * @param sim
 	 */
 	private void removeExisting(SimComponents sim) {
-		try {
-			sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects(((ReportCostFunction) sim.activeSim.get(AdjointCostFunctionManager.class).getAdjointCostFunction(SimComponents.ADJOINT_COST_FUNC_CL)));
-			sim.activeSim.println("Pre-existing Cl cost function deleted");
-		} catch (Exception e) {}
 		
-		try {
-			sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects(((ReportCostFunction) sim.activeSim.get(AdjointCostFunctionManager.class).getAdjointCostFunction(SimComponents.ADJOINT_COST_FUNC_CD)));
-			sim.activeSim.println("Pre-existing Cd cost function deleted");
-		} catch (Exception e) {}
+		Collection<AdjointCostFunction> costFuncs = sim.activeSim.get(AdjointCostFunctionManager.class).getObjects();
 		
-		try {
-			sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects(((ReportCostFunction) sim.activeSim.get(AdjointCostFunctionManager.class).getAdjointCostFunction(SimComponents.ADJOINT_COST_FUNC_LD)));
-			sim.activeSim.println("Pre-existing L/D cost function deleted");
-		} catch (Exception e) {}
+		for (AdjointCostFunction f:costFuncs) {
+			sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects((ReportCostFunction) f);
+		}
+		
 	}
 	
 	/**
