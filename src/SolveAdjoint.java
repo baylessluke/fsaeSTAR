@@ -1,7 +1,6 @@
-import star.common.AdjointSolver;
-import star.common.MonitorIterationStoppingCriterion;
-import star.common.MonitorIterationStoppingCriterionMaxLimitType;
-import star.common.StarMacro;
+import star.common.*;
+
+import java.util.Arrays;
 
 /*
  * Solves adjoint and calculates surface sensitivity
@@ -40,14 +39,23 @@ public class SolveAdjoint extends StarMacro {
 	}
 	
 	/**
-	 * Run adjoint
+	 * Run adjoint. Will only run the cost function selected.
 	 * @param sim
 	 * @param solver
 	 */
 	private void solve(SimComponents sim, AdjointSolver solver) {
-		
+
+		String costFunc = SimComponents.valEnvString("adjoint_cost_func");
+		if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_CL))
+			costFunc = "Lift Coefficient";
+		else if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_CD))
+			costFunc = "Drag Coefficient";
+		else
+			costFunc = "L/D";
+		ReportCostFunction reportCostFunc = (ReportCostFunction) sim.activeSim.get(AdjointCostFunctionManager.class).getAdjointCostFunction(costFunc);
+
 		sim.activeSim.println("Solving adjoint...");
-		solver.runAdjoint();
+		solver.runAdjoint(Arrays.<AdjointCostFunction>asList(reportCostFunc));
 		sim.activeSim.println("Adjoint solved (I hope).");
 		
 	}
