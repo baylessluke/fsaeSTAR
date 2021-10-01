@@ -1,4 +1,5 @@
 import star.common.*;
+import star.motion.AdjointGridFluxSolver;
 
 import java.util.Arrays;
 
@@ -16,7 +17,7 @@ public class SolveAdjoint extends StarMacro {
         clCrit.setIsUsed(false);
         AdjointSolver solver = ((AdjointSolver) sim.activeSim.getSolverManager().getSolver(AdjointSolver.class));
         
-		this.initial(sim);
+		this.initial(sim, solver);
 		this.solve(sim, solver);
 		this.calcSrfSensitivity(sim, solver);
 		
@@ -28,14 +29,19 @@ public class SolveAdjoint extends StarMacro {
 	 * Sets the adjoint steps. I'm doing it with global max step stopping criterion because it's less jank. If I were to use an adjoint stop criterion, I have to increase the global stopping criterion anyways.
 	 * @param sim
 	 */
-	private void initial(SimComponents sim) {
+	private void initial(SimComponents sim, AdjointSolver solver) {
 		
         int currentIteration = sim.activeSim.getSimulationIterator().getCurrentIteration();
         ((MonitorIterationStoppingCriterionMaxLimitType) sim.maxStepStop.getCriterionType()).getLimit().setValue(currentIteration + (int) sim.valEnv("adjoint_step"));
         sim.activeSim.println("Setting stopping criteria to: " + ((MonitorIterationStoppingCriterionMaxLimitType) sim.maxStepStop.getCriterionType()).getLimit().evaluate());
         sim.maxStepStop.setInnerIterationCriterion(true);
         sim.maxStepStop.setIsUsed(true);
-		
+
+		// solver set up
+		// Right preconditioning
+		AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
+		gmres.getPreconditionerOption().setSelected(PreconditionerOption.Type.RIGHT_PRECONDITIONING);
+
 	}
 	
 	/**
