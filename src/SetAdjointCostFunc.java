@@ -50,11 +50,11 @@ public class SetAdjointCostFunc extends StarMacro {
         for (AdjointCostFunction f:costFuncs) {
         	
         	String name = f.getPresentationName();
-        	if (name.equals(SimComponents.ADJOINT_COST_FUNC_CL))
+        	if (name.equals("Lift Coefficient"))
         		hasCl = true;
-        	if (name.equals(SimComponents.ADJOINT_COST_FUNC_CD))
+        	if (name.equals("Drag Coefficient"))
         		hasCd = true;
-        	if (name.equals(SimComponents.ADJOINT_COST_FUNC_LD))
+        	if (name.equals("L/D"))
         		hasLD = true;
         }
         
