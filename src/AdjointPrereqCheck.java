@@ -23,7 +23,7 @@ public class AdjointPrereqCheck extends StarMacro {
 	private void checkPrimal(SimComponents sim) {
 		
 		if (sim.activeSim.getSimulationIterator().getCurrentIteration() <= 0) {
-			sim.activeSim.println("Error! Adjoint solver needs primal solution to work");
+			sim.activeSim.println("Error! Adjoint solver needs primal solution to work! Killing sim!");
 			sim.killSim();
 		} else {
 			StarPlot plot = sim.activeSim.getPlotManager().getPlot("Residuals");

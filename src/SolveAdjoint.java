@@ -1,8 +1,4 @@
-import java.io.File;
-
 import star.common.AdjointSolver;
-import star.common.AdjointSteadySolver;
-import star.common.FixedStepsStoppingCriterion;
 import star.common.MonitorIterationStoppingCriterion;
 import star.common.MonitorIterationStoppingCriterionMaxLimitType;
 import star.common.StarMacro;
