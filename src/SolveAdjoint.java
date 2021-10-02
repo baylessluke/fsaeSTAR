@@ -40,7 +40,7 @@ public class SolveAdjoint extends StarMacro {
 		// solver set up
 		// Right preconditioning
 		AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
-		gmres.getPreconditionerOption().setSelected(PreconditionerOption.Type.RIGHT_PRECONDITIONING);
+		gmres.getPreconditionerOption().setSelected(PreconditionerOption.Type.LEFT_PRECONDITIONING);
 
 	}
 	
