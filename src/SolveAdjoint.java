@@ -38,9 +38,9 @@ public class SolveAdjoint extends StarMacro {
         sim.maxStepStop.setIsUsed(true);
 
 		// solver set up
-		// Right preconditioning
+		// Increase krylov space to 60
 		AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
-		gmres.getPreconditionerOption().setSelected(PreconditionerOption.Type.LEFT_PRECONDITIONING);
+		gmres.setMaxKrylovBaseSize(60);
 
 	}
 	
