@@ -38,9 +38,11 @@ public class SolveAdjoint extends StarMacro {
         sim.maxStepStop.setIsUsed(true);
 
 		// solver set up
+		// Switch to flexible GMRES
+		solver.getAccelerationOption().setSelected(AdjointAccelerationOption.Type.FLEXIBLE_GMRES);
 		// Increase krylov space to 60
-		AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
-		gmres.setMaxKrylovBaseSize(60);
+		// AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
+		// gmres.setMaxKrylovBaseSize(60);
 
 	}
 	
