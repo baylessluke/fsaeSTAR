@@ -43,7 +43,7 @@ public class SolveAdjoint extends StarMacro {
 
 		// Increase krylov space to 60
 		AdjointGmresAlgorithm gmres = solver.getGmresAlgorithm();
-		// gmres.setMaxKrylovBaseSize(60);
+		gmres.setMaxKrylovBaseSize(60);
 
 		// Increase recycle percentage to 50
 		// gmres.setRecycledVectorsPercentage(60);
