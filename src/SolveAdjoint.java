@@ -41,9 +41,9 @@ public class SolveAdjoint extends StarMacro {
 		// Switch to flexible GMRES
 		solver.getAccelerationOption().setSelected(AdjointAccelerationOption.Type.FLEXIBLE_GMRES);
 
-		// Increase krylov space to 100
+		// Increase krylov space to 75
 		AdjointFlexibleGmresAlgorithm gmres = solver.getFlexibleGmresAlgorithm();
-		gmres.setMaxKrylovBaseSize(100);
+		gmres.setMaxKrylovBaseSize(75);
 
 		// Increase recycle percentage to 50
 		// gmres.setRecycledVectorsPercentage(60);
