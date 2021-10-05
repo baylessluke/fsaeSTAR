@@ -54,8 +54,10 @@ public class SetAdjointCostFunc extends StarMacro {
         		hasCl = true;
         	if (name.equals("Drag Coefficient"))
         		hasCd = true;
+			/*
         	if (name.equals("L/D"))
         		hasLD = true;
+			 */
         }
         
         
@@ -65,9 +67,11 @@ public class SetAdjointCostFunc extends StarMacro {
 		} else if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_CD) && !hasCd){
 			reportCostFunc.setPresentationName("Drag Coefficient");
 			reportCostFunc.setReport(sim.activeSim.getReportManager().getReport("Drag Coefficient"));
+		/*
 		} else if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_LD) && !hasLD) {
 			reportCostFunc.setPresentationName("L/D");
 			reportCostFunc.setReport(sim.activeSim.getReportManager().getReport("L/D"));
+		 */
 		} else if (hasCl || hasCd || hasLD) {
 			sim.activeSim.println("Existing cost function of the same type detected. No new cost function created.");
 		} else {
