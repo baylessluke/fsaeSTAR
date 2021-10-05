@@ -97,7 +97,7 @@ public class SimComponents {
     public static final String DUAL_FAN_CYLINDRICAL_AXIS_NAME = "Dual Fan Cylindrical";
     public static final String ADJOINT_COST_FUNC_CL = "Cl";
     public static final String ADJOINT_COST_FUNC_CD = "Cd";
-    public static final String ADJOINT_COST_FUNC_LD = "L/D";
+    // public static final String ADJOINT_COST_FUNC_LD = "L/D";
     public static final String ADJOINT_PHYSICS_NAME = "S-a Adjoint";
     public static final String[] ADJOINT_DISPLAYER_2D = {"Adjoint wrt X-Momentum", "Adjoint wrt Y-Momentum", "Adjoint wrt Z-Momentum"};
     public static final String[] ADJOINT_DISPLAYER_3D = {"Adjoint Surface Sensitivity"};
