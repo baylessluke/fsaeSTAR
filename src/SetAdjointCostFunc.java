@@ -1,21 +1,20 @@
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 import star.common.*;
 import star.flow.ForceCoefficientReport;
 
 public class SetAdjointCostFunc extends StarMacro {
 
-	private static String costFuncReportName = "Adjoint Cost Function";
-	private static String costFuncName = "Cost Function";
+	private final static String costFuncReportName = "Adjoint Cost Function";
+	private final static String costFuncName = "Cost Function";
 
 	public void execute() {
 		
         SimComponents sim = new SimComponents(getActiveSimulation());
         sim.activeSim.getSceneManager().setVerbose(true);
 
-		this.setCostFunc(sim);
+		this.setCostFuncReport(sim);
         this.removeExisting(sim);
 		this.setCostFunc(sim);
 	}
@@ -48,7 +47,7 @@ public class SetAdjointCostFunc extends StarMacro {
 		adjointReport.getReferenceVelocity().setValue(sim.freestreamVal);
 
 		// set all aero parts as components for the report
-		Collection<Boundary> aeroParts = new ArrayList<Boundary>();
+		Collection<Boundary> aeroParts = new ArrayList<>();
 		for (String prefix : SimComponents.AERO_PREFIXES){
 			aeroParts.addAll(sim.partSpecBounds.get(prefix));
 		}
@@ -58,7 +57,6 @@ public class SetAdjointCostFunc extends StarMacro {
 
 	/**
 	 * Remove existing cost functions not named costFuncName if there are any
-	 * @param sim
 	 */
 	private void removeExisting(SimComponents sim) {
 		
@@ -66,7 +64,7 @@ public class SetAdjointCostFunc extends StarMacro {
 
 		for (AdjointCostFunction f:costFuncs) {
 			if (!f.getPresentationName().equals(costFuncName)){
-				sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects((ReportCostFunction) f);
+				sim.activeSim.get(AdjointCostFunctionManager.class).removeObjects(f);
 			}
 		}
 		
@@ -74,7 +72,6 @@ public class SetAdjointCostFunc extends StarMacro {
 	
 	/**
 	 * Sets the cost function. If there's no cost function selected, kill the sim
-	 * @param sim
 	 */
 	private void setCostFunc(SimComponents sim) {
 

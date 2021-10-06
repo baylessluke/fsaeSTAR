@@ -1,7 +1,4 @@
 import star.common.*;
-import star.motion.AdjointGridFluxSolver;
-
-import java.util.Arrays;
 
 /*
  * Solves adjoint and calculates surface sensitivity
@@ -15,7 +12,7 @@ public class SolveAdjoint extends StarMacro {
         sim.activeSim.getSceneManager().setVerbose(true);
         MonitorIterationStoppingCriterion clCrit = (MonitorIterationStoppingCriterion) sim.activeSim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Lift Coefficient Criterion");
         clCrit.setIsUsed(false);
-        AdjointSolver solver = ((AdjointSolver) sim.activeSim.getSolverManager().getSolver(AdjointSolver.class));
+        AdjointSolver solver = sim.activeSim.getSolverManager().getSolver(AdjointSolver.class);
         
 		this.initial(sim, solver);
 		this.solve(sim, solver);
@@ -27,7 +24,6 @@ public class SolveAdjoint extends StarMacro {
 	
 	/**
 	 * Sets the adjoint steps. I'm doing it with global max step stopping criterion because it's less jank. If I were to use an adjoint stop criterion, I have to increase the global stopping criterion anyways.
-	 * @param sim
 	 */
 	private void initial(SimComponents sim, AdjointSolver solver) {
 		
@@ -52,22 +48,11 @@ public class SolveAdjoint extends StarMacro {
 	
 	/**
 	 * Run adjoint. Will only run the cost function selected.
-	 * @param sim
-	 * @param solver
 	 */
 	private void solve(SimComponents sim, AdjointSolver solver) {
 
-		String costFunc = SimComponents.valEnvString("adjoint_cost_func");
-		if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_CL))
-			costFunc = "Lift Coefficient";
-		else if (costFunc.equals(SimComponents.ADJOINT_COST_FUNC_CD))
-			costFunc = "Drag Coefficient";
-		else
-			costFunc = "L/D";
-		ReportCostFunction reportCostFunc = (ReportCostFunction) sim.activeSim.get(AdjointCostFunctionManager.class).getAdjointCostFunction(costFunc);
-
 		sim.activeSim.println("Solving adjoint...");
-		solver.runAdjoint(Arrays.<AdjointCostFunction>asList(reportCostFunc));
+		solver.runAdjoint();
 		sim.activeSim.println("Adjoint solved (I hope).");
 		
 	}
