@@ -15,8 +15,11 @@ public class SetAdjointCostFunc extends StarMacro {
         sim.activeSim.getSceneManager().setVerbose(true);
 
 		this.setCostFuncReport(sim);
+		System.out.println("Here 1");
         this.removeExisting(sim);
+		System.out.println("Here 2");
 		this.setCostFunc(sim);
+		System.out.println("Here 3");
 	}
 
 	/**
@@ -25,7 +28,6 @@ public class SetAdjointCostFunc extends StarMacro {
 	private void setCostFuncReport(SimComponents sim) {
 
 		ForceCoefficientReport adjointReport = (ForceCoefficientReport) sim.activeSim.getReportManager().getReport(costFuncReportName);
-		System.out.println("Here");
 		String reportType = SimComponents.valEnvString("adjoint_cost_func");
 
 		// set force direction
