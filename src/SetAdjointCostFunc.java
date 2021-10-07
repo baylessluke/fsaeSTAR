@@ -6,7 +6,7 @@ import star.flow.ForceCoefficientReport;
 
 public class SetAdjointCostFunc extends StarMacro {
 
-	private final static String costFuncReportName = "Adjoint Cost Function";
+	private final static String costFuncReportName = "Adjoint Cost Function Report";
 	private final static String costFuncName = "Cost Function";
 
 	public void execute() {
