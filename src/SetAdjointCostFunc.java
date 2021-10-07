@@ -37,26 +37,21 @@ public class SetAdjointCostFunc extends StarMacro {
 			sim.killSim();
 		}
 
-		System.out.println("Here 1");
-
 		// set full / half car
 		if (sim.fullCarFlag)
 			adjointReport.getReferenceArea().setValue(1.0);
 		else
 			adjointReport.getReferenceArea().setValue(0.5);
 
-		System.out.println("Here 2");
-
 		// set freestream
 		adjointReport.getReferenceVelocity().setValue(sim.freestreamVal);
-
-		System.out.println("Here 3");
 
 		// set all aero parts as components for the report
 		Collection<Boundary> aeroParts = new ArrayList<>();
 		for (String prefix : SimComponents.AERO_PREFIXES){
 			aeroParts.addAll(sim.partSpecBounds.get(prefix));
 		}
+		sim.activeSim.println(aeroParts.size());
 		adjointReport.getParts().setObjects(aeroParts);
 
 	}
