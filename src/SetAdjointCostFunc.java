@@ -86,7 +86,7 @@ public class SetAdjointCostFunc extends StarMacro {
         Collection<AdjointCostFunction> costFuncs = sim.activeSim.get(AdjointCostFunctionManager.class).getObjects();
 		if (costFuncs.size() == 0) {
 			ReportCostFunction reportCostFunc = sim.activeSim.get(AdjointCostFunctionManager.class).createAdjointCostFunction(ReportCostFunction.class);
-			reportCostFunc.setReport(sim.activeSim.getReportManager().getReport("Adjoint Cost Function"));
+			reportCostFunc.setReport(sim.activeSim.getReportManager().getReport(costFuncReportName));
 			reportCostFunc.setPresentationName(costFuncName);
 		}
 	}
