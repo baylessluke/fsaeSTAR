@@ -25,6 +25,7 @@ public class SetAdjointCostFunc extends StarMacro {
 	private void setCostFuncReport(SimComponents sim) {
 
 		ForceCoefficientReport adjointReport = (ForceCoefficientReport) sim.activeSim.getReportManager().getReport(costFuncReportName);
+		System.out.println("Here");
 		String reportType = SimComponents.valEnvString("adjoint_cost_func");
 
 		// set force direction
