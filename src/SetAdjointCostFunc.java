@@ -50,7 +50,12 @@ public class SetAdjointCostFunc extends StarMacro {
 		// set all aero parts as components for the report
 		Collection<Boundary> aeroParts = new ArrayList<>();
 		for (String prefix : SimComponents.AERO_PREFIXES){
-			aeroParts.addAll(Objects.requireNonNull(sim.partSpecBounds.get(prefix)));
+			try {
+				aeroParts.addAll(Objects.requireNonNull(sim.partSpecBounds.get(prefix)));
+			} catch (NullPointerException e){
+				e.printStackTrace();
+			}
+
 		}
 		sim.activeSim.println(aeroParts.size());
 		adjointReport.getParts().setObjects(aeroParts);
