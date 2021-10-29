@@ -57,7 +57,7 @@ public class SimComponents {
     public static final String SUBTRACT_NAME = "Subtract";
     public static final String[] AERO_PREFIXES = {"RW", "FW", "UT", "EC", "MOUNT", "SW", "FC"};                                       //These prefixes will be used to decide what an aero component is.
     public static final String[] LIFT_GENERATOR_PREFIXES = {"RW", "FW", "UT", "SW", "FC"};                                            //These prefixes generate lift. Aero surface wrap control needs to know this.
-    public static final String[] NON_AERO_PREFIXES = {"CFD", "DONTGIVE", "NS"};                                                       //These are prefixes for non-aero parts. Everything other than aero and tyres must have one of these prefixes.
+    public static final String[] NON_AERO_PREFIXES = {"CFD"};                                                       //These are prefixes for non-aero parts. Everything other than aero and tyres must have one of these prefixes.
     public static final String[] WHEEL_NAMES = {FRONT_LEFT, FRONT_RIGHT, REAR_LEFT, REAR_RIGHT};                                      //Names for wheels. Must be exact.
     public static final String FREESTREAM_PREFIX = "Freestream";                                                                      //This is the domain. Good way to make sure the macros filter out domain surfaces later on. Just make sure no actual parts include the term "freestream"
     public static final String FREESTREAM_CORNERING = "Freestream_C";
@@ -97,7 +97,7 @@ public class SimComponents {
 
     //Version check. An easy way to make sure the sim and the macros are the same version. Throw an error at the beginning, rather than an uncaught NPE later.
     // This needs to match the version parameter in STAR. This is really just a way so people don't bug me with macro problems that can be solved with pulling the correct branch/tag
-    private final double version = 5.1;
+    private final double version = 5.2;
 
     // Simulation object
     public Simulation activeSim;
@@ -330,24 +330,32 @@ public class SimComponents {
         liftGenerators = new ArrayList<>();
         //This does all the filtering.
         for (GeometryPart prt : allParts) {
+            int exitFlag = 0;
             String prtName = prt.getPresentationName();
-            for (String prefix : AERO_PREFIXES) {
-                if (prtName.startsWith(aeroParent)) {
-                    aeroParts.add(prt);
+            if (prtName.startsWith(aeroParent))
+            {
+                aeroParts.add(prt);
+                for (String prefix : LIFT_GENERATOR_PREFIXES) {
+                    if (prtName.startsWith(prefix)) {
+                        liftGenerators.add(prt);
+                    }
                 }
-            }
-            for (String prefix : NON_AERO_PREFIXES) {
-                if (prtName.startsWith(prefix))
-                    nonAeroParts.add(prt);
+                continue;
             }
             for (String prefix : WHEEL_NAMES) {
-                if (prtName.startsWith(prefix))
-                    wheels.add(prt);
-            }
-            for (String prefix : LIFT_GENERATOR_PREFIXES) {
                 if (prtName.startsWith(prefix)) {
-                    liftGenerators.add(prt);
+                    wheels.add(prt);
+                    exitFlag = 1;
                 }
+            }
+            if (exitFlag == 1)
+                continue;
+            if (prtName.startsWith(FREESTREAM_PREFIX))
+                continue;
+            for (String prefix: NON_AERO_PREFIXES)
+            {
+                if (prtName.startsWith(prefix))
+                    nonAeroParts.add(prt);
             }
             if (prtName.startsWith(RADIATOR_NAME))
                 radPart = prt;

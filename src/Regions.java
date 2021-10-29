@@ -210,7 +210,7 @@ public class Regions extends StarMacro {
     private void setDomainBoundaries(SimComponents activeSim) {
         if (activeSim.corneringFlag) {
             setDomainBoundaries_Cornering(activeSim);
-            setRegionReferenceFrames(activeSim, activeSim.rotatingFrame);
+            setRegionReferenceFrames(activeSim, activeSim.labReferenceFrame);
             return;
         }
 
