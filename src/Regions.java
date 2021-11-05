@@ -280,10 +280,7 @@ public class Regions extends StarMacro {
 
             if (activeSim.corneringFlag)
             {
-                activeSim.leftPlane.setBoundaryType(InletBoundary.class);
-                activeSim.symPlane.setBoundaryType(InletBoundary.class);
-                activeSim.rotatingFrame.getTranslationVelocity().setComponents(0, -slip, 0);
-                activeSim.rotatingFrame.getTranslationVelocity().setUnits(activeSim.ms);
+                activeSim.activeSim.println("Crosswind in a cornering case? Not allowed!");
                 return;
             }
 
