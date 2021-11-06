@@ -367,18 +367,8 @@ public class SimComponents {
                 dualFanPart = prt;
 
         }
-
-        //Define domain sizes
-        if (corneringFlag)
-            fullCarFlag = true;
-        else
-            fullCarFlag = domainSizing();
-
-        if (!fullCarFlag)
-            profileLimits[1] = 0;
-
-        dualRadFlag = (dualRadPart != null && fullCarFlag);     //Sets dual rad flag to true if dual rad part has a part assigned to it
-        dualFanFlag = (dualFanPart != null && fullCarFlag);     //Sets dual fan flag to true if dual fan part has a part assigned to it
+        dualRadFlag = dualRadPart != null;     //Sets dual rad flag to true if dual rad part has a part assigned to it
+        dualFanFlag = dualFanPart != null;     //Sets dual fan flag to true if dual fan part has a part assigned to it
         // Set up radiator regions
         try {
             domainRegion = assignRegion(DOMAIN_REGION);
@@ -447,6 +437,15 @@ public class SimComponents {
 
         // Plots
         plots = activeSim.getPlotManager().getPlots();
+
+        //Define domain sizes
+        if (corneringFlag)
+            fullCarFlag = true;
+        else
+            fullCarFlag = domainSizing();
+
+        if (!fullCarFlag)
+            profileLimits[1] = 0;
 
         //Set up fan flag and table
         fanFlag = boolEnv("FAN");
