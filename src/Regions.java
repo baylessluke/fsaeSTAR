@@ -68,7 +68,7 @@ public class Regions extends StarMacro {
                 createBoundaryInterface(activeSim.domainRadOutlet, activeSim.radOutlet,
                         SimComponents.RAD_OUTLET_STRING);
 
-        if (activeSim.dualRadFlag && activeSim.fullCarFlag)
+        if (activeSim.dualRadFlag)
         {
             activeSim.dualMassFlowInterfaceInlet = activeSim.activeSim.getInterfaceManager().
                     createBoundaryInterface(activeSim.domainDualRadInlet, activeSim.dualRadInlet,
@@ -81,7 +81,7 @@ public class Regions extends StarMacro {
 
         activeSim.fanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanInlet, activeSim.fanInlet, SimComponents.FAN_INLET_STRING);
         activeSim.fanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainFanOutlet, activeSim.fanOutlet, SimComponents.FAN_OUTLET_STRING);
-        if (activeSim.dualFanFlag && activeSim.fullCarFlag)
+        if (activeSim.dualFanFlag)
         {
             activeSim.dualFanInterfaceInlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanInlet, activeSim.dualFanInlet, SimComponents.FAN_INLET_STRING);
             activeSim.dualFanInterfaceOutlet = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.domainDualFanOutlet, activeSim.dualFanOutlet, SimComponents.FAN_OUTLET_STRING);
