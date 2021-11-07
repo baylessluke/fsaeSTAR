@@ -129,7 +129,7 @@ public class PostProc extends StarMacro {
                 }
                 for (VisView view : views2D)
                 {
-                    String filename = generateFileName(displayerPath, scn, disp, view, String.valueOf(section_val + (int) Math.floor(arrayMin)), ".png");
+                    String filename = generateFileName(displayerPath, scn, disp, view, "000"+ (section_val - (int) Math.floor(arrayMin)), ".png");
                     //This will not generate a new exported scene if the file path already exists. This is a very dumb way to do it, but this is one of those things where going big brain isn't worth the time.
                     if (!doesFileExist(filename)) {
                         disp.setRepresentation(sim.finiteVol);
