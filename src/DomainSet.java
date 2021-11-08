@@ -12,21 +12,10 @@ public class DomainSet extends StarMacro {
 
     private void execute0()
     {
-
         SimComponents sim = new SimComponents(getActiveSimulation());
-
-        // Figure out if you want full car or half car
-        boolean fullCar = SimComponents.boolEnv("domainSet");
-
-        if (!fullCar)
-            return;
-
-        // Set the block coordinates
-        if (fullCar) {
-            (sim.domain).getCorner1().setCoordinate(sim.meters, sim.meters, sim.inches, new DoubleVector(new double[]{-16.0, 0.0, 0.35}));
-            (sim.domain).getCorner2().setCoordinate(sim.meters, sim.meters, sim.meters, new DoubleVector(new double[]{32.0, -6.0, 6.0}));
-        }
-
+        (sim.domain).getCorner1().setCoordinate(sim.meters, sim.meters, sim.inches, new DoubleVector(new double[]{-16.0, 6.0, 0.35}));
+        (sim.domain).getCorner2().setCoordinate(sim.meters, sim.meters, sim.meters, new DoubleVector(new double[]{32.0, -6.0, 6.0}));
+	sim.saveSim();
     }
 
 }
