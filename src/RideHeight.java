@@ -6,11 +6,10 @@
 
 import star.base.neo.DoubleVector;
 import star.base.neo.NeoObjectVector;
-import star.common.SimulationPartManager;
-import star.common.StarMacro;
-import star.common.Units;
+import star.common.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 
 /*
@@ -44,80 +43,37 @@ public class RideHeight extends StarMacro {
 
         sim.activeSim.println("Front, rear pitch angle change attempted " + frontRot + " " + rearRot);
 
-        if (frontRot != 0) {
-            sim.activeSim.get(SimulationPartManager.class).rotateParts(sim.aeroParts,
-                    new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(sim.noUnit, sim.noUnit, sim.noUnit), frontRot, sim.frontWheelCoord);
-            sim.activeSim.get(SimulationPartManager.class).rotateParts(sim.nonAeroParts, new DoubleVector(new double[] {0, 0, 1}),
-                    Arrays.asList(sim.noUnit, sim.noUnit, sim.noUnit), frontRot, sim.frontWheelCoord);
-            sim.radiatorCoord.getLocalCoordinateSystemManager().
-                    rotateLocalCoordinateSystems(Collections.singletonList(sim.radiatorCoord),
-                            new DoubleVector(new double[] {0, 0, 1}),
-                            new NeoObjectVector(new Units[]{sim.noUnit,
-                                    sim.noUnit, sim.noUnit}), frontRot, sim.frontWheelCoord);
-            if (sim.dualRadFlag)
-            {
-                try {
-                    sim.dualRadCoord.getLocalCoordinateSystemManager().
-                            rotateLocalCoordinateSystems(Collections.singletonList(sim.dualRadCoord),
-                                    new DoubleVector(new double[] {0, 0, 1}),
-                                    new NeoObjectVector(new Units[]{sim.noUnit,
-                                            sim.noUnit, sim.noUnit}), frontRot, sim.frontWheelCoord);
-                }
-                catch (Exception e)
-                {
-                    sim.activeSim.println(this.getClass().getName() + "Dual rad rotation failure");
-                }
-            }
-            try {
-                sim.rollAxis.getLocalCoordinateSystemManager().
-                        rotateLocalCoordinateSystems(Collections.singletonList(sim.rollAxis),
-                                new DoubleVector(new double[] {0, 0, 1}),
-                                new NeoObjectVector(new Units[]{sim.noUnit,
-                                        sim.noUnit, sim.noUnit}), frontRot, sim.frontWheelCoord);
-            }
-            catch (Exception e)
-            {
-                sim.activeSim.println(this.getClass().getName() + " - No roll axis");
-            }
-        }
+        if (frontRot != 0)
+            rotateAboutAxis(sim, frontRot, sim.frontWheelCoord);
 
-        if (rearRot != 0) {
-            sim.activeSim.get(SimulationPartManager.class).
-                    rotateParts(sim.aeroParts, new DoubleVector(new double[] {0, 0, 1}),
-                            Arrays.asList(sim.noUnit, sim.noUnit, sim.noUnit), rearRot, sim.rearWheelCoord);
-            sim.activeSim.get(SimulationPartManager.class).
-                    rotateParts(sim.nonAeroParts, new DoubleVector(new double[] {0, 0, 1}),
-                            Arrays.asList(sim.noUnit, sim.noUnit, sim.noUnit), rearRot, sim.rearWheelCoord);
-            sim.radiatorCoord.getLocalCoordinateSystemManager().
-                    rotateLocalCoordinateSystems(Collections.singletonList(sim.radiatorCoord),
-                            new DoubleVector(new double[]{0.0, 0, 1}),
-                            new NeoObjectVector(new Units[]{sim.noUnit,
-                                    sim.noUnit, sim.noUnit}), rearRot, sim.rearWheelCoord);
-            if (sim.dualRadFlag)
-            {
-                try {
-                    sim.dualRadCoord.getLocalCoordinateSystemManager().
-                            rotateLocalCoordinateSystems(Collections.singletonList(sim.dualRadCoord),
-                                    new DoubleVector(new double[] {0, 0, 1}),
-                                    new NeoObjectVector(new Units[]{sim.noUnit,
-                                            sim.noUnit, sim.noUnit}), rearRot, sim.rearWheelCoord);
-                }
-                catch (Exception e)
-                {
-                    sim.activeSim.println(this.getClass().getName() + "Dual rad rotation failure");
-                }
-            }
-            try {
-                sim.rollAxis.getLocalCoordinateSystemManager().
-                        rotateLocalCoordinateSystems(Collections.singletonList(sim.rollAxis),
-                                new DoubleVector(new double[] {0, 0, 1}),
-                                new NeoObjectVector(new Units[]{sim.noUnit,
-                                        sim.noUnit, sim.noUnit}), rearRot, sim.rearWheelCoord);
-            }
-            catch (Exception e)
-            {
-                sim.activeSim.println(this.getClass().getName() + " - No roll axis");
-            }
-        }
+        if (rearRot != 0)
+            rotateAboutAxis(sim, rearRot, sim.rearWheelCoord);
+    }
+
+    private void rotateAboutAxis(SimComponents sim, double rotationAngle, CylindricalCoordinateSystem coordSys)
+    {
+        rotateParts(sim, sim.aeroParts, coordSys, rotationAngle);
+        rotateParts(sim, sim.nonAeroParts, coordSys, rotationAngle);
+        rotateCoord(sim, sim.radiatorCoord, coordSys, rotationAngle);
+        rotateCoord(sim, sim.fanAxis, coordSys, rotationAngle);
+        if (sim.dualRadFlag)
+            rotateCoord(sim, sim.dualRadCoord, coordSys, rotationAngle);
+        if (sim.dualFanFlag)
+            rotateCoord(sim, sim.dualFanAxis, coordSys, rotationAngle);
+    }
+
+    private void rotateParts(SimComponents activeSim, Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        activeSim.activeSim.get(SimulationPartManager.class).rotateParts(parts,
+                new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(activeSim.noUnit, activeSim.noUnit, activeSim.noUnit), rotationAngle, rotationPoint);
+    }
+
+    private void rotateCoord(SimComponents activeSim, CoordinateSystem coord, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        coord.getLocalCoordinateSystemManager().
+                rotateLocalCoordinateSystems(Collections.singletonList(coord),
+                        new DoubleVector(new double[] {0, 0, 1}),
+                        new NeoObjectVector(new Units[]{activeSim.noUnit,
+                                activeSim.noUnit, activeSim.noUnit}), rotationAngle, rotationPoint);
     }
 }
