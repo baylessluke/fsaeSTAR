@@ -210,7 +210,7 @@ public class Regions extends StarMacro {
     private void setDomainBoundaries(SimComponents activeSim) {
         if (activeSim.corneringFlag) {
             setDomainBoundaries_Cornering(activeSim);
-            setRegionReferenceFrames(activeSim, activeSim.labReferenceFrame);
+            setRegionReferenceFrames(activeSim, activeSim.rotatingFrame);
             return;
         }
 
@@ -247,14 +247,15 @@ public class Regions extends StarMacro {
         activeSim.leftPlane.setBoundaryType(SymmetryBoundary.class);
         activeSim.symPlane.setBoundaryType(SymmetryBoundary.class);
         activeSim.topPlane.setBoundaryType(SymmetryBoundary.class);
-        activeSim.fsOutlet.setBoundaryType(OutletBoundary.class);
+        activeSim.fsOutlet.setBoundaryType(PressureBoundary.class);
         activeSim.groundPlane.getConditions().get(ReferenceFrameOption.class).setSelected(ReferenceFrameOption.Type.LOCAL_FRAME);
-        activeSim.groundPlane.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.rotatingFrame);
+        activeSim.groundPlane.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.labReferenceFrame);
         activeSim.fsInlet.setBoundaryType(InletBoundary.class);
         activeSim.fsInlet.getConditions().get(FlowDirectionOption.class).setSelected(FlowDirectionOption.Type.BOUNDARY_NORMAL);
         activeSim.fsInlet.getConditions().get(ReferenceFrameOption.class).setSelected(ReferenceFrameOption.Type.LOCAL_FRAME);
-        activeSim.fsInlet.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.rotatingFrame);
+        activeSim.fsInlet.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.labReferenceFrame);
         activeSim.fsInlet.getValues().get(VelocityMagnitudeProfile.class).getMethod(ConstantScalarProfileMethod.class).getQuantity().setValue(0);
+
     }
 
     //Set up interfaces for a full car domain. Need to interface the left and right boundaries together, otherwise the domain will naturally straighten any yaw condition you set at the inlet.
@@ -279,19 +280,7 @@ public class Regions extends StarMacro {
 
             if (activeSim.corneringFlag)
             {
-                activeSim.leftPlane.setBoundaryType(InletBoundary.class);
-                activeSim.leftPlane.getConditions().get(FlowDirectionOption.class).setSelected(FlowDirectionOption.Type.BOUNDARY_NORMAL);
-                activeSim.leftPlane.getConditions().get(ReferenceFrameOption.class).setSelected(ReferenceFrameOption.Type.LOCAL_FRAME);
-                activeSim.leftPlane.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.rotatingFrame);
-                activeSim.leftPlane.getValues().get(VelocityMagnitudeProfile.class).getMethod(ConstantScalarProfileMethod.class).getQuantity().setValue(0);
-                activeSim.symPlane.setBoundaryType(InletBoundary.class);
-                activeSim.symPlane.getConditions().get(FlowDirectionOption.class).setSelected(FlowDirectionOption.Type.BOUNDARY_NORMAL);
-                activeSim.symPlane.getConditions().get(ReferenceFrameOption.class).setSelected(ReferenceFrameOption.Type.LOCAL_FRAME);
-                activeSim.symPlane.getValues().get(BoundaryReferenceFrameSpecification.class).setReferenceFrame(activeSim.rotatingFrame);
-                activeSim.symPlane.getValues().get(VelocityMagnitudeProfile.class).getMethod(ConstantScalarProfileMethod.class).getQuantity().setValue(0);
-                activeSim.rotatingFrame.getTranslationVelocity().setComponents(0, -slip, 0);
-                activeSim.rotatingFrame.getTranslationVelocity().setUnits(activeSim.ms);
-
+                activeSim.activeSim.println("Crosswind in a cornering case? Not allowed!");
                 return;
             }
 
@@ -300,7 +289,8 @@ public class Regions extends StarMacro {
             activeSim.yawInterface = activeSim.activeSim.getInterfaceManager().createBoundaryInterface(activeSim.leftPlane, activeSim.symPlane, SimComponents.YAW_INTERFACE_NAME);
 
             activeSim.yawInterface.setPresentationName(SimComponents.YAW_INTERFACE_NAME);
-            activeSim.yawInterface.getTopology().setSelected(InterfaceConfigurationOption.Type.PERIODIC);               //I don't have the foggiest idea what interface topology is supposed to be for. this is some blatant plagiarism.
+            activeSim.yawInterface.getTopology().setSelected(InterfaceConfigurationOption.Type.PERIODIC);               //Raunaq in 2019: I don't have the foggiest idea what interface topology is supposed to be for. this is some blatant plagiarism.
+                                                                                                                        //Raunaq in 2021: Raunaq in 2019 was a dumbass.
 
             //Set up the yaw condition at the inlet.
             activeSim.fsInlet.getValues().get(VelocityMagnitudeProfile.class).
