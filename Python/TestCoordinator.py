@@ -1,15 +1,26 @@
 from datetime import datetime
+import batchBuilderSupport as bbs
+import os
 
 # ----------------------------
 #       Initialization
 # -----------------------------
+
+# get testConfig.config setting
+config_file = open(os.getcwd() + os.sep + "testConfig.config", "r")
+config_vars = bbs.get_env_vals(config_file)
+
+# location of regressive_testing folder
+test_src_dir = config_vars["test_src"]
 
 # version of basesim this regression test is written for
 VERSION = 5.2
 
 # initialize log file
 log_time = datetime.utcnow()
-log_file = open(log_time.strftime("regressive_testing_%Y%m%d%H%M%S.txt"), "w")
+log_file = open(log_time.strftime(test_src_dir + os.sep + "regressive_testing_%Y%m%d%H%M%S.txt"), "w")
+last_run_time = ""
+last_run_version = 0
 
 # test environments
 GEOMETRY_PREP = [
@@ -61,6 +72,9 @@ POST_PROC = [
 
 
 def write_log(message="", extra_blank_line=False, file=log_file):
+
+    # TO-DO: scratch testing folder integration
+
     file.write(message + "\n")
     if extra_blank_line:
         file.write("\n")
@@ -76,7 +90,7 @@ def log_run_date():
 
     write_log("Documenting when this program has been ran...")
 
-    f = open("last_run_date.txt", "w")
+    f = open("../regressive_testing/last_run_date.txt", "w")
     now = datetime.utcnow()
     f.write(now.strftime("%Y-%m-%dT%H:%M:%SZ\n"))
     f.write("VERSION = " + str(VERSION))
@@ -146,7 +160,7 @@ def get_test_env(file_list):
             write_log("POST_PROC")
         else:
             fatal_error("Something weird has happened with testing environments")
-    write_log(extra_blank_line=True)
+    write_log("")
 
     return envs
 
@@ -162,9 +176,10 @@ def get_files_changed():
     write_log("Files changes detected:")
     for file in files:
         write_log(file)
-    write_log(extra_blank_line=True)
+    write_log("")
 
     return files
+
 
 
 # ----------------------------
