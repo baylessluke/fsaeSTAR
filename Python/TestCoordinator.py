@@ -16,12 +16,6 @@ config_file = open(os.getcwd() + os.sep + "testConfig.config", "r")
 config_vars = bbs.get_env_vals(config_file)
 config_file.close()
 
-# last_run_date.txt contents
-test_src_dir = config_vars["test_src"]
-last_run_date_file = open(test_src_dir + os.sep + LAST_RUN_DATE_FILE_NAME, "r")
-last_run_date_vars = bbs.get_env_vals(last_run_date_file)
-last_run_date_file.close()
-
 # TESTING_INFO.txt contents
 testing_space_dir = config_vars["TEST_ENVS"]
 testing_info_file = open(testing_space_dir + os.sep + TESTING_INFO_FILE_NAME, "r")
@@ -30,7 +24,23 @@ testing_info_file.close()
 
 # initialize log file
 log_time = datetime.utcnow()
-log_file = open(log_time.strftime(test_src_dir + os.sep + "regressive_testing_%Y%m%d%H%M%S.log"), "w")
+log_file = open(log_time.strftime(testing_space_dir + os.sep + "regressive_testing_%Y%m%d%H%M%S.log"), "w")
+
+# last_run_date.txt contents
+last_run_date_path = testing_space_dir + os.sep + LAST_RUN_DATE_FILE_NAME
+last_run_date_file = ""
+last_run_date_vars = ""
+if os.path.isfile(last_run_date_path):
+    last_run_date_file = open(last_run_date_path, "r")
+    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
+    last_run_date_file.close()
+else:
+    # is the file doesn't exist, just give it date that's in the past and a version so ancient that no one remembers
+    last_run_date_file = open(last_run_date_path, "w+")
+    last_run_date_file.write("LAST_RUN_DATE = 2021-11-08T16:20:42Z;\n")
+    last_run_date_file.write("VERSION = 1.0;")
+    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
+    last_run_date_file.close()
 
 # Variables that are needed later
 last_run_time = last_run_date_vars["LAST_RUN_DATE"]
@@ -104,7 +114,7 @@ def log_run_date():
 
     write_log("Documenting when this program has been ran...")
 
-    f = open(test_src_dir + os.sep + LAST_RUN_DATE_FILE_NAME, "w")
+    f = open(testing_space_dir + os.sep + LAST_RUN_DATE_FILE_NAME, "w")
     now = datetime.utcnow()
     f.write(now.strftime("LAST_RUN_DATE = %Y-%m-%dT%H:%M:%SZ;\n"))
     f.write("VERSION = " + str(VERSION) + ";")
@@ -220,5 +230,5 @@ test_envs = get_test_env(files_changed)
 
 # exit the program
 log_run_date()  # only log run date if the program finished executing seems to make sense, we will see
-write_log("Regressive testing complete...exiting")
+write_log("Handing off to STAR macros...exiting")
 exit(0)
