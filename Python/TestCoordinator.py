@@ -17,42 +17,14 @@ LAST_RUN_DATE_FILE_NAME = "last_run_date.txt"
 TESTING_INFO_FILE_NAME = "TESTING_INFO.txt"
 VERSION = 5.2
 TEST_CONFIG_NAME = "testConfig.test"
-
-# get testConfig.test setting
 config_file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
-config_vars = bbs.get_env_vals(config_file)
+CONFIG_VARS = bbs.get_env_vals(config_file)
 config_file.close()
-
-# TESTING_INFO.txt contents
-testing_space_dir = config_vars["TEST_ENVS"]
-testing_info_file = open(testing_space_dir + os.sep + TESTING_INFO_FILE_NAME, "r")
-testing_info_vars = bbs.get_env_vals(testing_info_file)
-testing_info_file.close()
+TESTING_SPACE_DIR = CONFIG_VARS["TEST_ENVS"]
 
 # initialize log file
 log_time = datetime.utcnow()
-log_file = open(log_time.strftime(testing_space_dir + os.sep + "regressive_testing_%Y%m%d%H%M%S.log"), "w")
-
-# last_run_date.txt contents
-last_run_date_path = testing_space_dir + os.sep + LAST_RUN_DATE_FILE_NAME
-last_run_date_file = ""
-last_run_date_vars = ""
-if os.path.isfile(last_run_date_path):
-    last_run_date_file = open(last_run_date_path, "r")
-    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
-    last_run_date_file.close()
-else:
-    # is the file doesn't exist, just give it date that's in the past and a version so ancient that no one remembers
-    last_run_date_file = open(last_run_date_path, "w+")
-    last_run_date_file.write("LAST_RUN_DATE = 2021-11-08T16:20:42Z;\n")
-    last_run_date_file.write("VERSION = 1.0;")
-    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
-    last_run_date_file.close()
-
-# Variables that are needed later
-last_run_time = last_run_date_vars["LAST_RUN_DATE"]
-last_run_version = float(last_run_date_vars["VERSION"])
-test_env_version = float(testing_info_vars["VERSION"])
+log_file = open(log_time.strftime(TESTING_SPACE_DIR + os.sep + "regressive_testing_%Y%m%d%H%M%S.log"), "w")
 
 # test environments
 GEOMETRY_PREP = [
@@ -121,7 +93,7 @@ def log_run_date():
 
     write_log("Documenting when this program has been ran...")
 
-    f = open(testing_space_dir + os.sep + LAST_RUN_DATE_FILE_NAME, "w")
+    f = open(TESTING_SPACE_DIR + os.sep + LAST_RUN_DATE_FILE_NAME, "w")
     now = datetime.utcnow()
     f.write(now.strftime("LAST_RUN_DATE = %Y-%m-%dT%H:%M:%SZ;\n"))
     f.write("VERSION = " + str(VERSION) + ";")
@@ -216,12 +188,12 @@ def copy_to_testing_space(envs):
 
     for env in envs:
         sim_name = env + ".sim"
-        origin_file = testing_space_dir + os.sep + sim_name
-        destination_file = testing_space_dir + os.sep + "Testing_Space" + os.sep + sim_name
+        origin_file = TESTING_SPACE_DIR + os.sep + sim_name
+        destination_file = TESTING_SPACE_DIR + os.sep + "Testing_Space" + os.sep + sim_name
         copyfile(origin_file, destination_file)
         write_log(sim_name + " copied successfully.")
 
-    write_log("All test environments copied.\n")
+    write_log("All test environments copied.", True)
 
 
 def edit_test_config(name, envs):
@@ -235,13 +207,63 @@ def edit_test_config(name, envs):
     file.write(";")
 
     file.close()
-    write_log("Done.\n")
+    write_log("Done.", True)
+
+
+def restore_test_config():
+    # restore test config to before edit state
+
+    write_log("Restoring test config file...")
+
+    # read all lines except for the one added by this script
+    file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
+    lines = file.readlines()
+    lines = lines[:-1]
+    file.close()
+
+    # overwrite the file without the last line
+    file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "w")
+    for line in lines:
+        file.write(line)
+    file.close()
+
+    write_log("Done.", True)
 
 
 # -----------------------------
 #       Execution
 # -----------------------------
 
+# TESTING_INFO.txt contents
+try:
+    testing_info_file = open(TESTING_SPACE_DIR + os.sep + TESTING_INFO_FILE_NAME, "r")
+    testing_info_vars = bbs.get_env_vals(testing_info_file)
+    testing_info_file.close()
+    test_env_version = float(testing_info_vars["VERSION"])  # test environment version
+except FileExistsError:
+    fatal_error("Testing space directory does not exist")
+
+# last_run_date.txt contents
+last_run_date_path = TESTING_SPACE_DIR + os.sep + LAST_RUN_DATE_FILE_NAME
+last_run_date_file = ""
+last_run_date_vars = ""
+if os.path.isfile(last_run_date_path):
+    last_run_date_file = open(last_run_date_path, "r")
+    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
+    last_run_date_file.close()
+else:
+    # is the file doesn't exist, just give it date that's in the past and a version so ancient that no one remembers
+    last_run_date_file = open(last_run_date_path, "w+")
+    last_run_date_file.write("LAST_RUN_DATE = 2021-11-08T16:20:42Z;\n")
+    last_run_date_file.write("VERSION = 1.0;")
+    last_run_date_vars = bbs.get_env_vals(last_run_date_file)
+    last_run_date_file.close()
+
+# Last run info
+last_run_time = last_run_date_vars["LAST_RUN_DATE"]
+last_run_version = float(last_run_date_vars["VERSION"])
+
+# Execution
 version_check()
 files_changed = get_files_changed()
 test_envs = get_test_env(files_changed)
@@ -256,13 +278,13 @@ edit_test_config(TEST_CONFIG_NAME, test_envs)
 linux_config_old_dir = "linuxConfig.config"
 linux_config_new_dir = "linuxConfig.temp"
 test_config_old_dir = TEST_CONFIG_NAME
-test_config_new_dir = linux_config_old_dir # yeah i know this is useless, but it just makes the code slightly easier to read
-#os.rename(linux_config_old_dir, linux_config_new_dir)
-#os.rename(test_config_old_dir, test_config_new_dir)
-
-#os.rename(linux_config_new_dir, linux_config_old_dir)
-#os.rename(test_config_new_dir, test_config_old_dir)
-
+test_config_new_dir = linux_config_old_dir  # yeah i know it's useless, but it makes the code slightly easier to read
+os.rename(linux_config_old_dir, linux_config_new_dir)
+os.rename(test_config_old_dir, test_config_new_dir)
+exec(open("test.py").read())  # queueing sims
+os.rename(test_config_new_dir, test_config_old_dir)
+os.rename(linux_config_new_dir, linux_config_old_dir)
+restore_test_config()
 # remember to delete last line in testConfig once done.
 
 

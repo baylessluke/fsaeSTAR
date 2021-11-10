@@ -22,5 +22,3 @@ Python/__pycache__/
 Python/deleteEverything.bat
 *.log
 ~$*
-testConfig.config
-Python/testConfig.config
