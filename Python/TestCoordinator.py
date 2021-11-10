@@ -305,19 +305,19 @@ def restore_test_config():
             lines.remove(line)
     for line in lines:
         # remove lines test_envs line. Don't understand why I have to do this in two loops, python is weird
-        if line.find(FLAG_TEST_ENVS_NAME) != -1:
+        if line.find(FLAG_TEST_ENVS_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(YAW_FLAG_NAME) != -1:
+        if line.find(YAW_FLAG_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(ROLL_FLAG_NAME) != -1:
+        if line.find(ROLL_FLAG_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(RH_FLAG_NAME) != -1:
+        if line.find(RH_FLAG_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(STEERING_FLAG_NAME) != -1:
+        if line.find(STEERING_FLAG_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(FAN_FLAG_NAME) != -1:
+        if line.find(FAN_FLAG_NAME + " = ") != -1:
             lines.remove(line)
-        if line.find(COMPLETE_RUN_FLAG_NAME) != -1:
+        if line.find(COMPLETE_RUN_FLAG_NAME + " = ") != -1:
             lines.remove(line)
     file.close()
 
