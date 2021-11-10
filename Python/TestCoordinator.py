@@ -20,7 +20,14 @@ TEST_CONFIG_NAME = "testConfig.test"
 config_file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
 CONFIG_VARS = bbs.get_env_vals(config_file)
 config_file.close()
-TESTING_SPACE_DIR = CONFIG_VARS["TEST_ENVS"]
+TESTING_SPACE_DIR = CONFIG_VARS["TEST_ENV_DIR"]
+FLAG_TEST_ENVS_NAME = "TEST_ENVS"
+YAW_FLAG_NAME = "yaw"
+RH_FLAG_NAME = "rh"
+ROLL_FLAG_NAME = "roll"
+STEERING_FLAG_NAME = "steering"
+FAN_FLAG_NAME = "fan"
+COMPLETE_RUN_FLAG_NAME = "complete_run"
 
 # initialize log file
 log_time = datetime.utcnow()
@@ -105,10 +112,15 @@ def log_run_date():
 
 def get_test_env(file_list):
     # takes in a list of java file that has been changed and determine what tests to run
+    # also determines which flag are true. The flags are important because for some changes test environments in
+    # various settings need to be ran
+    # return value: a list in the order of yaw, rh, roll, steering, fan, complete_run, envs
 
     write_log("Determining test environments to run...")
 
+    # which test environments to run
     envs = []
+    complete_run = False
     if test_env_version == last_run_version:
         for file in file_list:
             if file in GEOMETRY_PREP:
@@ -139,20 +151,51 @@ def get_test_env(file_list):
             elif file in POST_PROC:
                 if "POST_PROC" not in envs:
                     envs.append("POST_PROC")
+            elif file == "SimComponents.java" or file == "MacroController.java":
+                complete_run = True
+                write_log("SimComponents and/or MacroController changes detected, all case will be ran")
             else:
-                fatal_error("File " + file + " not found in testing environments")
+                write_log("File " + file + " not found in testing environments, ignoring it")
     else:
-        write_log("Version change detected, all cases will be ran")
-        envs = ["GEOMETRY_PREP", "GEOMETRY_REPAIR", "MESH_PREP", "MESH", "MESH_REPAIR", "INITIAL_EXECUTION",
-                "LATE_STAGE_EXECUTION", "POST_PROC"]
+        write_log("Version change change detected, all cases will be ran")
+        complete_run = True
 
     # logging test environments
     write_log("These environments will be ran: ")
     for env in envs:
         write_log(env)
-    write_log("")
 
-    return envs
+    # flags
+    yaw = False
+    rh = False
+    roll = False
+    steering = False
+    fan = False
+    for file in file_list:
+        if file == "yawSet.java" and yaw == False:
+            yaw = True
+            write_log(file + " changes detected, yaw flag has been set to True")
+        if file == "RideHeight.java" and rh == False:
+            rh = True
+            write_log(file + " changes detected, rh flag has been set to True")
+        if file == "RollSet.java" and roll == False:
+            roll = True
+            write_log(file + " changes detected, roll flag has been set to True")
+        if file == "Steering.java" and steering == False:
+            steering = True
+            write_log(file + " changes detected, steering flag has been set to True")
+        if file == "Regions.java" and fan == False:
+            # not a fan of testing for fan cases each time a region is changed, but that's the only thing possible
+            # with this set up. Maybe a project for the future
+            fan = True
+            write_log(file + " changes detected, fan flag has been set to True")
+
+    # returning everything in the correct order
+    return_list = [yaw, rh, roll, steering, fan, complete_run, envs]
+
+    write_log("")  # add a blank line
+
+    return return_list
 
 
 def get_files_changed():
@@ -160,7 +203,7 @@ def get_files_changed():
 
     write_log("Detecting files changed...")
 
-    files = ["run.java", "ExportReports.java", "MeshRepair.java", "ExportReports.java", "PostProc.java"]
+    files = ["run.java", "ExportReports.java", "MeshRepair.java", "ExportReports.java", "PostProc.java", "yawSet.java", "Regions.java"]
 
     # logging files changed
     write_log("Files changes detected:")
@@ -196,18 +239,53 @@ def copy_to_testing_space(envs):
     write_log("All test environments copied.", True)
 
 
-def edit_test_config(name, envs):
+def edit_test_config(name, envs, yaw, rh, roll, steering, fan, complete_run):
     # edit the test config to set appropriate test envs to true
     write_log("Editing test config...")
 
+    # removing shit
+    restore_test_config()
+
+    # test envs
     file = open(name, "a")
-    file.write("\nTEST_ENVS = ")
-    env_string = "";
+    file.write("\n" + FLAG_TEST_ENVS_NAME + " = ")
+    env_string = ""
     for env in envs:
         env_string = env_string + env + ","
     env_string = env_string[:-1]
     file.write(env_string)
-    file.write(";")
+    file.write(";\n")
+
+    # flags
+    if yaw:
+        file.write(YAW_FLAG_NAME + " = true;\n")
+    else:
+        file.write(YAW_FLAG_NAME + " = false;\n")
+
+    if rh:
+        file.write(RH_FLAG_NAME + " = true;\n")
+    else:
+        file.write(RH_FLAG_NAME + " = false;\n")
+
+    if roll:
+        file.write(ROLL_FLAG_NAME + " = true;\n")
+    else:
+        file.write(ROLL_FLAG_NAME + " = false;\n")
+
+    if steering:
+        file.write(STEERING_FLAG_NAME + " = true;\n")
+    else:
+        file.write(STEERING_FLAG_NAME + " = false;\n")
+
+    if fan:
+        file.write(FAN_FLAG_NAME + " = true;\n")
+    else:
+        file.write(FAN_FLAG_NAME + " = false;\n")
+
+    if complete_run:
+        file.write(COMPLETE_RUN_FLAG_NAME + " = true;\n")
+    else:
+        file.write(COMPLETE_RUN_FLAG_NAME + " = false;\n")
 
     file.close()
     write_log("Done.", True)
@@ -221,10 +299,29 @@ def restore_test_config():
     # read all lines except for the one added by this script
     file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
     lines = file.readlines()
-    lines = lines[:-1]
+    for line in lines:
+        # remove blank lines
+        if line.find(";") == -1:
+            lines.remove(line)
+    for line in lines:
+        # remove lines test_envs line. Don't understand why I have to do this in two loops, python is weird
+        if line.find(FLAG_TEST_ENVS_NAME) != -1:
+            lines.remove(line)
+        if line.find(YAW_FLAG_NAME) != -1:
+            lines.remove(line)
+        if line.find(ROLL_FLAG_NAME) != -1:
+            lines.remove(line)
+        if line.find(RH_FLAG_NAME) != -1:
+            lines.remove(line)
+        if line.find(STEERING_FLAG_NAME) != -1:
+            lines.remove(line)
+        if line.find(FAN_FLAG_NAME) != -1:
+            lines.remove(line)
+        if line.find(COMPLETE_RUN_FLAG_NAME) != -1:
+            lines.remove(line)
     file.close()
 
-    # overwrite the file without the last line
+    # overwrite the file without unwanted lines
     file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "w")
     for line in lines:
         file.write(line)
@@ -266,12 +363,23 @@ else:
 last_run_time = last_run_date_vars["LAST_RUN_DATE"]
 last_run_version = float(last_run_date_vars["VERSION"])
 
-# Execution
+# Version checking
 version_check()
+
+# test settings
 files_changed = get_files_changed()
-test_envs = get_test_env(files_changed)
+test_settings = get_test_env(files_changed)
+yaw_flag = test_settings[0]
+rh_flag = test_settings[1]
+roll_flag = test_settings[2]
+steering_flag = test_settings[3]
+fan_flag = test_settings[4]
+complete_run_flag = test_settings[5]
+test_envs = test_settings[6]
+
+# testing prep and execution
 copy_to_testing_space(test_envs)
-edit_test_config(TEST_CONFIG_NAME, test_envs)
+edit_test_config(TEST_CONFIG_NAME, test_envs, yaw_flag, rh_flag, roll_flag, steering_flag, fan_flag, complete_run_flag)
 # the following things will be kinda dumb but i will try to explain it...
 # since I'm lazy and want to just borrow folderBuilder.py, everything has to be setup in a way that
 # makes folderBuilder.py happy. But I also need custom settings for the regressive check. So the
@@ -288,8 +396,6 @@ exec(open("test.py").read())  # queueing sims
 os.rename(test_config_new_dir, test_config_old_dir)
 os.rename(linux_config_new_dir, linux_config_old_dir)
 restore_test_config()
-# remember to delete last line in testConfig once done.
-
 
 # exit the program
 log_run_date()  # only log run date if the program finished executing seems to make sense, we will see

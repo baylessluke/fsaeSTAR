@@ -1,5 +1,5 @@
 CP = /home/zhan3907/adjoint/fsaeSTAR/src;
-TEST_ENVS = W:\FSAE\Regressive_Testing_Space;
+TEST_ENV_DIR = W:\FSAE\Regressive_Testing_Space;
 STARLOC = /home/zhan3907/Desktop/STAR_Install/16.06.008-R8/STAR-CCM+16.06.008-R8/star/bin/starccm+;
 PODKEY = 2uW1FSiwr/pY4QMkEwR3vQ;
 LICPATH = 1999@flex.cd-adapco.com;
