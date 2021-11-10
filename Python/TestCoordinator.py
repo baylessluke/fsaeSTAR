@@ -1,4 +1,10 @@
+# This folder is the master folder for regressive testing. It has git integration to detect
+# which fsaeSTAR src files have been changed since last time the test was ran. The program
+# makes a decisions on which test environments to run based on the changed files. The changed
+# files are copied to test_space which will be executed.
+
 from datetime import datetime
+from shutil import copyfile
 import batchBuilderSupport as bbs
 import os
 
@@ -10,9 +16,10 @@ import os
 LAST_RUN_DATE_FILE_NAME = "last_run_date.txt"
 TESTING_INFO_FILE_NAME = "TESTING_INFO.txt"
 VERSION = 5.2
+TEST_CONFIG_NAME = "testConfig.test"
 
-# get testConfig.config setting
-config_file = open(os.getcwd() + os.sep + "testConfig.config", "r")
+# get testConfig.test setting
+config_file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
 config_vars = bbs.get_env_vals(config_file)
 config_file.close()
 
@@ -133,61 +140,44 @@ def get_test_env(file_list):
     if test_env_version == last_run_version:
         for file in file_list:
             if file in GEOMETRY_PREP:
-                if GEOMETRY_PREP not in envs:
-                    envs.append(GEOMETRY_PREP)
+                if "GEOMETRY_PREP" not in envs:
+                    envs.append("GEOMETRY_PREP")
             elif file in GEOMETRY_REPAIR:
-                if GEOMETRY_REPAIR not in envs:
-                    envs.append(GEOMETRY_REPAIR)
+                if "GEOMETRY_REPAIR" not in envs:
+                    envs.append("GEOMETRY_REPAIR")
             elif file in MESH_PREP:
-                if MESH_PREP not in envs:
-                    envs.append(MESH_PREP)
+                if "MESH_PREP" not in envs:
+                    envs.append("MESH_PREP")
             elif file in MESH:
-                if MESH not in envs:
-                    envs.append(MESH)
+                if "MESH" not in envs:
+                    envs.append("MESH")
             elif file in MESH_REPAIR:
-                if MESH_PREP not in envs:
-                    envs.append(MESH_REPAIR)
+                if "MESH_REPAIR" not in envs:
+                    envs.append("MESH_REPAIR")
             elif file in INITIAL_EXECUTION:
-                if INITIAL_EXECUTION not in envs:
+                if "INITIAL_EXECUTION" not in envs:
                     if file == "run.java":
                         # if run.java got changed, run both initial_execution and late_stage_execution envs
-                        envs.append(LATE_STAGE_EXECUTION)
+                        envs.append("LATE_STAGE_EXECUTION")
                     else:
-                        envs.append(INITIAL_EXECUTION)
+                        envs.append("INITIAL_EXECUTION")
             elif file in LATE_STAGE_EXECUTION:
-                if LATE_STAGE_EXECUTION not in envs:
-                    envs.append(LATE_STAGE_EXECUTION)
+                if "LATE_STAGE_EXECUTION" not in envs:
+                    envs.append("LATE_STAGE_EXECUTION")
             elif file in POST_PROC:
-                if POST_PROC not in envs:
-                    envs.append(POST_PROC)
+                if "POST_PROC" not in envs:
+                    envs.append("POST_PROC")
             else:
                 fatal_error("File " + file + " not found in testing environments")
     else:
         write_log("Version change detected, all cases will be ran")
-        envs = [GEOMETRY_PREP, GEOMETRY_REPAIR, MESH_PREP, MESH, MESH_REPAIR, INITIAL_EXECUTION, LATE_STAGE_EXECUTION,
-                POST_PROC]
+        envs = ["GEOMETRY_PREP", "GEOMETRY_REPAIR", "MESH_PREP", "MESH", "MESH_REPAIR", "INITIAL_EXECUTION",
+                "LATE_STAGE_EXECUTION", "POST_PROC"]
 
     # logging test environments
     write_log("These environments will be ran: ")
     for env in envs:
-        if env == GEOMETRY_PREP:
-            write_log("GEOMETRY_PREP")
-        elif env == GEOMETRY_REPAIR:
-            write_log("GEOMETRY_REPAIR")
-        elif env == MESH_PREP:
-            write_log("MESH_PREP")
-        elif env == MESH:
-            write_log("MESH")
-        elif env == MESH_REPAIR:
-            write_log("MESH_REPAIR")
-        elif env == INITIAL_EXECUTION:
-            write_log("INITIAL_EXECUTION")
-        elif env == LATE_STAGE_EXECUTION:
-            write_log("LATE_STAGE_EXECUTION")
-        elif env == POST_PROC:
-            write_log("POST_PROC")
-        else:
-            fatal_error("Something weird has happened with testing environments")
+        write_log(env)
     write_log("")
 
     return envs
@@ -220,13 +210,61 @@ def version_check():
         fatal_error("Version of the testing suite and testing environment do not match, killing test")
 
 
-# ----------------------------
+def copy_to_testing_space(envs):
+    # copy all the testing environments to testing_space
+    write_log("Copying files to Testing_Space...")
+
+    for env in envs:
+        sim_name = env + ".sim"
+        origin_file = testing_space_dir + os.sep + sim_name
+        destination_file = testing_space_dir + os.sep + "Testing_Space" + os.sep + sim_name
+        copyfile(origin_file, destination_file)
+        write_log(sim_name + " copied successfully.")
+
+    write_log("All test environments copied.\n")
+
+
+def edit_test_config(name, envs):
+    # edit the test config to set appropriate test envs to true
+    write_log("Editing test config...")
+
+    file = open(name, "a")
+    file.write("\nTEST_ENVS = ")
+    for env in envs:
+        file.write(env + ",")
+    file.write(";")
+
+    file.close()
+    write_log("Done.\n")
+
+
+# -----------------------------
 #       Execution
 # -----------------------------
 
 version_check()
 files_changed = get_files_changed()
 test_envs = get_test_env(files_changed)
+copy_to_testing_space(test_envs)
+edit_test_config(TEST_CONFIG_NAME, test_envs)
+# the following things will be kinda dumb but i will try to explain it...
+# since I'm lazy and want to just borrow folderBuilder.py, everything has to be setup in a way that
+# makes folderBuilder.py happy. But I also need custom settings for the regressive check. So the
+# way I'm doing this is having a config file for regressive testing (testConfig.test), rename
+# linuxConfig.config to linuxConfig.temp, rename testConfig.text to linuxConfig.config, submit the
+# job, and rename everything back and pretend nothing happened...Yeah, not ideal
+linux_config_old_dir = "linuxConfig.config"
+linux_config_new_dir = "linuxConfig.temp"
+test_config_old_dir = TEST_CONFIG_NAME
+test_config_new_dir = linux_config_old_dir # yeah i know this is useless, but it just makes the code slightly easier to read
+#os.rename(linux_config_old_dir, linux_config_new_dir)
+#os.rename(test_config_old_dir, test_config_new_dir)
+
+#os.rename(linux_config_new_dir, linux_config_old_dir)
+#os.rename(test_config_new_dir, test_config_old_dir)
+
+# remember to delete last line in testConfig once done.
+
 
 # exit the program
 log_run_date()  # only log run date if the program finished executing seems to make sense, we will see

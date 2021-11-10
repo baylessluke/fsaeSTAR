@@ -1,0 +1,6 @@
+fsaeSTAR_src = /home/zhan3907/adjoint/fsaeSTAR/src;
+test_src = /home/zhan3907/adjoiont/fsaeSTAR/regressive_testing;
+TEST_ENVS = /scratch/scholar/zhan3907/Regressive_Testing_Space;
+STARLOC = /home/zhan3907/Desktop/STAR_Install/16.06.008-R8/STAR-CCM+16.06.008-R8/star/bin/starccm+;
+PODKEY = 2uW1FSiwr/pY4QMkEwR3vQ;
+LICPATH = 1999@flex.cd-adapco.com;
