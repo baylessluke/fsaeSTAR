@@ -28,6 +28,7 @@ ROLL_FLAG_NAME = "roll"
 STEERING_FLAG_NAME = "steering"
 FAN_FLAG_NAME = "fan"
 COMPLETE_RUN_FLAG_NAME = "complete_run"
+TEST_SETTING_NAME = "testSettings.test"
 
 # initialize log file
 log_time = datetime.utcnow()
@@ -203,7 +204,8 @@ def get_files_changed():
 
     write_log("Detecting files changed...")
 
-    files = ["run.java", "ExportReports.java", "MeshRepair.java", "ExportReports.java", "PostProc.java", "yawSet.java", "Regions.java"]
+    files = ["run.java", "ExportReports.java", "MeshRepair.java", "ExportReports.java", "PostProc.java", "yawSet.java",
+             "Regions.java"]
 
     # logging files changed
     write_log("Files changes detected:")
@@ -241,14 +243,11 @@ def copy_to_testing_space(envs):
 
 def edit_test_config(name, envs, yaw, rh, roll, steering, fan, complete_run):
     # edit the test config to set appropriate test envs to true
-    write_log("Editing test config...")
-
-    # removing shit
-    restore_test_config()
+    write_log("Writing test setting to " + name + "...")
 
     # test envs
-    file = open(name, "a")
-    file.write("\n" + FLAG_TEST_ENVS_NAME + " = ")
+    file = open(name, "w")
+    file.write(FLAG_TEST_ENVS_NAME + " = ")
     env_string = ""
     for env in envs:
         env_string = env_string + env + ","
@@ -257,76 +256,14 @@ def edit_test_config(name, envs, yaw, rh, roll, steering, fan, complete_run):
     file.write(";\n")
 
     # flags
-    if yaw:
-        file.write(YAW_FLAG_NAME + " = true;\n")
-    else:
-        file.write(YAW_FLAG_NAME + " = false;\n")
-
-    if rh:
-        file.write(RH_FLAG_NAME + " = true;\n")
-    else:
-        file.write(RH_FLAG_NAME + " = false;\n")
-
-    if roll:
-        file.write(ROLL_FLAG_NAME + " = true;\n")
-    else:
-        file.write(ROLL_FLAG_NAME + " = false;\n")
-
-    if steering:
-        file.write(STEERING_FLAG_NAME + " = true;\n")
-    else:
-        file.write(STEERING_FLAG_NAME + " = false;\n")
-
-    if fan:
-        file.write(FAN_FLAG_NAME + " = true;\n")
-    else:
-        file.write(FAN_FLAG_NAME + " = false;\n")
-
-    if complete_run:
-        file.write(COMPLETE_RUN_FLAG_NAME + " = true;\n")
-    else:
-        file.write(COMPLETE_RUN_FLAG_NAME + " = false;\n")
+    file.write(YAW_FLAG_NAME + " = " + str(yaw).lower() + ";\n")
+    file.write(RH_FLAG_NAME + " = " + str(rh).lower() + ";\n")
+    file.write(ROLL_FLAG_NAME + " = " + str(roll).lower() + ";\n")
+    file.write(STEERING_FLAG_NAME + " = " + str(steering).lower() + ";\n")
+    file.write(FAN_FLAG_NAME + " = " + str(fan).lower() + ";\n")
+    file.write(COMPLETE_RUN_FLAG_NAME + " = " + str(complete_run).lower() + ";\n")
 
     file.close()
-    write_log("Done.", True)
-
-
-def restore_test_config():
-    # restore test config to before edit state
-
-    write_log("Restoring test config file...")
-
-    # read all lines except for the one added by this script
-    file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "r")
-    lines = file.readlines()
-    for line in lines:
-        # remove blank lines
-        if line.find(";") == -1:
-            lines.remove(line)
-    for line in lines:
-        # remove lines test_envs line. Don't understand why I have to do this in two loops, python is weird
-        if line.find(FLAG_TEST_ENVS_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(YAW_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(ROLL_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(RH_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(STEERING_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(FAN_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-        if line.find(COMPLETE_RUN_FLAG_NAME + " = ") != -1:
-            lines.remove(line)
-    file.close()
-
-    # overwrite the file without unwanted lines
-    file = open(os.getcwd() + os.sep + TEST_CONFIG_NAME, "w")
-    for line in lines:
-        file.write(line)
-    file.close()
-
     write_log("Done.", True)
 
 
@@ -379,7 +316,7 @@ test_envs = test_settings[6]
 
 # testing prep and execution
 copy_to_testing_space(test_envs)
-edit_test_config(TEST_CONFIG_NAME, test_envs, yaw_flag, rh_flag, roll_flag, steering_flag, fan_flag, complete_run_flag)
+edit_test_config(TEST_SETTING_NAME, test_envs, yaw_flag, rh_flag, roll_flag, steering_flag, fan_flag, complete_run_flag)
 # the following things will be kinda dumb but i will try to explain it...
 # since I'm lazy and want to just borrow folderBuilder.py, everything has to be setup in a way that
 # makes folderBuilder.py happy. But I also need custom settings for the regressive check. So the
@@ -395,7 +332,6 @@ os.rename(test_config_old_dir, test_config_new_dir)
 exec(open("test.py").read())  # queueing sims
 os.rename(test_config_new_dir, test_config_old_dir)
 os.rename(linux_config_new_dir, linux_config_old_dir)
-restore_test_config()
 
 # exit the program
 log_run_date()  # only log run date if the program finished executing seems to make sense, we will see

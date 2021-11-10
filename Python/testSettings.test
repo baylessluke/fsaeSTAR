@@ -1,0 +1,7 @@
+TEST_ENVS = LATE_STAGE_EXECUTION,POST_PROC,MESH_REPAIR,INITIAL_EXECUTION,MESH_PREP;
+yaw = true;
+rh = false;
+roll = false;
+steering = false;
+fan = true;
+complete_run = false;
