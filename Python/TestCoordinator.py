@@ -202,8 +202,11 @@ def edit_test_config(name, envs):
 
     file = open(name, "a")
     file.write("\nTEST_ENVS = ")
+    env_string = "";
     for env in envs:
-        file.write(env + ",")
+        env_string = env_string + env + ","
+    env_string = env_string[:-1]
+    file.write(env_string)
     file.write(";")
 
     file.close()
