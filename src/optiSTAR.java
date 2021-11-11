@@ -95,6 +95,7 @@ public class optiSTAR extends StarMacro {
                 acceptance_rate = acceptance_rate + results.acceptance_rate;
             }
             acceptance_rate = acceptance_rate / N_CYCLES;
+            activeSim.println("ACCEPTANCE RATE: " + acceptance_rate);
             if (check_convergence(new_lift, best_lift))
                 convergence_counter = convergence_counter + 1;
             if (convergence_counter >= CONV_TRIGS)
@@ -102,7 +103,6 @@ public class optiSTAR extends StarMacro {
             temperature = temperature * cooling_rate;
             activeSim.println("TEMPERATURE: " + temperature);
             activeSim.println("CONVERGENCE COUNT: " + convergence_counter);
-            activeSim.println("DESIGN VARIABLES: ");
             activeSim.println("STEP VECTOR: ");
             step_vector = update_step_vector(step_vector, acceptance_rate).clone();
             for (double v : step_vector) {
@@ -304,7 +304,6 @@ public class optiSTAR extends StarMacro {
 
     public boolean check_metropolis(double cl_new, double cl_old, double temperature)
     {
-
         double delF = cl_new - cl_old;
         if (delF < 0)
             return true;
