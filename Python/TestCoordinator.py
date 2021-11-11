@@ -329,7 +329,7 @@ test_config_old_dir = TEST_CONFIG_NAME
 test_config_new_dir = linux_config_old_dir  # yeah i know it's useless, but it makes the code slightly easier to read
 os.rename(linux_config_old_dir, linux_config_new_dir)
 os.rename(test_config_old_dir, test_config_new_dir)
-exec(open("test.py").read())  # queueing sims
+exec(open("folderBuilder.py").read())  # queueing sims
 os.rename(test_config_new_dir, test_config_old_dir)
 os.rename(linux_config_new_dir, linux_config_old_dir)
 
