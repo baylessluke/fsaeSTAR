@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class optiSTAR extends StarMacro {
 
-    public static final int STAR_ITERS = 500;
+    public static final int STAR_ITERS = 1000;
     final int N_DESIGN_VARS = 7;
     final double convergence_crit = 0.1; //converged if we're not moving by more than 0.1%
     final int max_fevals = 1000;
