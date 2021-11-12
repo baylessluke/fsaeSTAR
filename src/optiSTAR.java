@@ -17,6 +17,7 @@ import java.util.Random;
 
 public class optiSTAR extends StarMacro {
 
+    public static final int STAR_ITERS = 10;
     final int N_DESIGN_VARS = 7;
     final double convergence_crit = 0.1; //converged if we're not moving by more than 0.1%
     final int max_fevals = 1000;
@@ -167,6 +168,10 @@ public class optiSTAR extends StarMacro {
                 cand_guess[i] = cand_guess[i] + r * stepvector[i];
                 bounds_valid = check_bounds(cand_guess, lower_bounds, upper_bounds);
             }
+            for (double v: cand_guess)
+            {
+                sim.println("running var: " + v);
+            }
             double new_lift = run_sim_and_get_results(cand_guess, sim);
             if (check_metropolis(new_lift, old_lift, temperature))
             {
@@ -284,7 +289,7 @@ public class optiSTAR extends StarMacro {
         autoMesh.execute();
         SimulationIterator simIter = sim.getSimulationIterator();
         long current_iteration = simIter.getCurrentIteration();
-        long new_max_iter = current_iteration + 1500;
+        long new_max_iter = current_iteration + STAR_ITERS;
         StepStoppingCriterion maxStepCrit =
                 ((StepStoppingCriterion) sim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Maximum Steps"));
         maxStepCrit.getMaximumNumberStepsObject().getQuantity().setValue(new_max_iter);
