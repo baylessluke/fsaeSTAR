@@ -154,6 +154,7 @@ public class optiSTAR extends StarMacro {
         int accepted = 0;
         int total = 0;
         results.latest_lift = best_lift;
+        results.latest_guess = initial_guess.clone();
 
         if (stepvector.length != initial_guess.length)
             throw new IllegalStateException("There's something weird with these array sizes");
