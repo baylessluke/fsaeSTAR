@@ -1,5 +1,6 @@
 import star.common.Simulation;
 
+import java.io.File;
 import java.io.IOException;
 
 public class RTTestComponents {
@@ -8,7 +9,7 @@ public class RTTestComponents {
     public Simulation sim;
 
     // test settings
-    private final String TEST_SETTING_FILE_NAME = "testSetting.test";
+    private static final String TEST_SETTING_FILE_NAME = "testSetting.test";
     private String[] macros;
     private boolean yawFlag;
     private boolean rollFlag;
@@ -39,6 +40,11 @@ public class RTTestComponents {
      * @throws IOException
      */
     private void importSetting() throws IOException {
+
+        // creating file from test settings
+        String homeDir = System.getProperty("user.dir");
+        File testSettingFile = new File(homeDir + File.separator + TEST_SETTING_FILE_NAME);
+        
 
     }
 
