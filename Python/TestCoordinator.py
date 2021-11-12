@@ -7,6 +7,7 @@ from datetime import datetime
 from shutil import copyfile
 import batchBuilderSupport as bbs
 import os
+from pathlib import Path
 
 # ----------------------------
 #       Initialization
@@ -242,12 +243,17 @@ def copy_to_testing_space(envs):
 
 
 def edit_test_config(name, envs, yaw, rh, roll, steering, fan, complete_run):
-    # edit the test config to set appropriate test envs to true
+    # edit the test setting to set appropriate test envs to true. doing this in home directory because
+    # System.getProperty("user.dir") returns the home directory instead of the current directory for star macros,
+    # and finding out what directory the test setting file in with no info is hard.
     write_log("Writing test setting to " + name + "...")
+
+    # get home directory
+    home = str(Path.home())
 
     # test envs
     file = open(name, "w")
-    file.write(FLAG_TEST_ENVS_NAME + " = ")
+    file.write(home + os.sep + FLAG_TEST_ENVS_NAME + " = ")
     env_string = ""
     for env in envs:
         env_string = env_string + env + ","
@@ -329,7 +335,7 @@ test_config_old_dir = TEST_CONFIG_NAME
 test_config_new_dir = linux_config_old_dir  # yeah i know it's useless, but it makes the code slightly easier to read
 os.rename(linux_config_old_dir, linux_config_new_dir)
 os.rename(test_config_old_dir, test_config_new_dir)
-exec(open("folderBuilder.py").read())  # queueing sims
+exec(open("test.py").read())  # queueing sims
 os.rename(test_config_new_dir, test_config_old_dir)
 os.rename(linux_config_new_dir, linux_config_old_dir)
 
