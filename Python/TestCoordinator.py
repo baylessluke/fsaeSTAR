@@ -262,12 +262,12 @@ def edit_test_config(name, envs, yaw, rh, roll, steering, fan, complete_run):
     file.write(";\n")
 
     # flags
-    file.write(YAW_FLAG_NAME + " = " + str(yaw).lower() + ";\n")
-    file.write(RH_FLAG_NAME + " = " + str(rh).lower() + ";\n")
-    file.write(ROLL_FLAG_NAME + " = " + str(roll).lower() + ";\n")
-    file.write(STEERING_FLAG_NAME + " = " + str(steering).lower() + ";\n")
-    file.write(FAN_FLAG_NAME + " = " + str(fan).lower() + ";\n")
-    file.write(COMPLETE_RUN_FLAG_NAME + " = " + str(complete_run).lower() + ";\n")
+    file.write(YAW_FLAG_NAME + "=" + str(yaw).lower() + "\n")
+    file.write(RH_FLAG_NAME + "=" + str(rh).lower() + "\n")
+    file.write(ROLL_FLAG_NAME + "=" + str(roll).lower() + "\n")
+    file.write(STEERING_FLAG_NAME + "=" + str(steering).lower() + "\n")
+    file.write(FAN_FLAG_NAME + "=" + str(fan).lower() + "\n")
+    file.write(COMPLETE_RUN_FLAG_NAME + "=" + str(complete_run).lower() + "\n")
 
     file.close()
     write_log("Done.", True)
