@@ -1,5 +1,8 @@
+import star.base.report.ExpressionReport;
+import star.base.report.ReportManager;
 import star.common.Simulation;
 
+import java.beans.Expression;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +24,12 @@ public class RTTestComponents {
     private boolean fanFlag;
     private boolean fullRunFlag;
 
+    // star object names
+    private static final String CENTROID_REPORT_NAME = "Centroid";
+
+    // star objects
+    ExpressionReport centroidReport;
+
     // -----------------------
     //     Initialization
     // -----------------------
@@ -36,6 +45,9 @@ public class RTTestComponents {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // initializing objects
+        this.centroidReport = (ExpressionReport) sim.getReportManager().getReport(CENTROID_REPORT_NAME);
     }
 
     /**
