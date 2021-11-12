@@ -5,6 +5,8 @@ import star.cadmodeler.SolidModelCompositePart;
 import star.cadmodeler.SolidModelManager;
 import star.cadmodeler.UserDesignParameter;
 import star.common.*;
+import star.meshing.AutoMeshOperation2d;
+import star.meshing.MeshOperationManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -278,6 +280,8 @@ public class optiSTAR extends StarMacro {
 
     public void runSim(Simulation sim)
     {
+        AutoMeshOperation2d autoMesh = (AutoMeshOperation2d) sim.get(MeshOperationManager.class).getObject("Automated Mesh (2D)");
+        autoMesh.execute();
         SimulationIterator simIter = sim.getSimulationIterator();
         long current_iteration = simIter.getCurrentIteration();
         long new_max_iter = current_iteration + 1500;
