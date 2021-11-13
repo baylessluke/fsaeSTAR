@@ -81,7 +81,7 @@ public class optiSTAR extends StarMacro {
 
         while (f_eval < max_fevals && !converged) {
             activeSim.println("----STARTING OPTIMIZATION----");
-            double[] acceptance_rate = new double[0];
+            double[] acceptance_rate = new double[7];
             for (int i = 0; i < N_CYCLES; i++) {
                 cycle results = run_cycle(step_vector, initial_guess, x_lower_bound, x_upper_bound, activeSim, temperature);
                 initial_guess = results.latest_guess.clone();
@@ -97,7 +97,7 @@ public class optiSTAR extends StarMacro {
                 }
                 new_lift = results.latest_lift;
                 if (i == 0)
-                    acceptance_rate = results.acceptance_rate;
+                    acceptance_rate = results.acceptance_rate.clone();
                 else
                 {
                     for (int j = 0; j < results.acceptance_rate.length; j++)
@@ -164,7 +164,7 @@ public class optiSTAR extends StarMacro {
         double old_lift = best_lift;
         double[] best_of_cycle = initial_guess.clone();
         double[] accepted = new double[stepvector.length];
-        int total = 0;
+        Arrays.fill(accepted, 0);
         results.latest_lift = best_lift;
         results.latest_guess = initial_guess.clone();
 
@@ -200,7 +200,6 @@ public class optiSTAR extends StarMacro {
                 }
                 accepted[i] = accepted[i] + 1;
             }
-            total = total + 1;
         }
 
         results.acceptance_rate = accepted;
