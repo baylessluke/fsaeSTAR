@@ -63,13 +63,13 @@ public class optiSTAR extends StarMacro {
 
         double [] initial_guess = {
                 0,      //F1_F2_AOA
-                1,      //F1_OVERLAP
-                1,      //F1_SLOT
+                0,      //F1_OVERLAP
+                0,      //F1_SLOT
                 0,      //F2_AOA
-                1,      //F2_OVERLAP
-                1,      //F2_SLOT
-                -1,      //GLOBAL_AOA
-                2,      //GROUND_CLEARANCE
+                0,      //F2_OVERLAP
+                0,      //F2_SLOT
+                0,      //GLOBAL_AOA
+                0,      //GROUND_CLEARANCE
         };
 
         double temperature = 4;
