@@ -51,14 +51,14 @@ public class optiSTAR extends StarMacro {
         };
 
         double[] step_vector = {
-                4,      //F1_F2_AOA
-                0.25,   //F1_OVERLAP
-                0.15,   //F1_SLOT
-                4,      //F2_AOA
-                0.125,  //F2_OVERLAP
-                0.125,  //F2_SLOT
-                1,      //GLOBAL_AOA
-                0.25,   //GROUND_CLEARANCE
+                8,      //F1_F2_AOA
+                0.5,   //F1_OVERLAP
+                0.3,   //F1_SLOT
+                8,      //F2_AOA
+                0.3,  //F2_OVERLAP
+                0.3,  //F2_SLOT
+                2,      //GLOBAL_AOA
+                0.75,   //GROUND_CLEARANCE
         };
 
         double [] initial_guess = {
@@ -93,6 +93,9 @@ public class optiSTAR extends StarMacro {
                     best_lift = results.best_lift;
                     best_ever_x_arr = results.best_of_cycle.clone();
                     activeSim.println("NEW BEST LIFT: " + best_lift);
+                    activeSim.println("DESIGN VALUES FOR NEW BEST LIFT: ");
+                    for (double v: best_ever_x_arr)
+                        activeSim.println(v);
                 }
                 new_lift = results.latest_lift;
                 acceptance_rate = acceptance_rate + results.acceptance_rate;
