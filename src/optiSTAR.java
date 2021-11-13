@@ -11,14 +11,12 @@ import star.meshing.MeshOperationManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.Math.*;
 import java.util.Arrays;
 import java.util.Random;
 
 public class optiSTAR extends StarMacro {
 
     public static final int STAR_ITERS = 1000;
-    final int N_DESIGN_VARS = 7;
     final double convergence_crit = 0.1; //converged if we're not moving by more than 0.1%
     final int max_fevals = 1000;
     final int N_CYCLES = 5;
@@ -83,7 +81,7 @@ public class optiSTAR extends StarMacro {
 
         while (f_eval < max_fevals && !converged) {
             activeSim.println("----STARTING OPTIMIZATION----");
-            double acceptance_rate = 0;
+            double[] acceptance_rate = new double[0];
             for (int i = 0; i < N_CYCLES; i++) {
                 cycle results = run_cycle(step_vector, initial_guess, x_lower_bound, x_upper_bound, activeSim, temperature);
                 initial_guess = results.latest_guess.clone();
@@ -98,10 +96,21 @@ public class optiSTAR extends StarMacro {
                         activeSim.println(v);
                 }
                 new_lift = results.latest_lift;
-                acceptance_rate = acceptance_rate + results.acceptance_rate;
+                if (i == 0)
+                    acceptance_rate = results.acceptance_rate;
+                else
+                {
+                    for (int j = 0; j < results.acceptance_rate.length; j++)
+                        acceptance_rate[j] = acceptance_rate[j] + results.acceptance_rate[j];
+                }
             }
-            acceptance_rate = acceptance_rate / N_CYCLES;
-            activeSim.println("ACCEPTANCE RATE: " + acceptance_rate);
+            for (int i = 0; i < acceptance_rate.length; i++)
+            {
+                acceptance_rate[i] = acceptance_rate[i] / N_CYCLES;
+            }
+            activeSim.println("ACCEPTANCE RATE: ");
+            for (double v: acceptance_rate)
+                activeSim.println(v);
             if (check_convergence(new_lift, best_lift))
                 convergence_counter = convergence_counter + 1;
             if (convergence_counter >= CONV_TRIGS)
@@ -138,10 +147,10 @@ public class optiSTAR extends StarMacro {
         activeSim.saveState(activeSim.getSessionDir() + File.separator + activeSim.getPresentationName() + ".sim");
     }
 
-    class cycle
+    static class cycle
     {
         public double [] best_of_cycle;
-        public double acceptance_rate;
+        public double[] acceptance_rate;
         public double best_lift;
         public double [] latest_guess;
         public double latest_lift;
@@ -154,7 +163,7 @@ public class optiSTAR extends StarMacro {
         double best_lift = run_sim_and_get_results(initial_guess, sim);
         double old_lift = best_lift;
         double[] best_of_cycle = initial_guess.clone();
-        int accepted = 0;
+        double[] accepted = new double[stepvector.length];
         int total = 0;
         results.latest_lift = best_lift;
         results.latest_guess = initial_guess.clone();
@@ -189,12 +198,12 @@ public class optiSTAR extends StarMacro {
                     best_lift = new_lift;
                     best_of_cycle = cand_guess.clone();
                 }
-                accepted = accepted + 1;
+                accepted[i] = accepted[i] + 1;
             }
             total = total + 1;
         }
 
-        results.acceptance_rate = (double) accepted / (double) total;
+        results.acceptance_rate = accepted;
         results.best_lift = best_lift;
         results.best_of_cycle = best_of_cycle;
         saveSim(sim);
@@ -208,26 +217,19 @@ public class optiSTAR extends StarMacro {
         return getLiftReport(sim);
     }
 
-    public double[] update_step_vector(double[] step_vector, double acceptance_rate)
+    public double[] update_step_vector(double[] step_vector, double[] acceptance_rate_arr)
     {
         double[] new_step_vector = step_vector.clone();
-
-        if (acceptance_rate > 0.6)
-        {
-            for (int i = 0; i < step_vector.length; i++)
-            {
+        for (int i = 0; i < acceptance_rate_arr.length; i++) {
+            double acceptance_rate = acceptance_rate_arr[i];
+            if (acceptance_rate > 0.6) {
                 new_step_vector[i] = step_vector[i] * (1 + 2 * (acceptance_rate - 0.6) / 0.4);
             }
-        }
 
-        if (acceptance_rate < 0.4)
-        {
-            for (int i = 0; i < step_vector.length; i++)
-            {
+            if (acceptance_rate < 0.4) {
                 new_step_vector[i] = step_vector[i] / (1 + 2 * (0.4 - acceptance_rate) / 0.4);
             }
         }
-
         return new_step_vector;
     }
 
