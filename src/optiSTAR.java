@@ -49,14 +49,14 @@ public class optiSTAR extends StarMacro {
         };
 
         double[] step_vector = {
-                10,      //F1_F2_AOA
-                1,   //F1_OVERLAP
-                0.5,   //F1_SLOT
-                10,      //F2_AOA
-                1,  //F2_OVERLAP
-                0.5,  //F2_SLOT
-                4,      //GLOBAL_AOA
-                1.25,   //GROUND_CLEARANCE
+                8,      //F1_F2_AOA
+                0.5,   //F1_OVERLAP
+                0.3,   //F1_SLOT
+                8,      //F2_AOA
+                0.3,  //F2_OVERLAP
+                0.3,  //F2_SLOT
+                2,      //GLOBAL_AOA
+                0.75,   //GROUND_CLEARANCE
         };
 
         double [] initial_guess = {
