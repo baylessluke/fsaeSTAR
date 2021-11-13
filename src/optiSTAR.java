@@ -82,6 +82,7 @@ public class optiSTAR extends StarMacro {
         while (f_eval < max_fevals && !converged) {
             activeSim.println("----STARTING OPTIMIZATION----");
             double[] acceptance_rate = new double[step_vector.length];
+            initial_guess = best_ever_x_arr.clone();
             for (int i = 0; i < N_CYCLES; i++) {
                 cycle results = run_cycle(step_vector, initial_guess, x_lower_bound, x_upper_bound, activeSim, temperature);
                 initial_guess = results.latest_guess.clone();
@@ -125,7 +126,7 @@ public class optiSTAR extends StarMacro {
             }
         }
 
-        File fout = new File("results.txt");
+        File fout = new File(activeSim.getSessionDir() + File.separator + "results.txt");
         try {
             fout.createNewFile();
             FileWriter writer = new FileWriter(fout);
