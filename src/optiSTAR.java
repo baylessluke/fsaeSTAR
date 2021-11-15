@@ -126,7 +126,7 @@ public class optiSTAR extends StarMacro {
             }
         }
 
-        File fout = new File(activeSim.getSessionDir() + File.separator + "results.txt");
+        File fout = new File(activeSim.getSessionDir() + File.separator + "results.text");
         try {
             fout.createNewFile();
             FileWriter writer = new FileWriter(fout);
