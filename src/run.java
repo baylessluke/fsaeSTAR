@@ -3,10 +3,12 @@ Runs the sim. First runs it for 4 steps, runs MeshRepair to see if anything need
  */
 
 import star.common.MonitorIterationStoppingCriterionMaxLimitType;
+import star.common.MonitorIterationStoppingCriterionType;
 import star.common.StarMacro;
 import star.common.StarScript;
 
 import java.io.File;
+import java.util.Objects;
 
 public class run extends StarMacro {
 
@@ -33,17 +35,33 @@ public class run extends StarMacro {
         ((MonitorIterationStoppingCriterionMaxLimitType) activeSim.maxStepStop.getCriterionType()).getLimit().setValue(currentIteration + activeSim.maxSteps);
         activeSim.activeSim.println("Setting stopping criteria to: " + ((MonitorIterationStoppingCriterionMaxLimitType) activeSim.maxStepStop.getCriterionType()).getLimit().evaluate());
         activeSim.maxStepStop.setInnerIterationCriterion(true);
-        activeSim.maxStepStop.setIsUsed(true);
+        activeSim.maxStepStop.setIsUsed(false); //using time only for now
         activeSim.setFreestreamParameterValue();
         activeSim.abortFile.setAbortFilePath(activeSim.dir + File.separator + SimComponents.valEnvString("SLURM_JOB_ID"));
         activeSim.activeSim.getSimulationIterator().step(1);
+        MonitorIterationStoppingCriterionMaxLimitType timeStopLimit = (MonitorIterationStoppingCriterionMaxLimitType) activeSim.maxTime.getCriterionType();
+        String clusterName = Objects.requireNonNull(SimComponents.valEnvString("CLUSTER"), "Can't recognize cluster from linuxConfig!");
+        if (clusterName.equals("scholar") || clusterName.equals("gpu"))
+        {
+            timeStopLimit.getLimit().setValue(activeSim.totalSolverTime.getValue() + 12600);
+            timeStopLimit.getLimit().setUnits(activeSim.seconds);
+        }
+        else if (clusterName.equals("long"))
+        {
+            timeStopLimit.getLimit().setValue(activeSim.totalSolverTime.getValue() + 257400);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Can't figure out what cluster this is running on!");
+        }
+        activeSim.maxTime.setIsUsed(true);
     }
 
     //There's some recursion in here.
     private void continueRun(SimComponents activeSim)
     {
         //If any of these conditions are true, we don't want to run any more iterations. Climb out of whatever recursion we've fallen down
-        if (CONVERGED || activeSim.abortFile.getIsSatisfied() || activeSim.maxStepStop.getIsSatisfied())
+        if (CONVERGED || activeSim.abortFile.getIsSatisfied() || activeSim.maxTime.getIsSatisfied())
             return;
 
         //Disable maximum velocity criteria and run for 4 steps.
@@ -75,7 +93,7 @@ public class run extends StarMacro {
             }
             if (!activeSim.maxStepStop.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied())
                 activeSim.activeSim.getSimulationIterator().run(50);
-        } while(!CONVERGED && !activeSim.maxStepStop.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied() && !activeSim.maxVel.getIsSatisfied());
+        } while(!CONVERGED && !activeSim.maxTime.getIsSatisfied() && !activeSim.abortFile.getIsSatisfied() && !activeSim.maxVel.getIsSatisfied());
 
         //If maximum velocity is triggered, run mesh repair, then continue iterating again.
         if (activeSim.maxVel.getIsSatisfied())
