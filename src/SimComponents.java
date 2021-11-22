@@ -97,7 +97,7 @@ public class SimComponents {
 
     //Version check. An easy way to make sure the sim and the macros are the same version. Throw an error at the beginning, rather than an uncaught NPE later.
     // This needs to match the version parameter in STAR. This is really just a way so people don't bug me with macro problems that can be solved with pulling the correct branch/tag
-    private final double version = 5.2;
+    private final double version = 5.3;
 
     // Simulation object
     public Simulation activeSim;
@@ -145,6 +145,7 @@ public class SimComponents {
     public Units meters;
     public Units degs;
     public Units ms;
+    public Units seconds;
 
     //Vehicle dimensions radii
     public double frontTyreRadius = 0.228599;           //meters
@@ -181,6 +182,8 @@ public class SimComponents {
     public AbortFileStoppingCriterion abortFile;    //Don't think we're using this for anything right now.
     public UpdateEvent monitorWaypoint;             //Only for transient.
     public boolean convergenceCheck;
+    public CumulativeElapsedTimeReport totalSolverTime;
+    public MonitorIterationStoppingCriterion maxTime;
 
     // Physics
     public PhysicsContinuum steadyStatePhysics;
@@ -312,6 +315,7 @@ public class SimComponents {
         degs = activeSim.getUnitsManager().getObject("deg");
         meters = activeSim.getUnitsManager().getObject("m");
         ms = activeSim.getUnitsManager().getObject("m/s");
+        seconds = activeSim.getUnitsManager().getObject("s");
 
         // Initialize surface wrappers
         surfaceWrapOperation = ((SurfaceWrapperAutoMeshOperation) activeSim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER));
@@ -636,7 +640,8 @@ public class SimComponents {
         abortFile = (AbortFileStoppingCriterion) activeSim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Stop File");
         monitorWaypoint = activeSim.getUpdateEventManager().getUpdateEvent("Monitor Waypoint");
         convergenceCheck = boolEnv("CONV_SC");
-
+        totalSolverTime = (CumulativeElapsedTimeReport) activeSim.getReportManager().getReport("Total Solver Elapsed Time");
+        maxTime = (MonitorIterationStoppingCriterion) activeSim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Total Solver Time");
     }
 
     public void setFreestreamParameterValue() {

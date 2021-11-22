@@ -17,7 +17,6 @@ frh = front ride height change in inches;
 rrh = rear ride height change in inches;
 roll = roll angle in degrees;
 freestream = freestream in m/s;
-maxSteps = total additional steps to run;
 FAN = true if you want fans enabled, false if you want them disabled;
 preprocess = true to surface wrap and mesh. false to skip;
 process = true to generate post processed data. false to skip;
