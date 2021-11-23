@@ -46,8 +46,7 @@ public class RTTestController extends StarMacro {
     public void execute() {
 
         sim = getActiveSimulation();
-
-        sortParts(sim);
+        sortParts();
 
         new RTTestController().execute();
     }
@@ -80,12 +79,10 @@ public class RTTestController extends StarMacro {
 
     /**
      * Sort leaf geometry parts into their respective category according to the names for parent geometry parts
-     * @param sim
      */
-    private void sortParts(Simulation sim) {
+    private void sortParts() {
 
-        Collection<GeometryPart> geomParts = new ArrayList<>();
-        geomParts = sim.getGeometryPartManager().getParts(); // get all parents
+        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
 
         // sort CFD, tire, aero, chassis, and suspension parts
         for (GeometryPart parent:geomParts) {
