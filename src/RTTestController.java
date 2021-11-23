@@ -1,8 +1,13 @@
+import star.common.Simulation;
 import star.common.StarMacro;
 
 public class RTTestController extends StarMacro {
 
+    public static Simulation sim;
+
     public void execute() {
+
+        sim = getActiveSimulation();
 
     }
 
@@ -104,6 +109,24 @@ public class RTTestController extends StarMacro {
                 "ExportReports.java",
                 "PostProc.java"
         };
+    }
+
+    /**
+     * Print the test results. Created this method to standardize passed and failed messages
+     * @param testPassed
+     */
+    public static void printTestResults(boolean testPassed, String test, String result, String expected) {
+
+        StringBuilder output = new StringBuilder();
+
+        if (testPassed) {
+            output.append(String.format("%40f | PASSED: ", test));
+        } else {
+            output.append(String.format("%40f | FAILED: ", test));
+        }
+
+        output.append("Result: " + result + " | Expected: " + expected);
+        sim.println(output);
     }
 
 }
