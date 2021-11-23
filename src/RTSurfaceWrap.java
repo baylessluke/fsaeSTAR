@@ -1,14 +1,16 @@
+/*
+ * TO-DO: surface wrapper 3D scene export
+ */
+
 import star.common.*;
 import star.meshing.MeshOperationManager;
-import star.surfacewrapper.GapClosureOption;
+import star.meshing.SurfaceCustomMeshControl;
 import star.surfacewrapper.SurfaceWrapperAutoMeshOperation;
-import star.surfacewrapper.SurfaceWrapperAutoMesher;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class RTSurfaceWrap extends StarMacro {
+public class RTSurfaceWrap {
 
     private static final String SURFACE_WRAPPER_NAME = "Surface wrapper";
 
@@ -25,22 +27,31 @@ public class RTSurfaceWrap extends StarMacro {
     private static final String PARTS_SELECTED_TEST = "Parts Selected";
     private static final String PARTS_SELECTED_EXPECTED = "All CFD_ and tires selected";
 
-    @Override
-    public void execute() {
+    // Aero control test
+    private static final String AERO_CONTROL_NAME = "Aero Control";
+    private static final String AERO_CONTROL_PARTS_SELECTED_TEST = "Aero Control Parts Selected";
+    private static final String AERO_CONTROL_PARTS_SELECTED_EXPECTED = "All CFD_Aerodynamics_830250079 parts selected";
+    private static final String AERO_CONTROL_AVAILABILITY_TEST = "Aero Control Availability";
+    private static final String AERO_CONTROL_AVAILABILITY_EXPECTED = "Aero control enabled";
 
-        Simulation sim = getActiveSimulation();
+    /**
+     * Execute the tests
+     */
+    public void execute(Simulation sim) {
+
+        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
 
         // Surface wrapper PPM
         wrapperPPM(sim);
-        gapClosure(sim);
-
+        gapClosure(wrapper);
+        partsSelected(wrapper);
+        aeroControl(wrapper);
 
     }
 
     /**
      * Surface wrapper PPM check.
      * pass: no parts selected
-     * @param sim
      */
     private void wrapperPPM(Simulation sim) {
 
@@ -50,18 +61,16 @@ public class RTSurfaceWrap extends StarMacro {
         if (numParts == 0)
             RTTestController.printTestResults(true, SURFACE_WRAPPER_PPM_TEST, SURFACE_WRAPPER_PPM_EXPECTED, SURFACE_WRAPPER_PPM_EXPECTED);
         else
-            RTTestController.printTestResults(false, SURFACE_WRAPPER_PPM_TEST, Integer.toString(numParts) + " parts selected", SURFACE_WRAPPER_PPM_EXPECTED);
+            RTTestController.printTestResults(false, SURFACE_WRAPPER_PPM_TEST, numParts + " parts selected", SURFACE_WRAPPER_PPM_EXPECTED);
 
     }
 
     /**
      * Check gap closure setting
      * pass: true
-     * @param sim
      */
-    private void gapClosure(Simulation sim) {
+    private void gapClosure(SurfaceWrapperAutoMeshOperation wrapper) {
 
-        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
         boolean gapClosureSetting = wrapper.getDoGapClosure();
         if (gapClosureSetting)
             RTTestController.printTestResults(true, GAP_CLOSURE_TEST, Boolean.toString(true), GAP_CLOSURE_EXPECTED);
@@ -73,28 +82,16 @@ public class RTSurfaceWrap extends StarMacro {
     /**
      * Check parts selected in surface wrapper
      * Pass: all CFD_ parts and tires are selected
-     * @param sim
      */
-    private void partsSelected(Simulation sim) {
+    private void partsSelected(SurfaceWrapperAutoMeshOperation wrapper) {
 
         // get selected parts
-        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
-        GeometryObjectGroup group = wrapper.getInputGeometryObjects();
-        Collection<GeometryPart> partsSelected = group.getLeafParts();
+        Collection<GeometryPart> partsSelected = wrapper.getInputGeometryObjects().getLeafParts();
 
-        // get expected parts
-        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
-        Collection<GeometryPart> expectedWrapperLeafParts = new ArrayList<>();
-        for (GeometryPart parents:geomParts) {
-            if (parents.getPresentationName().contains("CFD_") || parents.getPresentationName().equals("Front Left") || parents.getPresentationName().equals("Front Right") || parents.getPresentationName().equals("Rear Left") || parents.getPresentationName().equals("Rear Right")) {
-                expectedWrapperLeafParts.addAll(parents.getLeafParts());
-            }
-        }
-
-        // compare the two
+        // compare selected parts against CFD parts
         boolean testPassed = true;
         Collection<GeometryPart> unselectedParts = new ArrayList<>(); // parts that should be selected but are not selected
-        for (GeometryPart parts:expectedWrapperLeafParts) {
+        for (GeometryPart parts:RTTestController.cfdParts) {
             if (!partsSelected.contains(parts)) {
                 testPassed = false;
                 unselectedParts.add(parts);
@@ -103,17 +100,59 @@ public class RTSurfaceWrap extends StarMacro {
 
         // print results
         if (testPassed)
-            RTTestController.printTestResults(true, PARTS_SELECTED_TEST, PARTS_SELECTED_EXPECTED, PARTS_SELECTED_EXPECTED)
+            RTTestController.printTestResults(true, PARTS_SELECTED_TEST, PARTS_SELECTED_EXPECTED, PARTS_SELECTED_EXPECTED);
         else {
             StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
             for (GeometryPart part:unselectedParts) {
-                unselectedPartsString.append(part.getPresentationName() + " ,");
+                unselectedPartsString.append(part.getPresentationName()).append(" ,");
             }
             unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
             unselectedPartsString.append(" NOT selected");
 
             RTTestController.printTestResults(false, PARTS_SELECTED_TEST, unselectedPartsString.toString(), PARTS_SELECTED_TEST);
         }
+    }
+
+    /**
+     * Check parts selected in aero control
+     * Pass: all parts in CFD_Aerodynamics_830250079 selected
+     */
+    private void aeroControl(SurfaceWrapperAutoMeshOperation wrapper) {
+
+        SurfaceCustomMeshControl aeroControl = ((SurfaceCustomMeshControl) wrapper.getCustomMeshControls().getObject(AERO_CONTROL_NAME));
+
+        // get parts selected
+        Collection<GeometryPart> partsSelected = aeroControl.getGeometryObjects().getLeafParts();
+
+        // compare selected parts against aero parts
+        boolean testPassed = true;
+        Collection<GeometryPart> unselectedParts = new ArrayList<>(); // parts that should be selected but are not selected
+        for (GeometryPart parts:RTTestController.aeroParts) {
+            if (!partsSelected.contains(parts)) {
+                testPassed = false;
+                unselectedParts.add(parts);
+            }
+        }
+
+        // print results of aero control parts selected test
+        if (testPassed)
+            RTTestController.printTestResults(true, AERO_CONTROL_PARTS_SELECTED_TEST, AERO_CONTROL_PARTS_SELECTED_EXPECTED, AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+        else {
+            StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
+            for (GeometryPart part:unselectedParts) {
+                unselectedPartsString.append(part.getPresentationName()).append(" ,");
+            }
+            unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
+            unselectedPartsString.append(" NOT selected");
+
+            RTTestController.printTestResults(false, AERO_CONTROL_PARTS_SELECTED_TEST, unselectedPartsString.toString(), AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+        }
+
+        // print result of aero control availability test
+        if (aeroControl.getEnableControl())
+            RTTestController.printTestResults(true, AERO_CONTROL_AVAILABILITY_TEST, AERO_CONTROL_AVAILABILITY_EXPECTED, AERO_CONTROL_AVAILABILITY_EXPECTED);
+        else
+            RTTestController.printTestResults(false, AERO_CONTROL_AVAILABILITY_TEST, "Aero control disabled", AERO_CONTROL_AVAILABILITY_EXPECTED);
     }
 
 }

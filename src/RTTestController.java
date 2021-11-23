@@ -1,115 +1,131 @@
+import javafx.scene.Parent;
+import star.common.GeometryPart;
 import star.common.Simulation;
 import star.common.StarMacro;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Properties;
 
 public class RTTestController extends StarMacro {
 
     public static Simulation sim;
 
+    // Test settings
+    private static final String TEST_SETTING_FILE_NAME = "testSetting.test";
+    private String[] macros;
+    private boolean yawFlag;
+    private boolean rollFlag;
+    private boolean steerFlag;
+    private boolean rhFlag;
+    private boolean fanFlag;
+    private boolean fullRunFlag;
+
+    // Part collections
+    public static Collection<GeometryPart> cfdParts = new ArrayList<>();
+    public static Collection<GeometryPart> aeroParts = new ArrayList<>();
+    public static Collection<GeometryPart> chaParts = new ArrayList<>();
+    public static Collection<GeometryPart> susParts = new ArrayList<>();
+    public static Collection<GeometryPart> powParts = new ArrayList<>();
+    public static Collection<GeometryPart> tireParts = new ArrayList<>();
+    public static Collection<GeometryPart> fwParts = new ArrayList<>();
+    public static Collection<GeometryPart> rwParts = new ArrayList<>();
+    public static Collection<GeometryPart> swParts = new ArrayList<>();
+    public static Collection<GeometryPart> utParts = new ArrayList<>();
+    public static Collection<GeometryPart> nsParts = new ArrayList<>();
+
+    // Initialization
+
     public void execute() {
 
         sim = getActiveSimulation();
 
+        sortParts(sim);
+
+        new RTTestController().execute();
     }
 
     /**
-     * Runs all the macros provided according to the passed flag
+     * Imports test setting file and fill out all the setting parameters
+     * @throws IOException
      */
-    private void runMacros() {
-        // macro lists
+    private void importSetting() throws IOException {
 
-        String[] GEOMETRY_PREP_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
+        // creating file from test settings
+        String homeDir = System.getProperty("user.dir");
+        InputStream testSettingFile = new FileInputStream(homeDir + File.separator + TEST_SETTING_FILE_NAME);
 
-        String[] GEOMETRY_REPAIR_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
+        // Properties object
+        Properties testSettings = new Properties();
+        testSettings.load(testSettingFile);
 
-        String[] MESH_PREP_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
+        // read properties
+        String macrosStr = testSettings.getProperty("TEST_ENVS");
+        this.macros = macrosStr.strip().split(",");
+        this.yawFlag = Boolean.parseBoolean(testSettings.getProperty("yaw"));
+        this.fanFlag = Boolean.parseBoolean(testSettings.getProperty("fan"));
+        this.rollFlag = Boolean.parseBoolean(testSettings.getProperty("roll"));
+        this.rhFlag = Boolean.parseBoolean(testSettings.getProperty("rh"));
+        this.steerFlag = Boolean.parseBoolean(testSettings.getProperty("steering"));
+        this.fullRunFlag = Boolean.parseBoolean(testSettings.getProperty("complete_run"));
 
-        String[] MESH_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
-
-        String[] MESH_REPAIR_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
-
-        String[] INITIAL_EXECUTION_MACROS = {
-                "MeshRepair.java",
-                "yawSet.java",
-                "GenReports.java",
-                "SoftRun.java",
-                "MeshRepair.java",
-                "SoftRun.java",
-                "MeshRepair.java",
-                "run.java",
-        };
-
-        String[] LATE_STAGE_EXECUTION_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
-
-        String[] POST_PROC_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java"
-        };
-
-        String [] FR_PRE_PROC_MACROS = {
-                "DomainSet.java",
-                "RideHeight.java",
-                "RollSet.java",
-                "Steering.java",
-                "SurfaceWrap.java",
-                "Subtract.java",
-                "Regions.java",
-                "AutoMesh.java",
-                "MeshRepair.java",
-                "MeshRepair.java",
-                "MeshRepair.java",
-                "save.java",
-        };
-
-        String [] FR_PROC_MACROS = {
-                "MeshRepair.java",
-                "yawSet.java",
-                "GenReports.java",
-                "SoftRun.java",
-                "MeshRepair.java",
-                "SoftRun.java",
-                "MeshRepair.java",
-                "run.java",
-                "ExportReports.java"
-        };
-
-
-        String [] FR_POST_PROC_MACROS = {
-                "ExportReports.java",
-                "PostProc.java"
-        };
     }
+
+    /**
+     * Sort leaf geometry parts into their respective category according to the names for parent geometry parts
+     * @param sim
+     */
+    private void sortParts(Simulation sim) {
+
+        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
+
+        // sort CFD, tire, aero, chassis, and suspension parts
+        for (GeometryPart parent:geomParts) {
+            if (parent.getPresentationName().contains("CFD_")) {
+                cfdParts.addAll(parent.getLeafParts());
+
+                if (parent.getPresentationName().equals("CFD_AERODYNAMICS_830250079")) {
+                    aeroParts.addAll(parent.getLeafParts());
+                }
+
+                if (parent.getPresentationName().equals("CFD_CHASSIS")) {
+                    chaParts.addAll(parent.getLeafParts());
+                }
+
+                if (parent.getPresentationName().equals("CFD_SUSPENSION")) {
+                    susParts.addAll(parent.getLeafParts());
+                }
+
+                if (parent.getPresentationName().equals("CFD_POWERTRAIN")) {
+                    powParts.addAll(parent.getLeafParts());
+                }
+            } else if (parent.getPresentationName().equals("Front Left") || parent.getPresentationName().equals("Front Right") || parent.getPresentationName().equals("Rear Left") || parent.getPresentationName().equals("Rear Right"))
+                tireParts.addAll(parent.getLeafParts());
+        }
+
+        // sort aero parts into the subcategories
+        for (GeometryPart part:aeroParts) {
+            GeometryPart parent = part.getParentPart();
+
+            if (parent.getPresentationName().contains("FW_"))
+                fwParts.add(part);
+            else if (parent.getPresentationName().contains("RW_"))
+                rwParts.add(part);
+            else if (parent.getPresentationName().contains("SW_"))
+                swParts.add(part);
+            else if (parent.getPresentationName().contains("UT_"))
+                utParts.add(part);
+            else if (parent.getPresentationName().contains("NS_"))
+                nsParts.add(part);
+        }
+
+    }
+
+    // Static classes
 
     /**
      * Print the test results. Created this method to standardize passed and failed messages
