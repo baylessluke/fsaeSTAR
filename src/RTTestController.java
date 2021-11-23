@@ -12,8 +12,6 @@ import java.util.Properties;
 
 public class RTTestController extends StarMacro {
 
-    public static Simulation sim;
-
     // Test settings
     private static final String TEST_SETTING_FILE_NAME = "testSetting.test";
     private String[] macros;
@@ -41,7 +39,7 @@ public class RTTestController extends StarMacro {
 
     public void execute() {
 
-        sim = getActiveSimulation();
+        Simulation sim = getActiveSimulation();
 
         sortParts(sim);
 
@@ -80,10 +78,7 @@ public class RTTestController extends StarMacro {
      */
     private void sortParts(Simulation sim) {
 
-        Collection<GeometryPart> geomParts = new ArrayList<>();
-        geomParts = sim.getGeometryPartManager().getParts(); // get all parents
-
-
+        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
 
         // sort CFD, tire, aero, chassis, and suspension parts
         for (GeometryPart parent:geomParts) {
