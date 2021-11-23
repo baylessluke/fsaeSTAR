@@ -13,6 +13,7 @@ import java.util.Properties;
 public class RTTestController extends StarMacro {
 
     Simulation sim;
+    public static RTTestController controller;
 
     // Test settings
     private final String TEST_SETTING_FILE_NAME = "testSetting.test";
@@ -39,16 +40,17 @@ public class RTTestController extends StarMacro {
 
     // Initialization
 
-    public RTTestController() {
-        sim = getActiveSimulation();
+    public RTTestController(Simulation sim) {
+        this.sim = sim;
+        sortParts();
     }
 
     public void execute() {
 
-        sim = getActiveSimulation();
-        sortParts();
+        controller = new RTTestController(getActiveSimulation());
 
-        new RTTestController().execute();
+        new RTSurfaceWrap(controller);
+
     }
 
     /**
@@ -82,7 +84,7 @@ public class RTTestController extends StarMacro {
      */
     private void sortParts() {
 
-        Collection<GeometryPart> geomParts = getActiveSimulation().getGeometryPartManager().getParts(); // get all parents
+        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
 
         // sort CFD, tire, aero, chassis, and suspension parts
         for (GeometryPart parent:geomParts) {
