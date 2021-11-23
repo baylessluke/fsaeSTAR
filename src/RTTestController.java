@@ -84,12 +84,12 @@ public class RTTestController extends StarMacro {
         try {
             geomParts = sim.getGeometryPartManager().getParts(); // get all parents
         } catch(NullPointerException e) {
+            e.printStackTrace();
         }
 
 
         // sort CFD, tire, aero, chassis, and suspension parts
         for (GeometryPart parent:geomParts) {
-            sim.println(parent.getPresentationName());
             if (parent.getPresentationName().contains("CFD_")) {
                 cfdParts.addAll(parent.getLeafParts());
 
