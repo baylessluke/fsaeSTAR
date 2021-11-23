@@ -84,7 +84,6 @@ public class RTTestController extends StarMacro {
         try {
             geomParts = sim.getGeometryPartManager().getParts(); // get all parents
         } catch(NullPointerException e) {
-            e.printStackTrace();
         }
 
 
