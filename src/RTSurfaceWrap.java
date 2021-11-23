@@ -14,7 +14,7 @@ public class RTSurfaceWrap {
 
     RTTestController test;
 
-    private static final String SURFACE_WRAPPER_NAME = "Surface wrapper";
+    private final String SURFACE_WRAPPER_NAME = "Surface wrapper";
 
     // Surface wrapper PPM test
     private final String SURFACE_WRAPPER_PPM_NAME = "Surface wrapper PPM";

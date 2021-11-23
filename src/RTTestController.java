@@ -15,7 +15,7 @@ public class RTTestController extends StarMacro {
     Simulation sim;
 
     // Test settings
-    private static final String TEST_SETTING_FILE_NAME = "testSetting.test";
+    private final String TEST_SETTING_FILE_NAME = "testSetting.test";
     private String[] macros;
     private boolean yawFlag;
     private boolean rollFlag;
@@ -127,8 +127,6 @@ public class RTTestController extends StarMacro {
         }
 
     }
-
-    // Static classes
 
     /**
      * Print the test results. Created this method to standardize passed and failed messages
