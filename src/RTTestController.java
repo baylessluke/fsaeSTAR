@@ -40,6 +40,10 @@ public class RTTestController extends StarMacro {
 
     // Initialization
 
+    public RTTestController() {
+
+    }
+
     public RTTestController(Simulation sim) {
         this.sim = sim;
         sortParts();
