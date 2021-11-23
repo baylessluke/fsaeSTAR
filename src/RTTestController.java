@@ -80,12 +80,8 @@ public class RTTestController extends StarMacro {
      */
     private void sortParts(Simulation sim) {
 
-        Collection<GeometryPart> geomParts = new ArrayList<>();
-        try {
-            geomParts = sim.getGeometryPartManager().getParts(); // get all parents
-        } catch(NullPointerException e) {
-            e.printStackTrace();
-        }
+        Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
+
 
 
         // sort CFD, tire, aero, chassis, and suspension parts
