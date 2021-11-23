@@ -12,6 +12,8 @@ import java.util.Properties;
 
 public class RTTestController extends StarMacro {
 
+    Simulation sim;
+
     // Test settings
     private static final String TEST_SETTING_FILE_NAME = "testSetting.test";
     private String[] macros;
@@ -23,23 +25,27 @@ public class RTTestController extends StarMacro {
     private boolean fullRunFlag;
 
     // Part collections
-    public static Collection<GeometryPart> cfdParts = new ArrayList<>();
-    public static Collection<GeometryPart> aeroParts = new ArrayList<>();
-    public static Collection<GeometryPart> chaParts = new ArrayList<>();
-    public static Collection<GeometryPart> susParts = new ArrayList<>();
-    public static Collection<GeometryPart> powParts = new ArrayList<>();
-    public static Collection<GeometryPart> tireParts = new ArrayList<>();
-    public static Collection<GeometryPart> fwParts = new ArrayList<>();
-    public static Collection<GeometryPart> rwParts = new ArrayList<>();
-    public static Collection<GeometryPart> swParts = new ArrayList<>();
-    public static Collection<GeometryPart> utParts = new ArrayList<>();
-    public static Collection<GeometryPart> nsParts = new ArrayList<>();
+    public Collection<GeometryPart> cfdParts = new ArrayList<>();
+    public Collection<GeometryPart> aeroParts = new ArrayList<>();
+    public Collection<GeometryPart> chaParts = new ArrayList<>();
+    public Collection<GeometryPart> susParts = new ArrayList<>();
+    public Collection<GeometryPart> powParts = new ArrayList<>();
+    public Collection<GeometryPart> tireParts = new ArrayList<>();
+    public Collection<GeometryPart> fwParts = new ArrayList<>();
+    public Collection<GeometryPart> rwParts = new ArrayList<>();
+    public Collection<GeometryPart> swParts = new ArrayList<>();
+    public Collection<GeometryPart> utParts = new ArrayList<>();
+    public Collection<GeometryPart> nsParts = new ArrayList<>();
 
     // Initialization
 
+    public RTTestController() {
+        sim = getActiveSimulation();
+    }
+
     public void execute() {
 
-        Simulation sim = getActiveSimulation();
+        sim = getActiveSimulation();
 
         sortParts(sim);
 
@@ -128,7 +134,7 @@ public class RTTestController extends StarMacro {
      * Print the test results. Created this method to standardize passed and failed messages
      * @param testPassed
      */
-    public static void printTestResults(boolean testPassed, String test, String result, String expected) {
+    public void printTestResults(boolean testPassed, String test, String result, String expected) {
 
         StringBuilder output = new StringBuilder();
 
