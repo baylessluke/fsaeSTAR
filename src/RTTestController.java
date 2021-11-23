@@ -1,4 +1,3 @@
-import javafx.scene.Parent;
 import star.common.GeometryPart;
 import star.common.Simulation;
 import star.common.StarMacro;
