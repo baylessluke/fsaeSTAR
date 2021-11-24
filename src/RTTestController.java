@@ -1,3 +1,9 @@
+/**
+ * Geometry prep run sequence:
+ * 1. RTSurfaceWrap
+ * 2. RTSteering
+ */
+
 import star.common.StarMacro;
 
 public class RTTestController extends StarMacro {
