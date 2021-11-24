@@ -14,31 +14,9 @@ public class RTSurfaceWrap {
 
     RTTestComponent rt;
 
-    private final String SURFACE_WRAPPER_NAME = "Surface wrapper";
-
-    // Surface wrapper PPM test
-    private final String SURFACE_WRAPPER_PPM_NAME = "Surface wrapper PPM";
-    private final String SURFACE_WRAPPER_PPM_TEST = "Surface Wrapper PPM";
-    private final String SURFACE_WRAPPER_PPM_EXPECTED = "No part selected";
-
-    // Gap closure test
-    private final String GAP_CLOSURE_TEST = "Gap Closure";
-    private final String GAP_CLOSURE_EXPECTED = "true";
-
-    // Parts selected test
-    private final String PARTS_SELECTED_TEST = "Parts Selected";
-    private final String PARTS_SELECTED_EXPECTED = "All CFD_ and tires selected";
-
-    // Aero control test
-    private final String AERO_CONTROL_NAME = "Aero Control";
-    private final String AERO_CONTROL_PARTS_SELECTED_TEST = "Aero Control Parts Selected";
-    private final String AERO_CONTROL_PARTS_SELECTED_EXPECTED = "All CFD_Aerodynamics_830250079 parts selected";
-    private final String AERO_CONTROL_AVAILABILITY_TEST = "Aero Control Availability";
-    private final String AERO_CONTROL_AVAILABILITY_EXPECTED = "Aero control enabled";
-
     public RTSurfaceWrap(RTTestComponent rt) {
         this.rt = rt;
-        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) rt.sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
+        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) rt.sim.get(MeshOperationManager.class).getObject(rt.SURFACE_WRAPPER_NAME));
 
         // Surface wrapper PPM
         wrapperPPM(rt.sim);
@@ -53,13 +31,17 @@ public class RTSurfaceWrap {
      */
     private void wrapperPPM(Simulation sim) {
 
-        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_PPM_NAME));
+        String surfaceWrapperPPMName = "Surface wrapper PPM";
+        String surfaceWrapperPPMTest = "Surface Wrapper PPM";
+        String surfaceWrapperPPMExpected = "No part selected";
+
+        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) sim.get(MeshOperationManager.class).getObject(surfaceWrapperPPMName));
         GeometryObjectGroup partsSelected = wrapper.getInputGeometryObjects();
         int numParts = partsSelected.getChildrenCount();
         if (numParts == 0)
-            rt.printTestResults(true, SURFACE_WRAPPER_PPM_TEST, SURFACE_WRAPPER_PPM_EXPECTED, SURFACE_WRAPPER_PPM_EXPECTED);
+            rt.printTestResults(true, surfaceWrapperPPMTest, surfaceWrapperPPMExpected, surfaceWrapperPPMExpected);
         else
-            rt.printTestResults(false, SURFACE_WRAPPER_PPM_TEST, numParts + " parts selected", SURFACE_WRAPPER_PPM_EXPECTED);
+            rt.printTestResults(false, surfaceWrapperPPMTest, numParts + " parts selected", surfaceWrapperPPMExpected);
 
     }
 
@@ -69,11 +51,14 @@ public class RTSurfaceWrap {
      */
     private void gapClosure(SurfaceWrapperAutoMeshOperation wrapper) {
 
+        String gapClosureTest = "Gap Closure";
+        String gapClosureExpected = "true";
+
         boolean gapClosureSetting = wrapper.getDoGapClosure();
         if (gapClosureSetting)
-            rt.printTestResults(true, GAP_CLOSURE_TEST, Boolean.toString(true), GAP_CLOSURE_EXPECTED);
+            rt.printTestResults(true, gapClosureTest, Boolean.toString(true), gapClosureExpected);
         else
-            rt.printTestResults(false, GAP_CLOSURE_TEST, Boolean.toString(false), GAP_CLOSURE_EXPECTED);
+            rt.printTestResults(false, gapClosureTest, Boolean.toString(false), gapClosureExpected);
 
     }
 
@@ -82,6 +67,9 @@ public class RTSurfaceWrap {
      * Pass: all CFD_ parts and tires are selected
      */
     private void partsSelected(SurfaceWrapperAutoMeshOperation wrapper) {
+
+        String partsSelectedTest = "Parts Selected";
+        String partsSelectedExpected = "All CFD_ and tires selected";
 
         // get selected parts
         Collection<GeometryPart> partsSelected = wrapper.getInputGeometryObjects().getLeafParts();
@@ -98,7 +86,7 @@ public class RTSurfaceWrap {
 
         // print results
         if (testPassed)
-            rt.printTestResults(true, PARTS_SELECTED_TEST, PARTS_SELECTED_EXPECTED, PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(true, partsSelectedTest, partsSelectedExpected, partsSelectedExpected);
         else {
             StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
             for (GeometryPart part:unselectedParts) {
@@ -107,7 +95,7 @@ public class RTSurfaceWrap {
             unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
             unselectedPartsString.append(" NOT selected");
 
-            rt.printTestResults(false, PARTS_SELECTED_TEST, unselectedPartsString.toString(), PARTS_SELECTED_TEST);
+            rt.printTestResults(false, partsSelectedTest, unselectedPartsString.toString(), partsSelectedTest);
         }
     }
 
@@ -117,7 +105,13 @@ public class RTSurfaceWrap {
      */
     private void aeroControl(SurfaceWrapperAutoMeshOperation wrapper) {
 
-        SurfaceCustomMeshControl aeroControl = ((SurfaceCustomMeshControl) wrapper.getCustomMeshControls().getObject(AERO_CONTROL_NAME));
+        String aeroControlName = "Aero Control";
+        String aeroControlPartsSelectedTest = "Aero Control Parts Selected";
+        String aeroControlPartsSelectedExpected = "All CFD_Aerodynamics_830250079 parts selected";
+        String aeroControlAvailabilityTest = "Aero Control Availability";
+        String aeroControlAvailabilityExpected = "Aero control enabled";
+
+        SurfaceCustomMeshControl aeroControl = ((SurfaceCustomMeshControl) wrapper.getCustomMeshControls().getObject(aeroControlName));
 
         // get parts selected
         Collection<GeometryPart> partsSelected = aeroControl.getGeometryObjects().getLeafParts();
@@ -134,7 +128,7 @@ public class RTSurfaceWrap {
 
         // print results of aero control parts selected test
         if (testPassed)
-            rt.printTestResults(true, AERO_CONTROL_PARTS_SELECTED_TEST, AERO_CONTROL_PARTS_SELECTED_EXPECTED, AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(true, aeroControlPartsSelectedTest, aeroControlPartsSelectedExpected, aeroControlPartsSelectedExpected);
         else {
             StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
             for (GeometryPart part:unselectedParts) {
@@ -143,14 +137,14 @@ public class RTSurfaceWrap {
             unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
             unselectedPartsString.append(" NOT selected");
 
-            rt.printTestResults(false, AERO_CONTROL_PARTS_SELECTED_TEST, unselectedPartsString.toString(), AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(false, aeroControlPartsSelectedTest, unselectedPartsString.toString(), aeroControlPartsSelectedExpected);
         }
 
         // print result of aero control availability test
         if (aeroControl.getEnableControl())
-            rt.printTestResults(true, AERO_CONTROL_AVAILABILITY_TEST, AERO_CONTROL_AVAILABILITY_EXPECTED, AERO_CONTROL_AVAILABILITY_EXPECTED);
+            rt.printTestResults(true, aeroControlAvailabilityTest, aeroControlAvailabilityExpected, aeroControlAvailabilityExpected);
         else
-            rt.printTestResults(false, AERO_CONTROL_AVAILABILITY_TEST, "Aero control disabled", AERO_CONTROL_AVAILABILITY_EXPECTED);
+            rt.printTestResults(false, aeroControlAvailabilityTest, "Aero control disabled", aeroControlAvailabilityExpected);
     }
 
 }

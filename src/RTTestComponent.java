@@ -1,5 +1,4 @@
-import star.common.GeometryPart;
-import star.common.Simulation;
+import star.common.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +22,19 @@ public class RTTestComponent {
     private boolean fanFlag;
     private boolean fullRunFlag;
 
+    // Names
+    public final String SURFACE_WRAPPER_NAME = "Surface wrapper";
+    public final String FRONT_WHEEL_CYLINDRICAL_NAME = "Front Wheel Cylindrical";
+    public final String FRONT_WHEEL_STEERING_NAME = "Front Wheel Steering";
+    public final String AUTO_MESH_NAME = "Automated Mesh";
+
+    // Coordinate systems
+    public CylindricalCoordinateSystem frontWheelCylindrical; // Coordinate system used for both tire rotation and front left steering
+    public CylindricalCoordinateSystem frontWheelSteering; // Used for front right steering, thanks for raunaq for the confusing naming convention
+
+    // units
+    public Units unitless;
+
     // Part collections
     public Collection<GeometryPart> cfdParts = new ArrayList<>();
     public Collection<GeometryPart> aeroParts = new ArrayList<>();
@@ -41,6 +53,7 @@ public class RTTestComponent {
     public RTTestComponent(Simulation sim) {
         this.sim = sim;
         sortParts();
+        initStarObjects();
     }
 
     /**
@@ -115,6 +128,20 @@ public class RTTestComponent {
             else if (parent.getPresentationName().contains("NS_"))
                 nsParts.add(part);
         }
+
+    }
+
+    /**
+     * Initialize star objects like coordinate systems, reports, and other stuff
+     */
+    private void initStarObjects() {
+
+        // coordinate system
+        this.frontWheelCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FRONT_WHEEL_CYLINDRICAL_NAME);
+        this.frontWheelSteering = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FRONT_WHEEL_STEERING_NAME);
+
+        // units
+        this.unitless = sim.getUnitsManager().getObject("");
 
     }
 
