@@ -3,6 +3,7 @@ import star.base.neo.NeoObjectVector;
 import star.base.report.VolumeIntegralReport;
 import star.common.*;
 import star.meshing.AutoMeshOperation;
+import star.meshing.LatestMeshProxyRepresentation;
 import star.meshing.MeshOperationManager;
 import star.meshing.MeshOperationPart;
 import star.surfacewrapper.SurfaceWrapperAutoMeshOperation;
@@ -102,13 +103,25 @@ public class RTSteering {
      */
     private void getReportValue() {
 
+        String steeringName = "Steering (Volume integral of Centroid X)";
+        double steeringExpected = -3.867e-2; // m^4
+
         // create stuff needed later
         VolumeIntegralReport report = (VolumeIntegralReport) rt.sim.getReportManager().getReport("Volume Integral of Centroid X");
-
+        VectorComponentFieldFunction centroidX = (VectorComponentFieldFunction) ((PrimitiveFieldFunction) rt.sim.getFieldFunctionManager().getFunction("Centroid")).getComponentFunction(0);
 
         // set up report
+        report.setFieldFunction(centroidX);
         report.setUnits(rt.sim.getUnitsManager().createUnits("m^4"));
+        report.getParts().setObjects(rt.sim.getRegionManager().getRegion(FRONT_TIRE_REGION_NAME));
+        report.setRepresentation(rt.latestSrfVol);
 
+        // get report value and print result
+        double reportValue = report.getValue();
+        if (reportValue == steeringExpected)
+           rt.printTestResults(true, steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
+        else
+            rt.printTestResults(false, steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
     }
 
 }

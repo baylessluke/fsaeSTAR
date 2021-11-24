@@ -1,4 +1,5 @@
 import star.common.*;
+import star.meshing.LatestMeshProxyRepresentation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +28,7 @@ public class RTTestComponent {
     public final String FRONT_WHEEL_CYLINDRICAL_NAME = "Front Wheel Cylindrical";
     public final String FRONT_WHEEL_STEERING_NAME = "Front Wheel Steering";
     public final String AUTO_MESH_NAME = "Automated Mesh";
+    public final String LATEST_SRF_VOL_NAME = "Latest Surface/Volume";
 
     // Coordinate systems
     public CylindricalCoordinateSystem frontWheelCylindrical; // Coordinate system used for both tire rotation and front left steering
@@ -34,6 +36,9 @@ public class RTTestComponent {
 
     // units
     public Units unitless;
+
+    // misc
+    public LatestMeshProxyRepresentation latestSrfVol;
 
     // Part collections
     public Collection<GeometryPart> cfdParts = new ArrayList<>();
@@ -142,6 +147,9 @@ public class RTTestComponent {
 
         // units
         this.unitless = sim.getUnitsManager().getObject("");
+
+        // misc
+        this.latestSrfVol = (LatestMeshProxyRepresentation) sim.getRepresentationManager().getObject(LATEST_SRF_VOL_NAME);
 
     }
 
