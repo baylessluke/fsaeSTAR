@@ -12,7 +12,7 @@ import java.util.Collection;
 
 public class RTSurfaceWrap {
 
-    RTTestController controller;
+    RTTestComponent rt;
 
     private final String SURFACE_WRAPPER_NAME = "Surface wrapper";
 
@@ -36,12 +36,12 @@ public class RTSurfaceWrap {
     private final String AERO_CONTROL_AVAILABILITY_TEST = "Aero Control Availability";
     private final String AERO_CONTROL_AVAILABILITY_EXPECTED = "Aero control enabled";
 
-    public RTSurfaceWrap(RTTestController controller) {
-        this.controller = controller;
-        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) controller.sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
+    public RTSurfaceWrap(RTTestComponent rt) {
+        this.rt = rt;
+        SurfaceWrapperAutoMeshOperation wrapper = ((SurfaceWrapperAutoMeshOperation) rt.sim.get(MeshOperationManager.class).getObject(SURFACE_WRAPPER_NAME));
 
         // Surface wrapper PPM
-        wrapperPPM(controller.sim);
+        wrapperPPM(rt.sim);
         gapClosure(wrapper);
         partsSelected(wrapper);
         aeroControl(wrapper);
@@ -57,9 +57,9 @@ public class RTSurfaceWrap {
         GeometryObjectGroup partsSelected = wrapper.getInputGeometryObjects();
         int numParts = partsSelected.getChildrenCount();
         if (numParts == 0)
-            controller.printTestResults(true, SURFACE_WRAPPER_PPM_TEST, SURFACE_WRAPPER_PPM_EXPECTED, SURFACE_WRAPPER_PPM_EXPECTED);
+            rt.printTestResults(true, SURFACE_WRAPPER_PPM_TEST, SURFACE_WRAPPER_PPM_EXPECTED, SURFACE_WRAPPER_PPM_EXPECTED);
         else
-            controller.printTestResults(false, SURFACE_WRAPPER_PPM_TEST, numParts + " parts selected", SURFACE_WRAPPER_PPM_EXPECTED);
+            rt.printTestResults(false, SURFACE_WRAPPER_PPM_TEST, numParts + " parts selected", SURFACE_WRAPPER_PPM_EXPECTED);
 
     }
 
@@ -71,9 +71,9 @@ public class RTSurfaceWrap {
 
         boolean gapClosureSetting = wrapper.getDoGapClosure();
         if (gapClosureSetting)
-            controller.printTestResults(true, GAP_CLOSURE_TEST, Boolean.toString(true), GAP_CLOSURE_EXPECTED);
+            rt.printTestResults(true, GAP_CLOSURE_TEST, Boolean.toString(true), GAP_CLOSURE_EXPECTED);
         else
-            controller.printTestResults(false, GAP_CLOSURE_TEST, Boolean.toString(false), GAP_CLOSURE_EXPECTED);
+            rt.printTestResults(false, GAP_CLOSURE_TEST, Boolean.toString(false), GAP_CLOSURE_EXPECTED);
 
     }
 
@@ -89,7 +89,7 @@ public class RTSurfaceWrap {
         // compare selected parts against CFD parts
         boolean testPassed = true;
         Collection<GeometryPart> unselectedParts = new ArrayList<>(); // parts that should be selected but are not selected
-        for (GeometryPart parts:controller.cfdParts) {
+        for (GeometryPart parts:rt.cfdParts) {
             if (!partsSelected.contains(parts)) {
                 testPassed = false;
                 unselectedParts.add(parts);
@@ -98,7 +98,7 @@ public class RTSurfaceWrap {
 
         // print results
         if (testPassed)
-            controller.printTestResults(true, PARTS_SELECTED_TEST, PARTS_SELECTED_EXPECTED, PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(true, PARTS_SELECTED_TEST, PARTS_SELECTED_EXPECTED, PARTS_SELECTED_EXPECTED);
         else {
             StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
             for (GeometryPart part:unselectedParts) {
@@ -107,7 +107,7 @@ public class RTSurfaceWrap {
             unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
             unselectedPartsString.append(" NOT selected");
 
-            controller.printTestResults(false, PARTS_SELECTED_TEST, unselectedPartsString.toString(), PARTS_SELECTED_TEST);
+            rt.printTestResults(false, PARTS_SELECTED_TEST, unselectedPartsString.toString(), PARTS_SELECTED_TEST);
         }
     }
 
@@ -125,7 +125,7 @@ public class RTSurfaceWrap {
         // compare selected parts against aero parts
         boolean testPassed = true;
         Collection<GeometryPart> unselectedParts = new ArrayList<>(); // parts that should be selected but are not selected
-        for (GeometryPart parts:controller.aeroParts) {
+        for (GeometryPart parts:rt.aeroParts) {
             if (!partsSelected.contains(parts)) {
                 testPassed = false;
                 unselectedParts.add(parts);
@@ -134,7 +134,7 @@ public class RTSurfaceWrap {
 
         // print results of aero control parts selected test
         if (testPassed)
-            controller.printTestResults(true, AERO_CONTROL_PARTS_SELECTED_TEST, AERO_CONTROL_PARTS_SELECTED_EXPECTED, AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(true, AERO_CONTROL_PARTS_SELECTED_TEST, AERO_CONTROL_PARTS_SELECTED_EXPECTED, AERO_CONTROL_PARTS_SELECTED_EXPECTED);
         else {
             StringBuilder unselectedPartsString = new StringBuilder("Parts: ");
             for (GeometryPart part:unselectedParts) {
@@ -143,14 +143,14 @@ public class RTSurfaceWrap {
             unselectedPartsString.delete(unselectedPartsString.length() - 2, unselectedPartsString.length());
             unselectedPartsString.append(" NOT selected");
 
-            controller.printTestResults(false, AERO_CONTROL_PARTS_SELECTED_TEST, unselectedPartsString.toString(), AERO_CONTROL_PARTS_SELECTED_EXPECTED);
+            rt.printTestResults(false, AERO_CONTROL_PARTS_SELECTED_TEST, unselectedPartsString.toString(), AERO_CONTROL_PARTS_SELECTED_EXPECTED);
         }
 
         // print result of aero control availability test
         if (aeroControl.getEnableControl())
-            controller.printTestResults(true, AERO_CONTROL_AVAILABILITY_TEST, AERO_CONTROL_AVAILABILITY_EXPECTED, AERO_CONTROL_AVAILABILITY_EXPECTED);
+            rt.printTestResults(true, AERO_CONTROL_AVAILABILITY_TEST, AERO_CONTROL_AVAILABILITY_EXPECTED, AERO_CONTROL_AVAILABILITY_EXPECTED);
         else
-            controller.printTestResults(false, AERO_CONTROL_AVAILABILITY_TEST, "Aero control disabled", AERO_CONTROL_AVAILABILITY_EXPECTED);
+            rt.printTestResults(false, AERO_CONTROL_AVAILABILITY_TEST, "Aero control disabled", AERO_CONTROL_AVAILABILITY_EXPECTED);
     }
 
 }
