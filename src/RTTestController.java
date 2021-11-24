@@ -41,17 +41,13 @@ public class RTTestController extends StarMacro {
     // Initialization
 
     public RTTestController() {
-
-    }
-
-    public RTTestController(Simulation sim) {
-        this.sim = sim;
+        this.sim = getActiveSimulation();
         sortParts();
     }
 
     public void execute() {
 
-        controller = new RTTestController(getActiveSimulation());
+        controller = new RTTestController();
 
         new RTSurfaceWrap(controller);
 
@@ -141,9 +137,9 @@ public class RTTestController extends StarMacro {
         StringBuilder output = new StringBuilder();
 
         if (testPassed) {
-            output.append(String.format("%40f | PASSED: ", test));
+            output.append(String.format("%40s | PASSED: ", test));
         } else {
-            output.append(String.format("%40f | FAILED: ", test));
+            output.append(String.format("%40s | FAILED: ", test));
         }
 
         output.append("Result: " + result + " | Expected: " + expected);
