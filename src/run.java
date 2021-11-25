@@ -49,6 +49,7 @@ public class run extends StarMacro {
         else if (clusterName.equals("long"))
         {
             timeStopLimit.getLimit().setValue(activeSim.totalSolverTime.getValue() + 257400);
+            timeStopLimit.getLimit().setUnits(activeSim.seconds);
         }
         else
         {
