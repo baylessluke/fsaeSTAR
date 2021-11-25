@@ -173,4 +173,17 @@ public class RTTestComponent {
 
     }
 
+    /**
+     * Get all the surfaces under all parts in a part group (e.g. cfdParts)
+     */
+    public Collection<PartSurface> getAllSurfacesByPartGroup(Collection<GeometryPart> partGroup) {
+
+        Collection<PartSurface> surfaces = new ArrayList<>();
+        for (GeometryPart part:partGroup) {
+            surfaces.addAll(part.getPartSurfaces());
+        }
+        return surfaces;
+
+    }
+
 }

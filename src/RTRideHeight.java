@@ -1,5 +1,8 @@
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
+import star.common.PartSurface;
+
+import java.util.Collection;
 
 /**
  * Ride height testing. Generate the centroid x, y, z report values of all CFD parts and tires at (0,0) ride height.
@@ -57,19 +60,23 @@ public class RTRideHeight {
      */
     private void setReportPartToCFD() {
 
-        this.sumXPosArea.getParts().setObjects(rt.cfdParts);
-        this.sumYPosArea.getParts().setObjects(rt.cfdParts);
-        this.sumZPosArea.getParts().setObjects(rt.cfdParts);
-        this.sumArea.getParts().setObjects(rt.cfdParts);
+        Collection<PartSurface> surfaces = rt.getAllSurfacesByPartGroup(rt.cfdParts);
+
+        this.sumXPosArea.getParts().setObjects(surfaces);
+        this.sumYPosArea.getParts().setObjects(surfaces);
+        this.sumZPosArea.getParts().setObjects(surfaces);
+        this.sumArea.getParts().setObjects(surfaces);
 
     }
 
     private void setReportPartToTire() {
 
-        this.sumXPosArea.getParts().setObjects(rt.tireParts);
-        this.sumYPosArea.getParts().setObjects(rt.tireParts);
-        this.sumZPosArea.getParts().setObjects(rt.tireParts);
-        this.sumArea.getParts().setObjects(rt.tireParts);
+        Collection<PartSurface> surfaces = rt.getAllSurfacesByPartGroup(rt.tireParts);
+
+        this.sumXPosArea.getParts().setObjects(surfaces);
+        this.sumYPosArea.getParts().setObjects(surfaces);
+        this.sumZPosArea.getParts().setObjects(surfaces);
+        this.sumArea.getParts().setObjects(surfaces);
 
     }
 
