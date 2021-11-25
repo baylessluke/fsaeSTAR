@@ -1,4 +1,5 @@
 import star.base.report.ExpressionReport;
+import star.base.report.SumReport;
 
 /**
  * Ride height testing. Generate the centroid x, y, z report values of all CFD parts and tires at (0,0) ride height.
@@ -15,22 +16,40 @@ public class RTRideHeight {
     String CENTROID_X_REPORT_NAME = "Centroid X";
     String CENTROID_Y_REPORT_NAME = "Centroid Y";
     String CENTROID_Z_REPORT_NAME = "Centroid Z";
+    String SUM_X_POS_AREA_NAME = "Sum of X_POS_AREA";
+    String SUM_Y_POS_AREA_NAME = "Sum of Y_POS_AREA";
+    String SUM_Z_POS_AREA_NAME = "Sum of Z_POS_AREA";
+    String SUM_AREA_NAME = "Sum of Area";
 
     // reports
     ExpressionReport centroidXReport;
     ExpressionReport centroidYReport;
     ExpressionReport centroidZReport;
+    SumReport sumXPosArea;
+    SumReport sumYPosArea;
+    SumReport sumZPosArea;
+    SumReport sumArea;
 
     public RTRideHeight(RTTestComponent rt) {
         this.rt = rt;
 
-        // initialization
+        this.initReports();
+        this.setReportPartToTire();
+    }
+
+    /**
+     * Initializing reports
+     */
+    private void initReports() {
+
         this.centroidXReport = (ExpressionReport) rt.sim.getReportManager().getReport(CENTROID_X_REPORT_NAME);
         this.centroidYReport = (ExpressionReport) rt.sim.getReportManager().getReport(CENTROID_Y_REPORT_NAME);
         this.centroidZReport = (ExpressionReport) rt.sim.getReportManager().getReport(CENTROID_Z_REPORT_NAME);
+        this.sumXPosArea = (SumReport) rt.sim.getReportManager().getReport(SUM_X_POS_AREA_NAME);
+        this.sumYPosArea = (SumReport) rt.sim.getReportManager().getReport(SUM_Y_POS_AREA_NAME);
+        this.sumZPosArea = (SumReport) rt.sim.getReportManager().getReport(SUM_Z_POS_AREA_NAME);
+        this.sumArea = (SumReport) rt.sim.getReportManager().getReport(SUM_AREA_NAME);
 
-        // execution
-        this.setReportPartToTire();
     }
 
     /**
@@ -38,17 +57,19 @@ public class RTRideHeight {
      */
     private void setReportPartToCFD() {
 
-        this.centroidXReport.getParts().setObjects(rt.cfdParts);
-        this.centroidYReport.getParts().setObjects(rt.cfdParts);
-        this.centroidZReport.getParts().setObjects(rt.cfdParts);
+        this.sumXPosArea.getParts().setObjects(rt.cfdParts);
+        this.sumYPosArea.getParts().setObjects(rt.cfdParts);
+        this.sumZPosArea.getParts().setObjects(rt.cfdParts);
+        this.sumArea.getParts().setObjects(rt.cfdParts);
 
     }
 
     private void setReportPartToTire() {
 
-        this.centroidXReport.getParts().setObjects(rt.tireParts);
-        this.centroidYReport.getParts().setObjects(rt.tireParts);
-        this.centroidZReport.getParts().setObjects(rt.tireParts);
+        this.sumXPosArea.getParts().setObjects(rt.tireParts);
+        this.sumYPosArea.getParts().setObjects(rt.tireParts);
+        this.sumZPosArea.getParts().setObjects(rt.tireParts);
+        this.sumArea.getParts().setObjects(rt.tireParts);
 
     }
 
