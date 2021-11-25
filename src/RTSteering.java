@@ -39,8 +39,7 @@ public class RTSteering {
 
         Collection<GeometryPart> frontTire = new ArrayList<>();
         for (GeometryPart part:rt.tireParts) {
-            rt.sim.println(part.getPresentationName());
-            if (part.getParentPart().getPresentationName().equals(tire)) {
+            if (part.getPresentationName().equals(tire)) {
                 frontTire.add(part);
             }
         }
