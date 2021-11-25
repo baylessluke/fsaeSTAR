@@ -29,6 +29,7 @@ public class RTSteering {
         this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
         this.wrap(frontLeft, frontRight);
         this.mesh();
+        this.getReportValue();
 
     }
 
