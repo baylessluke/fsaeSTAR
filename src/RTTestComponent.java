@@ -43,9 +43,6 @@ public class RTTestComponent {
     // Part collections
     public Collection<GeometryPart> cfdParts = new ArrayList<>();
     public Collection<GeometryPart> aeroParts = new ArrayList<>();
-    public Collection<GeometryPart> chaParts = new ArrayList<>();
-    public Collection<GeometryPart> susParts = new ArrayList<>();
-    public Collection<GeometryPart> powParts = new ArrayList<>();
     public Collection<GeometryPart> tireParts = new ArrayList<>();
     public Collection<GeometryPart> fwParts = new ArrayList<>();
     public Collection<GeometryPart> rwParts = new ArrayList<>();
@@ -94,25 +91,13 @@ public class RTTestComponent {
 
         Collection<GeometryPart> geomParts = sim.getGeometryPartManager().getParts(); // get all parents
 
-        // sort CFD, tire, aero, chassis, and suspension parts
+        // sort CFD, tire, and aero parts
         for (GeometryPart parent:geomParts) {
             if (parent.getPresentationName().contains("CFD_")) {
                 cfdParts.addAll(parent.getLeafParts());
 
                 if (parent.getPresentationName().equals("CFD_AERODYNAMICS_830250079")) {
                     aeroParts.addAll(parent.getLeafParts());
-                }
-
-                if (parent.getPresentationName().equals("CFD_CHASSIS")) {
-                    chaParts.addAll(parent.getLeafParts());
-                }
-
-                if (parent.getPresentationName().equals("CFD_SUSPENSION")) {
-                    susParts.addAll(parent.getLeafParts());
-                }
-
-                if (parent.getPresentationName().equals("CFD_POWERTRAIN")) {
-                    powParts.addAll(parent.getLeafParts());
                 }
             } else if (parent.getPresentationName().equals("Front Left") || parent.getPresentationName().equals("Front Right") || parent.getPresentationName().equals("Rear Left") || parent.getPresentationName().equals("Rear Right"))
                 tireParts.addAll(parent.getLeafParts());
@@ -187,4 +172,5 @@ public class RTTestComponent {
         }
 
     }
+
 }

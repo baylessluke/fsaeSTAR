@@ -1,6 +1,6 @@
 /**
  * Geometry prep run sequence:
- * 1. RTSurfaceWrap
+ * 1. RTRideHeight
  * 2. RTSteering
  */
 
