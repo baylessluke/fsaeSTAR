@@ -14,7 +14,7 @@ import java.util.Collections;
 
 public class RTSteering {
 
-    private RTTestComponent rt;
+    private final RTTestComponent rt;
     private final String FRONT_TIRE_REGION_NAME = "Front Tires Region";
 
     public RTSteering(RTTestComponent rt) {
@@ -24,10 +24,10 @@ public class RTSteering {
         Collection<GeometryPart> frontRight = getFrontTireParts("Front Right");
         double steeringAngle = -30 * (Math.PI / 180);
 
-        //this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
-        //this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
-        //this.wrap(frontLeft, frontRight);
-        //this.mesh();
+        this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
+        this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
+        this.wrap(frontLeft, frontRight);
+        this.mesh();
         this.getReportValue();
 
     }
@@ -109,7 +109,7 @@ public class RTSteering {
 
         // create stuff needed later
         VolumeIntegralReport report = (VolumeIntegralReport) rt.sim.getReportManager().getReport("Volume Integral of Centroid X");
-        VectorComponentFieldFunction centroidX = (VectorComponentFieldFunction) ((PrimitiveFieldFunction) rt.sim.getFieldFunctionManager().getFunction("Centroid")).getComponentFunction(0);
+        VectorComponentFieldFunction centroidX = (VectorComponentFieldFunction) rt.sim.getFieldFunctionManager().getFunction("Centroid").getComponentFunction(0);
 
         // set up report
         report.setFieldFunction(centroidX);
@@ -119,10 +119,7 @@ public class RTSteering {
 
         // get report value and print result
         double reportValue = report.getValue();
-        if (rt.numericalCompare(reportValue, steeringExpected, 0.01))
-           rt.printTestResults(true, steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
-        else
-            rt.printTestResults(false, steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
+        rt.printTestResults(rt.numericalCompare(reportValue, steeringExpected, 0.01), steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
     }
 
 }
