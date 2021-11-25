@@ -72,7 +72,10 @@ public class PostProc extends StarMacro {
         postProc2D(sim, meshDisplayers, profileViews, sim.profileLimits, 1, 0.1, sim.meshScene);
 
         if (sim.activeSim.getSimulationIterator().getCurrentIteration() < 10)
+        {
+            sim.activeSim.println("Current number of iterations is only " + sim.activeSim.getSimulationIterator().getCurrentIteration());
             return;
+        }
 
         sim.activeSim.println("---Processing 3D---");
         postProc3D(sim, displayers3D, views3D);
