@@ -14,7 +14,7 @@ public class RTTestController extends StarMacro {
 
         rt = new RTTestComponent(getActiveSimulation());
 
-        new RTSteering(rt);
+        new RTRideHeight(rt);
 
     }
 
