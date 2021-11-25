@@ -171,4 +171,20 @@ public class RTTestComponent {
         output.append("Result: ").append(result).append(" | Expected: ").append(expected);
         sim.println(output);
     }
+
+    /**
+     * Compare two numbers to see if they are equal given a safety factor. The safety factor is placed on the b value.
+     */
+    public boolean numericalCompare(double a, double b, double safetyFactor) {
+
+        double upper = b * (1 + safetyFactor);
+        double lower = b * (1 - safetyFactor);
+
+        if (b >= 0) {
+            return upper > a && lower < a;
+        } else {
+            return upper < a && lower > a;
+        }
+
+    }
 }
