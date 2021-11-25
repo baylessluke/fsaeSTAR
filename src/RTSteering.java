@@ -25,11 +25,11 @@ public class RTSteering {
         Collection<GeometryPart> frontRight = getFrontTireParts("Front Right");
         double steeringAngle = -30 * (Math.PI / 180);
 
-        // this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
-        // this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
+        this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
+        this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
         this.wrap(frontLeft, frontRight);
-        // this.mesh();
-        // this.getReportValue();
+        this.mesh();
+        this.getReportValue();
 
     }
 
@@ -61,7 +61,6 @@ public class RTSteering {
      */
     private void wrap(Collection<GeometryPart> frontLeft, Collection<GeometryPart> frontRight) {
 
-        /*
         // merge two lists into one
         Collection<GeometryPart> frontTires = new ArrayList<>();
         frontTires.addAll(frontLeft);
@@ -74,13 +73,11 @@ public class RTSteering {
         // wrap it
         wrapper.execute();
 
-*/
         // delete the existing front wheels region if it exists
         Collection<Region> regions = rt.sim.getRegionManager().getRegions();
         for (Region region:regions) {
             if (region.getPresentationName().contains(FRONT_TIRE_REGION_NAME)) {
                 rt.sim.getRegionManager().removeRegion(region);
-                break;
             }
         }
 
