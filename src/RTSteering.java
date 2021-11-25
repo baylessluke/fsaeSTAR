@@ -74,15 +74,16 @@ public class RTSteering {
         // wrap it
         wrapper.execute();
 
+*/
         // delete the existing front wheels region if it exists
         Collection<Region> regions = rt.sim.getRegionManager().getRegions();
         for (Region region:regions) {
-            if (region.getPresentationName().equals(FRONT_TIRE_REGION_NAME)) {
+            if (region.getPresentationName().contains(FRONT_TIRE_REGION_NAME)) {
                 rt.sim.getRegionManager().removeRegion(region);
                 break;
             }
         }
-         */
+
         // make the region
         MeshOperationPart wrapperPart = (MeshOperationPart) rt.sim.get(SimulationPartManager.class).getPart(rt.SURFACE_WRAPPER_NAME);
         Region frontWheelRegion = rt.sim.getRegionManager().createEmptyRegion();
