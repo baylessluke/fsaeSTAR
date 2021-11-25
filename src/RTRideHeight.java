@@ -37,7 +37,7 @@ public class RTRideHeight {
         this.rt = rt;
 
         this.initReports();
-        this.setReportPartToTire();
+        this.setReportPartToCFD();
     }
 
     /**
