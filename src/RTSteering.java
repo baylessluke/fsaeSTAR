@@ -25,11 +25,11 @@ public class RTSteering {
         Collection<GeometryPart> frontRight = getFrontTireParts("Front Right");
         double steeringAngle = -30 * (Math.PI / 180);
 
-        this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
-        this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
+        // this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
+        // this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
         this.wrap(frontLeft, frontRight);
-        this.mesh();
-        this.getReportValue();
+        // this.mesh();
+        // this.getReportValue();
 
     }
 
@@ -61,6 +61,7 @@ public class RTSteering {
      */
     private void wrap(Collection<GeometryPart> frontLeft, Collection<GeometryPart> frontRight) {
 
+        /*
         // merge two lists into one
         Collection<GeometryPart> frontTires = new ArrayList<>();
         frontTires.addAll(frontLeft);
@@ -81,10 +82,12 @@ public class RTSteering {
                 break;
             }
         }
-
+         */
         // make the region
         MeshOperationPart wrapperPart = (MeshOperationPart) rt.sim.get(SimulationPartManager.class).getPart(rt.SURFACE_WRAPPER_NAME);
-        rt.sim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[] {wrapperPart}), "OneRegion", null, "OneBoundaryPerPart", null, "OneFeatureCurve", null, false);
+        Region frontWheelRegion = rt.sim.getRegionManager().createEmptyRegion();
+        frontWheelRegion.setPresentationName(FRONT_TIRE_REGION_NAME);
+        rt.sim.getRegionManager().newRegionsFromParts(new NeoObjectVector(new Object[] {wrapperPart}), "OneRegion", frontWheelRegion, "OneBoundaryPerPart", null, "OneFeatureCurve", null, false);
     }
 
     /**
