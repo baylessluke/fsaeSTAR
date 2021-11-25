@@ -38,7 +38,6 @@ public class run extends StarMacro {
         activeSim.maxStepStop.setIsUsed(false); //using time only for now
         activeSim.setFreestreamParameterValue();
         activeSim.abortFile.setAbortFilePath(activeSim.dir + File.separator + SimComponents.valEnvString("SLURM_JOB_ID"));
-        activeSim.activeSim.getSimulationIterator().step(1);
         MonitorIterationStoppingCriterionMaxLimitType timeStopLimit = (MonitorIterationStoppingCriterionMaxLimitType) activeSim.maxTime.getCriterionType();
         String clusterName = Objects.requireNonNull(SimComponents.valEnvString("CLUSTER"), "Can't recognize cluster from linuxConfig!");
         if (clusterName.equals("scholar") || clusterName.equals("gpu"))
@@ -56,6 +55,7 @@ public class run extends StarMacro {
             throw new IllegalArgumentException("Can't figure out what cluster this is running on!");
         }
         activeSim.maxTime.setIsUsed(true);
+        activeSim.activeSim.getSimulationIterator().step(1);
     }
 
     //There's some recursion in here.
