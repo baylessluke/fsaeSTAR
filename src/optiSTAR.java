@@ -70,14 +70,14 @@ public class optiSTAR extends StarMacro {
                 0,      //GROUND_CLEARANCE
         };
 
-        double temperature = 4;
-        double[] best_ever_x_arr = new double[initial_guess.length];
+        double temperature = 6;
+        double[] best_ever_x_arr = initial_guess.clone();
         double best_lift = 0;
         double new_lift = 0;
         int convergence_counter = 0;
         int f_eval = 0;
         boolean converged = false;
-        double cooling_rate = 0.8;
+        double cooling_rate = 0.83;
 
         while (f_eval < max_fevals && !converged) {
             activeSim.println("----STARTING OPTIMIZATION----");
