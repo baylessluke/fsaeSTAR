@@ -152,49 +152,49 @@ public class RTRideHeight {
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeRadCSLoc, expNewRadCSLoc, 0.01),
-                    "Tire Part Centroid",
+                    "Radiator Cartesian Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeRadCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewRadCSLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSLoc, expNewDualRadCSLoc, 0.01),
-                    "Tire Part Centroid",
+                    "Dual Radiator Cartesian Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeDualRadCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewDualRadCSLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeFanCSLoc, expNewFanLoc, 0.01),
-                    "Tire Part Centroid",
+                    "Fan Cylindrical Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeFanCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewFanLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSLoc, expNewDualFanLoc, 0.01),
-                    "Tire Part Centroid",
+                    "Dual Fan Cylindrical Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeDualFanCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewDualFanLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewDualRadCSDir, 0.01),
-                    "Tire Part Centroid",
+                    "Radiator Cartesian Direction",
                     RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualRadCSDir),
                     RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewFanDirCSDir, 0.01),
-                    "Tire Part Centroid",
+                    "Dual Radiator Cartesian Direction",
                     RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualRadCSDir),
                     RTTestComponent.buildResultStringFromArray("X-Axis:", expNewFanDirCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeFanCSDir, expNewRadCSDir, 0.01),
-                    "Tire Part Centroid",
+                    "Fan Cylindrical Direction",
                     RTTestComponent.buildResultStringFromArray("R-Axis:", postChangeFanCSDir),
                     RTTestComponent.buildResultStringFromArray("R-Axis:", expNewRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanDirCSDir, 0.01),
-                    "Tire Part Centroid",
+                    "Dual Fan Cylindrical Direction",
                     RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualFanCSDir),
                     RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualFanDirCSDir)
             );
