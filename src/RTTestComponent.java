@@ -304,7 +304,7 @@ public class RTTestComponent {
      * Change meters to inches
      */
     public static double meterToInch(double meter) {
-        return meter / 25.4;
+        return meter * 39.37;
     }
 
 }
