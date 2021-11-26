@@ -211,6 +211,7 @@ public class Regions extends StarMacro {
         if (activeSim.corneringFlag) {
             setDomainBoundaries_Cornering(activeSim);
             setRegionReferenceFrames(activeSim, activeSim.rotatingFrame);
+            activeSim.rotatingFrame.getTranslationVelocity().setConstant(new double[] {0, 0, 0});
             return;
         }
 
