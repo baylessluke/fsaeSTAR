@@ -1,7 +1,4 @@
 /**
- * Geometry prep run sequence:
- * 1. RTRideHeight
- * 2. RTSteering
  */
 
 import star.common.StarMacro;
@@ -14,7 +11,9 @@ public class RTTestController extends StarMacro {
 
         rt = new RTTestComponent(getActiveSimulation());
 
-        new RTRideHeight(rt);
+        RTRideHeight rtRideHeight = new RTRideHeight(rt);
+        rtRideHeight.preChange();
+
 
     }
 

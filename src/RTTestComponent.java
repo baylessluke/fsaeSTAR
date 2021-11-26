@@ -27,12 +27,22 @@ public class RTTestComponent {
     public final String SURFACE_WRAPPER_NAME = "Surface wrapper";
     public final String FRONT_WHEEL_CYLINDRICAL_NAME = "Front Wheel Cylindrical";
     public final String FRONT_WHEEL_STEERING_NAME = "Front Wheel Steering";
+    public final String REAR_WHEEL_CYLINDRICAL_NAME = "Rear Wheel Cylindrical";
     public final String AUTO_MESH_NAME = "Automated Mesh";
     public final String LATEST_SRF_VOL_NAME = "Latest Surface/Volume";
+    public final String RAD_CS_NAME = "Radiator Cartesian";
+    public final String DUAL_RAD_CS_NAME = "Dual Radiator Cartesian";
+    public final String FAN_CS_NAME = "Fan Cylindrical";
+    public final String DUAL_FAN_CS_NAME = "Dual Fan Cylindrical";
 
     // Coordinate systems
     public CylindricalCoordinateSystem frontWheelCylindrical; // Coordinate system used for both tire rotation and front left steering
     public CylindricalCoordinateSystem frontWheelSteering; // Used for front right steering, thanks for raunaq for the confusing naming convention
+    public CylindricalCoordinateSystem rearWheelCylindrical; // rear wheel cylindrical
+    public CartesianCoordinateSystem radCartesian;
+    public CartesianCoordinateSystem dualRadCartesian;
+    public CylindricalCoordinateSystem fanCylindrical;
+    public CylindricalCoordinateSystem dualFanCylindrical;
 
     // units
     public Units unitless;
@@ -49,6 +59,9 @@ public class RTTestComponent {
     public Collection<GeometryPart> swParts = new ArrayList<>();
     public Collection<GeometryPart> utParts = new ArrayList<>();
     public Collection<GeometryPart> nsParts = new ArrayList<>();
+
+    // vehicle dimensions
+    public final int WHEEL_BASE = 61; // inches
 
     // initialization
 
@@ -129,6 +142,11 @@ public class RTTestComponent {
         // coordinate system
         this.frontWheelCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FRONT_WHEEL_CYLINDRICAL_NAME);
         this.frontWheelSteering = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FRONT_WHEEL_STEERING_NAME);
+        this.rearWheelCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(REAR_WHEEL_CYLINDRICAL_NAME);
+        this.radCartesian = (CartesianCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(RAD_CS_NAME);
+        this.dualRadCartesian = (CartesianCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(DUAL_RAD_CS_NAME);
+        this.fanCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FAN_CS_NAME);
+        this.dualFanCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(DUAL_FAN_CS_NAME);
 
         // units
         this.unitless = sim.getUnitsManager().getObject("");
@@ -160,7 +178,7 @@ public class RTTestComponent {
     /**
      * Compare two numbers to see if they are equal given a safety factor. The safety factor is placed on the b value.
      */
-    public boolean numericalCompare(double a, double b, double safetyFactor) {
+    public static boolean numericalCompare(double a, double b, double safetyFactor) {
 
         double upper = b * (1 + safetyFactor);
         double lower = b * (1 - safetyFactor);
@@ -176,13 +194,44 @@ public class RTTestComponent {
     /**
      * Get all the surfaces under all parts in a part group (e.g. cfdParts)
      */
-    public Collection<PartSurface> getAllSurfacesByPartGroup(Collection<GeometryPart> partGroup) {
+    public static Collection<PartSurface> getAllSurfacesByPartGroup(Collection<GeometryPart> partGroup) {
 
         Collection<PartSurface> surfaces = new ArrayList<>();
         for (GeometryPart part:partGroup) {
             surfaces.addAll(part.getPartSurfaces());
         }
         return surfaces;
+
+    }
+
+    /**
+     * Get the origin of the location of a coordinate system in inches
+     */
+    public static double[] getCSLocation(CoordinateSystem cs) {
+
+        double[] origin = new double[3];
+        for (int i = 0; i < 3; i++)
+            origin[i] = cs.getOriginVector().getComponent(i);
+        return origin;
+
+    }
+
+    /**
+     * Get the x direction of cartesian coordinate or the r direction of cylindrical direction
+     */
+    public static double[] getCSDirection(CoordinateSystem cs, boolean isCartesian) {
+
+        double[] direction = new double[3];
+        if (isCartesian) {
+            CartesianCoordinateSystem cartesian = (CartesianCoordinateSystem) cs;
+            for (int i = 0; i < 3; i++)
+                direction[i] = cartesian.getBasis0().getComponent(i);
+        } else {
+            CylindricalCoordinateSystem cylindrical = (CylindricalCoordinateSystem) cs;
+            for (int i = 0; i < 3; i++)
+                direction[i] = cylindrical.getBasis0().getComponent(i);
+        }
+        return direction;
 
     }
 

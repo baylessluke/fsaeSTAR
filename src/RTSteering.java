@@ -1,3 +1,8 @@
+/**
+ * Check steering angle with the volume integral of centroid in the x direction. This class ONLY checks if the tires
+ * are turned -30 degrees. The test would fail at any other angle.
+ */
+
 import star.base.neo.DoubleVector;
 import star.base.neo.NeoObjectVector;
 import star.base.report.VolumeIntegralReport;
@@ -22,10 +27,12 @@ public class RTSteering {
         this.rt = rt;
         Collection<GeometryPart> frontLeft = getFrontTireParts("Front Left");
         Collection<GeometryPart> frontRight = getFrontTireParts("Front Right");
-        double steeringAngle = -30 * (Math.PI / 180);
 
-        this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
-        this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
+        // debug stuff
+        // double steeringAngle = -30 * (Math.PI / 180);
+        // this.rotate(frontLeft, rt.frontWheelCylindrical, steeringAngle);
+        // this.rotate(frontRight, rt.frontWheelSteering, steeringAngle);
+
         this.wrap(frontLeft, frontRight);
         this.mesh();
         this.getReportValue();
@@ -119,7 +126,7 @@ public class RTSteering {
 
         // get report value and print result
         double reportValue = report.getValue();
-        rt.printTestResults(rt.numericalCompare(reportValue, steeringExpected, 0.01), steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
+        rt.printTestResults(RTTestComponent.numericalCompare(reportValue, steeringExpected, 0.01), steeringName, Double.toString(reportValue), Double.toString(steeringExpected));
     }
 
 }
