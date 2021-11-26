@@ -234,7 +234,7 @@ public class RTTestComponent {
 
         double[] origin = new double[3];
         for (int i = 0; i < 3; i++)
-            origin[i] = cs.getOriginVector().getComponent(i);
+            origin[i] = meterToInch(cs.getOriginVector().getComponent(i));
         return origin;
 
     }
@@ -298,6 +298,13 @@ public class RTTestComponent {
      */
     public static String buildResultStringFromArray(String prefix, double[] array) {
         return buildResultStringFromArray(prefix, array, "");
+    }
+
+    /**
+     * Change meters to inches
+     */
+    public static double meterToInch(double meter) {
+        return meter / 25.4;
     }
 
 }
