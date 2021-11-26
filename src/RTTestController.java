@@ -13,7 +13,7 @@ public class RTTestController extends StarMacro {
 
         RTRideHeight rtRideHeight = new RTRideHeight(rt);
         rtRideHeight.preChange();
-
+        rtRideHeight.postChange(-1, -1);
 
     }
 
