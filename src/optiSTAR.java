@@ -114,6 +114,8 @@ public class optiSTAR extends StarMacro {
                 activeSim.println(v);
             if (check_convergence(new_lift, best_lift))
                 convergence_counter = convergence_counter + 1;
+            else
+                convergence_counter = 0;
             if (convergence_counter >= CONV_TRIGS)
                 converged = true;
             temperature = temperature * cooling_rate;
