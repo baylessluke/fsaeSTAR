@@ -177,6 +177,9 @@ public class RTTestComponent {
 
     /**
      * Compare two numbers to see if they are equal given a safety factor. The safety factor is placed on the b value.
+     * @param a actual value
+     * @param b expected value
+     * @param safetyFactor safety factor NOT in percentage
      */
     public static boolean numericalCompare(double a, double b, double safetyFactor) {
 
@@ -188,6 +191,26 @@ public class RTTestComponent {
         } else {
             return upper < a && lower > a;
         }
+
+    }
+
+    /**
+     * Compare two lists with a safety factor applied on b
+     * @param a actual value
+     * @param b expected value
+     * @param safetyFactor
+     */
+    public static boolean numericalCompare(double[] a, double[] b, double safetyFactor) throws Exception {
+
+        if (a.length != b.length)
+            throw new Exception("Numerical compare failed! The size of two arrays are different");
+
+        for (int i = 0; i < a.length; i++) {
+            if (!numericalCompare(a[i], b[i], safetyFactor))
+                return false;
+        }
+
+        return true;
 
     }
 
@@ -233,6 +256,48 @@ public class RTTestComponent {
         }
         return direction;
 
+    }
+
+    /**
+     * Build the result output string from an array
+     * @param prefix String that comes before the array
+     * @param array gee, I wonder what it means
+     * @param postfix the String that comes after the array
+     * @return result output string
+     */
+    public static String buildResultStringFromArray(String prefix, double[] array, String postfix) {
+
+        StringBuilder output = new StringBuilder();
+        output.append(prefix);
+        output.append(" [");
+        for (int i = 0; i < array.length; i++)
+            output.append(String.format("%.5f", array[i])).append(" ,");
+        output.delete(output.length() - 2, output.length());
+        output.append("] ");
+        output.append(postfix);
+
+        return output.toString();
+
+    }
+
+    /**
+     * Build the result output string from an array
+     * @param array gee, I wonder what it means
+     * @param postfix the String that comes after the array
+     * @return result output string
+     */
+    public static String buildResultStringFromArray(double[] array, String postfix) {
+        return buildResultStringFromArray("", array, postfix);
+    }
+
+    /**
+     * Build the result output string from an array
+     * @param prefix String that comes before the array
+     * @param array gee, I wonder what it means
+     * @return result output string
+     */
+    public static String buildResultStringFromArray(String prefix, double[] array) {
+        return buildResultStringFromArray(prefix, array, "");
     }
 
 }

@@ -116,6 +116,92 @@ public class RTRideHeight {
         double[] expNewFanLoc = this.newLocation(frhOffset, rrhOffset, preChangeFanCSLoc);
         double[] expNewDualFanLoc = this.newLocation(frhOffset, rrhOffset, preChangeDualFanCSLoc);
 
+        // find the new direction of coordinate system axes
+        double[] expNewRadCSDir = this.newCSDirection(preChangeRadCSDir, frhOffset, rrhOffset);
+        double[] expNewDualRadCSDir = this.newCSDirection(preChangeDualRadCSDir, frhOffset, rrhOffset);
+        double[] expNewFanDirCSDir = this.newCSDirection(preChangeFanCSDir, frhOffset, rrhOffset);
+        double[] expNewDualFanDirCSDir = this.newCSDirection(preChangeDualFanCSDir, frhOffset, rrhOffset);
+
+        // get the actual new locations
+        setReportPartToCFD();
+        postChangeCFDCentroid = this.getCentroid();
+        setReportPartToTire();
+        postChangeTireCentroid = this.getCentroid();
+        postChangeRadCSLoc = RTTestComponent.getCSLocation(rt.radCartesian);
+        postChangeDualRadCSLoc = RTTestComponent.getCSLocation(rt.dualRadCartesian);
+        postChangeFanCSLoc = RTTestComponent.getCSLocation(rt.fanCylindrical);
+        postChangeDualFanCSLoc = RTTestComponent.getCSLocation(rt.dualFanCylindrical);
+        postChangeRadCSDir = RTTestComponent.getCSDirection(rt.radCartesian, true);
+        postChangeDualRadCSDir = RTTestComponent.getCSDirection(rt.dualRadCartesian, true);
+        postChangeFanCSDir = RTTestComponent.getCSDirection(rt.fanCylindrical, false);
+        postChangeDualFanCSDir = RTTestComponent.getCSDirection(rt.dualFanCylindrical, false);
+
+        // print the results
+        try {
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeCFDCentroid, expNewCFDCentroid, 0.01),
+                    "CFD Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeCFDCentroid, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewCFDCentroid, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeTireCentroid, expNewTireCentroid, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeTireCentroid, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewTireCentroid, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeRadCSLoc, expNewRadCSLoc, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeRadCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewRadCSLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualRadCSLoc, expNewDualRadCSLoc, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeDualRadCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewDualRadCSLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeFanCSLoc, expNewFanLoc, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeFanCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewFanLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualFanCSLoc, expNewDualFanLoc, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeDualFanCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewDualFanLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewDualRadCSDir, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualRadCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewFanDirCSDir, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewFanDirCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeFanCSDir, expNewRadCSDir, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", postChangeFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", expNewRadCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanDirCSDir, 0.01),
+                    "Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualFanDirCSDir)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -173,8 +259,8 @@ public class RTRideHeight {
             newLoc[2] = originalLoc[2] - frhOffset;
         } else {
 
-            double frontAngle = this.getRotationAngle(rt.frontWheelCylindrical, rrhOffset);
-            double rearAngle = this.getRotationAngle(rt.rearWheelCylindrical, frhOffset);
+            double frontAngle = this.getRotationAngle(rrhOffset);
+            double rearAngle = this.getRotationAngle(frhOffset);
             double[] frontDelta = this.getRotationDeltaAboutCS(rt.frontWheelCylindrical, originalLoc, frontAngle);
             double[] rearDelta = this.getRotationDeltaAboutCS(rt.rearWheelCylindrical, originalLoc, rearAngle);
             // superposition of front delta and rear delta to get the new delta
@@ -188,11 +274,10 @@ public class RTRideHeight {
 
     /**
      * Get the angle the vehicle rotated through in radians
-     * @param cs the coordinate system the car rotated about
      * @param rhOffset the ride height offset corresponding to this change
      * @return angle in radians
      */
-    private double getRotationAngle(CylindricalCoordinateSystem cs, double rhOffset) {
+    private double getRotationAngle(double rhOffset) {
 
         double angle = Math.atan(rhOffset / rt.WHEEL_BASE);
         return angle;
@@ -238,30 +323,29 @@ public class RTRideHeight {
     }
 
     /**
-     * Find the expected delta of coordinate system given an angle of rotation
-     * @param originalCSDir the original direction of x-axis of cartesian coordinate system or the original direction
-     *                      of r-axis of cylindrical coordinate system
-     * @param rotation the angle the coordinate system rotated through in vehicle center plane in radians
-     * @return the new x-axis or r-axis direction
+     * Find the new direction of the coordinate system after RH change
+     * @param originalCSDir coordinate system
+     * @param frh Front RH delta
+     * @param rrh Rear RH delta
+     * @return new direction of the coordinate system
      */
-    private double[] newCSDirectionDelta(double[] originalCSDir, double rotation) {
+    private double[] newCSDirection(double[] originalCSDir, double frh, double rrh) {
 
-        // find the original direction in terms of angle in the car center plane
-        double originalDir = Math.atan(originalCSDir[1] / originalCSDir[0]);
+        // rotations angles due to RH change
+        double frontRHRotation = this.getRotationAngle(frh);
+        double rearRHRotation = this.getRotationAngle(rrh);
 
-        // new direction in terms of angle in the car's center plane
-        double newDirAngle = originalDir + rotation;
+        // changes to the coordinate system direction
+        double originalDirAngle = Math.atan(originalCSDir[1] / originalCSDir[0]);
+        double newDirAngle = originalDirAngle + frontRHRotation + rearRHRotation;
 
-        // find the delta
-        double newX = Math.cos(newDirAngle);
-        double newY = Math.sin(newDirAngle);
-        double[] newDelta = new double[3];
-        newDelta[0] = newX;
-        newDelta[1] = newY;
-        newDelta[2] = 0;
+        // find the vector in the car center plane
+        double[] newDir = new double[3];
+        newDir[0] = Math.cos(newDirAngle);
+        newDir[1] = originalCSDir[1];
+        newDir[2] = Math.sin(newDirAngle);
 
-        return newDelta;
-
+        return newDir;
 
     }
 
