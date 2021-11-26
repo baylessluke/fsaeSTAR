@@ -195,8 +195,8 @@ public class RTRideHeight {
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanDirCSDir, 0.01),
                     "Dual Fan Cylindrical Direction",
-                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualFanCSDir),
-                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualFanDirCSDir)
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", postChangeDualFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", expNewDualFanDirCSDir)
             );
         } catch (Exception e) {
             e.printStackTrace();
