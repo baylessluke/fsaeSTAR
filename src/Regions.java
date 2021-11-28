@@ -281,6 +281,7 @@ public class Regions extends StarMacro {
 
             if (activeSim.corneringFlag)
             {
+                setDomainBoundaries_Cornering(activeSim);
                 activeSim.activeSim.println("Crosswind in a cornering case? Not allowed!");
                 return;
             }
