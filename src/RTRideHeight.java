@@ -315,7 +315,7 @@ public class RTRideHeight {
         // angle formed by the point's original location, coordinate system location, and the horizontal direction
         double opposite = originalLoc[2] - csLoc[2];
         double adjacent = originalLoc[0] - csLoc[0];
-        double pOGCSh = Math.atan(opposite / adjacent);
+        double pOGCSh = Math.abs(Math.atan(opposite / adjacent));
         rt.sim.println("pOGCSh: " + Math.toDegrees(pOGCSh));
 
         // angle formed by the point's new location, coordinate system location, and the horizontal direction
