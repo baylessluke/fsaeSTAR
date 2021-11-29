@@ -271,7 +271,7 @@ public class RTTestComponent {
         output.append(prefix);
         output.append(" [");
         for (int i = 0; i < array.length; i++)
-            output.append(String.format("%.5f", array[i])).append(" ,");
+            output.append(String.format("%.5f", array[i])).append(", ");
         output.delete(output.length() - 2, output.length());
         output.append("] ");
         output.append(postfix);
