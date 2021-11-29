@@ -351,7 +351,7 @@ public class RTRideHeight {
 
         // rotations angles due to RH change
         double frontRHRotation = this.getRotationAngle(rrh);
-        double rearRHRotation = this.getRotationAngle(frh);
+        double rearRHRotation = -this.getRotationAngle(frh);
         rt.sim.println("Front rotation: " + Math.toDegrees(frontRHRotation));
         rt.sim.println("Rear rotation: " + Math.toDegrees(rearRHRotation));
 
