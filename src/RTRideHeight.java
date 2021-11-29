@@ -350,13 +350,13 @@ public class RTRideHeight {
     private double[] newCSDirection(double[] originalCSDir, double frh, double rrh) {
 
         // rotations angles due to RH change
-        double frontRHRotation = this.getRotationAngle(frh);
-        double rearRHRotation = this.getRotationAngle(rrh);
+        double frontRHRotation = this.getRotationAngle(rrh);
+        double rearRHRotation = this.getRotationAngle(frh);
         rt.sim.println("Front rotation: " + Math.toDegrees(frontRHRotation));
         rt.sim.println("Rear rotation: " + Math.toDegrees(rearRHRotation));
 
         // changes to the coordinate system direction
-        double originalDirAngle = Math.atan(originalCSDir[1] / originalCSDir[0]);
+        double originalDirAngle = Math.atan(originalCSDir[2] / originalCSDir[0]);
         double newDirAngle = originalDirAngle + frontRHRotation + rearRHRotation;
         rt.sim.println("Original angle: " + Math.toDegrees(originalDirAngle));
         rt.sim.println("New angle: " + Math.toDegrees(newDirAngle));
