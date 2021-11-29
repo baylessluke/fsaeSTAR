@@ -4,11 +4,15 @@
  * systems. After RH change, another set of data is read. The two sets of data are compared to get a delta. If the delta
  * matches the calculated delta, it passes the test.
  */
+import star.base.neo.DoubleVector;
+import star.base.neo.NeoObjectVector;
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
 import star.common.*;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class RTRideHeight {
 
@@ -365,6 +369,35 @@ public class RTRideHeight {
 
         return newDir;
 
+    }
+
+    // testing
+
+    private void rotateAboutAxis(SimComponents sim, double rotationAngle, CylindricalCoordinateSystem coordSys)
+    {
+        rotateParts(sim, sim.aeroParts, coordSys, rotationAngle);
+        rotateParts(sim, sim.nonAeroParts, coordSys, rotationAngle);
+        rotateCoord(sim, sim.radiatorCoord, coordSys, rotationAngle);
+        rotateCoord(sim, sim.fanAxis, coordSys, rotationAngle);
+        if (sim.dualRadFlag)
+            rotateCoord(sim, sim.dualRadCoord, coordSys, rotationAngle);
+        if (sim.dualFanFlag)
+            rotateCoord(sim, sim.dualFanAxis, coordSys, rotationAngle);
+    }
+
+    private void rotateParts(SimComponents activeSim, Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        activeSim.activeSim.get(SimulationPartManager.class).rotateParts(parts,
+                new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(activeSim.noUnit, activeSim.noUnit, activeSim.noUnit), rotationAngle, rotationPoint);
+    }
+
+    private void rotateCoord(SimComponents activeSim, CoordinateSystem coord, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        coord.getLocalCoordinateSystemManager().
+                rotateLocalCoordinateSystems(Collections.singletonList(coord),
+                        new DoubleVector(new double[] {0, 0, 1}),
+                        new NeoObjectVector(new Units[]{activeSim.noUnit,
+                                activeSim.noUnit, activeSim.noUnit}), rotationAngle, rotationPoint);
     }
 
 }
