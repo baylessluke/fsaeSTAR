@@ -90,7 +90,7 @@ public class RTRideHeight {
         double rrhOffset = 0;
 
         double[] origLoc = {-6.97, -19.999, 13.49};
-        double[] temp = getRotationDeltaAboutCS(rt.frontWheelCylindrical, origLoc, -0.01745);
+        double[] temp = getRotationDeltaAboutCS(rt.rearWheelCylindrical, origLoc, -0.01745);
         for (int i = 0; i < 3; i++) {
             rt.sim.println(temp[i]);
         }
