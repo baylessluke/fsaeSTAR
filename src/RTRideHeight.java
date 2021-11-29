@@ -89,8 +89,8 @@ public class RTRideHeight {
         double frhOffset = -1;
         double rrhOffset = 0;
 
-        double[] origLoc = {-6.97, -19.999, 13.49};
-        double[] temp = getRotationDeltaAboutCS(rt.rearWheelCylindrical, origLoc, -0.01745);
+        double[] dir = RTTestComponent.getCSDirection(rt.radCartesian, true);
+        double[] temp = this.newCSDirection(dir, frhOffset,rrhOffset);
         for (int i = 0; i < 3; i++) {
             rt.sim.println(temp[i]);
         }
@@ -352,16 +352,23 @@ public class RTRideHeight {
         // rotations angles due to RH change
         double frontRHRotation = this.getRotationAngle(frh);
         double rearRHRotation = this.getRotationAngle(rrh);
+        rt.sim.println("Front rotation: " + frontRHRotation);
+        rt.sim.println("Rear rotation: " + rearRHRotation);
 
         // changes to the coordinate system direction
         double originalDirAngle = Math.atan(originalCSDir[1] / originalCSDir[0]);
         double newDirAngle = originalDirAngle + frontRHRotation + rearRHRotation;
+        rt.sim.println("Original angle: " + originalDirAngle);
+        rt.sim.println("New angle: " + newDirAngle);
 
         // find the vector in the car center plane
         double[] newDir = new double[3];
         newDir[0] = Math.cos(newDirAngle);
         newDir[1] = originalCSDir[1];
         newDir[2] = Math.sin(newDirAngle);
+        rt.sim.println("newDir[0]: " + newDir[0]);
+        rt.sim.println("newDir[1]: " + newDir[0]);
+        rt.sim.println("newDir[2]: " + newDir[0]);
 
         return newDir;
 
