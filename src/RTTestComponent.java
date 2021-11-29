@@ -240,7 +240,7 @@ public class RTTestComponent {
     }
 
     /**
-     * Get the x direction of cartesian coordinate or the z direction of cylindrical direction
+     * Get the y direction of cartesian coordinate or the z direction of cylindrical direction
      */
     public static double[] getCSDirection(CoordinateSystem cs, boolean isCartesian) {
 
