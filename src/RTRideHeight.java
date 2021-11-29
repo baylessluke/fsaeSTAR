@@ -338,6 +338,8 @@ public class RTRideHeight {
         // get the delta
         double[] delta = new double[3];
         delta[0] = newLoc[0] - Math.abs(originalLoc[0]);
+        if (originalLoc[0] < 0)
+            delta[0] = -delta[0];
         delta[1] = 0;
         delta[2] = newLoc[2] - originalLoc[2];
 
