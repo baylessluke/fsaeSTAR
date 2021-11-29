@@ -302,6 +302,7 @@ public class optiSTAR extends StarMacro {
         StepStoppingCriterion maxStepCrit =
                 ((StepStoppingCriterion) sim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Maximum Steps"));
         maxStepCrit.getMaximumNumberStepsObject().getQuantity().setValue(new_max_iter);
+        sim.getSolution().clearSolution(Solution.Clear.Mesh, Solution.Clear.Fields);
         sim.getSimulationIterator().run();
     }
 
