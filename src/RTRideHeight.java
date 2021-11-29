@@ -82,6 +82,22 @@ public class RTRideHeight {
     // Execution
 
     /**
+     * Temporary debug method
+     */
+    public void debug() {
+
+        double frhOffset = -1;
+        double rrhOffset = 0;
+
+        double[] origLoc = {0, 0, 10};
+        double[] temp = getRotationDeltaAboutCS(rt.rearWheelCylindrical, origLoc, -0.01745);
+        for (int i = 0; i < 3; i++) {
+            rt.sim.println(temp[i]);
+        }
+
+    }
+
+    /**
      * Get the numbers before RH changes
      */
     public void preChange() {
@@ -263,10 +279,6 @@ public class RTRideHeight {
             double rearAngle = this.getRotationAngle(frhOffset);
             double[] frontDelta = this.getRotationDeltaAboutCS(rt.frontWheelCylindrical, originalLoc, frontAngle);
             double[] rearDelta = this.getRotationDeltaAboutCS(rt.rearWheelCylindrical, originalLoc, rearAngle);
-            for (int i = 0; i < 3; i++) {
-                rt.sim.println("Front Delta: " + frontDelta[i]);
-                rt.sim.println("Rear Delta: " + rearDelta[i]);
-            }
             // superposition of front delta and rear delta to get the new delta
             for (int i = 0; i < 3; i++)
                 newLoc[i] = originalLoc[i] - (frontDelta[i] + rearDelta[i]);
