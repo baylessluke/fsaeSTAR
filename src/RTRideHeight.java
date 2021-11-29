@@ -281,7 +281,7 @@ public class RTRideHeight {
             double[] rearDelta = this.getRotationDeltaAboutCS(rt.rearWheelCylindrical, originalLoc, rearAngle);
             // superposition of front delta and rear delta to get the new delta
             for (int i = 0; i < 3; i++)
-                newLoc[i] = originalLoc[i] - (frontDelta[i] + rearDelta[i]);
+                newLoc[i] = originalLoc[i] + (frontDelta[i] + rearDelta[i]);
 
         }
         return newLoc;
