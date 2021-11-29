@@ -262,9 +262,11 @@ public class RTRideHeight {
             double frontAngle = this.getRotationAngle(rrhOffset);
             double rearAngle = this.getRotationAngle(frhOffset);
             double[] frontDelta = this.getRotationDeltaAboutCS(rt.frontWheelCylindrical, originalLoc, frontAngle);
-            rt.sim.println("Front Delta: " + frontDelta);
             double[] rearDelta = this.getRotationDeltaAboutCS(rt.rearWheelCylindrical, originalLoc, rearAngle);
-            rt.sim.println("Rear Delta: " + rearDelta);
+            for (int i = 0; i < 3; i++) {
+                rt.sim.println("Front Delta: " + frontDelta[i]);
+                rt.sim.println("Rear Delta: " + rearDelta[i]);
+            }
             // superposition of front delta and rear delta to get the new delta
             for (int i = 0; i < 3; i++)
                 newLoc[i] = originalLoc[i] - (frontDelta[i] + rearDelta[i]);
