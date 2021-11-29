@@ -316,11 +316,11 @@ public class RTRideHeight {
         double opposite = originalLoc[2] - csLoc[2];
         double adjacent = originalLoc[0] - csLoc[0];
         double pOGCSh = Math.abs(Math.atan(opposite / adjacent));
-        rt.sim.println("pOGCSh: " + pOGCSh);
+        rt.sim.println("pOGCSh: " + Math.toDegrees(pOGCSh));
 
         // angle formed by the point's new location, coordinate system location, and the horizontal direction
         double pNewCSh = pOGCSh + rotation;
-        rt.sim.println("pNewCSh: " + pNewCSh);
+        rt.sim.println("pNewCSh: " + Math.toDegrees(pNewCSh));
 
         // distance between the coordinate system location and the point parallel to vehicle center plane
         double r = Math.sqrt(Math.pow(csLoc[0] - originalLoc[0], 2) + Math.pow(csLoc[2] - originalLoc[2], 2));
