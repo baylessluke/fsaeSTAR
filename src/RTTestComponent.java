@@ -248,7 +248,7 @@ public class RTTestComponent {
         if (isCartesian) {
             CartesianCoordinateSystem cartesian = (CartesianCoordinateSystem) cs;
             for (int i = 0; i < 3; i++)
-                direction[i] = cartesian.getBasis0().getComponent(i);
+                direction[i] = cartesian.getBasis1().getComponent(i);
         } else {
             CylindricalCoordinateSystem cylindrical = (CylindricalCoordinateSystem) cs;
             for (int i = 0; i < 3; i++)
