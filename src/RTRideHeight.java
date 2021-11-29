@@ -358,8 +358,8 @@ public class RTRideHeight {
         // changes to the coordinate system direction
         double originalDirAngle = Math.atan(originalCSDir[1] / originalCSDir[0]);
         double newDirAngle = originalDirAngle + frontRHRotation + rearRHRotation;
-        rt.sim.println("Original angle: " + originalDirAngle);
-        rt.sim.println("New angle: " + newDirAngle);
+        rt.sim.println("Original angle: " + Math.toDegrees(originalDirAngle));
+        rt.sim.println("New angle: " + Math.toDegrees(newDirAngle));
 
         // find the vector in the car center plane
         double[] newDir = new double[3];
