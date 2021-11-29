@@ -331,9 +331,11 @@ public class RTRideHeight {
         newLoc[0] = r * Math.cos(pNewCSh) + csLoc[0];
         rt.sim.println("originalLoc[0]: " + originalLoc[0]);
         rt.sim.println("newLoc[0]: " + newLoc[0]);
+        rt.sim.println("csLoc[0]: " + csLoc[0]);
         newLoc[2] = r * Math.sin(pNewCSh) + csLoc[2];
         rt.sim.println("originalLoc[2]: " + originalLoc[2]);
         rt.sim.println("newLoc[2]: " + newLoc[2]);
+        rt.sim.println("csLoc[2]: " + csLoc[2]);
 
         // get the delta
         double[] delta = new double[3];
