@@ -329,7 +329,7 @@ public class RTRideHeight {
         // the new location of the point
         double[] newLoc = new double[3];
         newLoc[0] = r * Math.cos(pNewCSh) - csLoc[0];
-        newLoc[2] = r * Math.sin(pNewCSh) - csLoc[2];
+        newLoc[2] = r * Math.sin(pNewCSh) + csLoc[2];
 
         // get the delta
         double[] delta = new double[3];
