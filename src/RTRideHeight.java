@@ -319,7 +319,7 @@ public class RTRideHeight {
         rt.sim.println("pOGCSh: " + Math.toDegrees(pOGCSh));
 
         // angle formed by the point's new location, coordinate system location, and the horizontal direction
-        double pNewCSh = pOGCSh - rotation;
+        double pNewCSh = pOGCSh + rotation;
         rt.sim.println("pNewCSh: " + Math.toDegrees(pNewCSh));
 
         // distance between the coordinate system location and the point parallel to vehicle center plane
@@ -328,8 +328,8 @@ public class RTRideHeight {
 
         // the new location of the point
         double[] newLoc = new double[3];
-        newLoc[0] = r * Math.cos(pNewCSh) + csLoc[0];
-        newLoc[2] = r * Math.sin(pNewCSh) + csLoc[2];
+        newLoc[0] = r * Math.cos(pNewCSh) - csLoc[0];
+        newLoc[2] = r * Math.sin(pNewCSh) - csLoc[2];
 
         // get the delta
         double[] delta = new double[3];
