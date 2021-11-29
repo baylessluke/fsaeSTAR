@@ -294,6 +294,7 @@ public class optiSTAR extends StarMacro {
 
     public void runSim(Simulation sim)
     {
+        sim.getSolution().clearSolution(Solution.Clear.Mesh, Solution.Clear.Fields);
         AutoMeshOperation2d autoMesh = (AutoMeshOperation2d) sim.get(MeshOperationManager.class).getObject("Automated Mesh (2D)");
         autoMesh.execute();
         SimulationIterator simIter = sim.getSimulationIterator();
@@ -302,7 +303,6 @@ public class optiSTAR extends StarMacro {
         StepStoppingCriterion maxStepCrit =
                 ((StepStoppingCriterion) sim.getSolverStoppingCriterionManager().getSolverStoppingCriterion("Maximum Steps"));
         maxStepCrit.getMaximumNumberStepsObject().getQuantity().setValue(new_max_iter);
-        sim.getSolution().clearSolution(Solution.Clear.Mesh, Solution.Clear.Fields);
         sim.getSimulationIterator().run();
     }
 
