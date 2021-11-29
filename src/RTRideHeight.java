@@ -86,8 +86,8 @@ public class RTRideHeight {
      */
     public void debug() {
 
-        double frhOffset = -1;
-        double rrhOffset = 0;
+        double frhOffset = 0;
+        double rrhOffset = -1;
 
         double[] origLoc = {0, 0, 10};
         double[] temp = getRotationDeltaAboutCS(rt.rearWheelCylindrical, origLoc, -0.01745);
