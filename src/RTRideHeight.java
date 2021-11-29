@@ -315,7 +315,9 @@ public class RTRideHeight {
         // angle formed by the point's original location, coordinate system location, and the horizontal direction
         double opposite = originalLoc[2] - csLoc[2];
         double adjacent = originalLoc[0] - csLoc[0];
-        double pOGCSh = Math.abs(Math.atan(opposite / adjacent));
+        double pOGCSh = Math.atan(opposite / adjacent);
+        if (pOGCSh < 0)
+            pOGCSh += Math.PI;
         rt.sim.println("pOGCSh: " + Math.toDegrees(pOGCSh));
 
         // angle formed by the point's new location, coordinate system location, and the horizontal direction
@@ -328,11 +330,11 @@ public class RTRideHeight {
 
         // the new location of the point
         double[] newLoc = new double[3];
-        newLoc[0] = r * Math.cos(pNewCSh) + csLoc[0];
+        newLoc[0] = csLoc[0] + r * Math.cos(pNewCSh);
         rt.sim.println("originalLoc[0]: " + originalLoc[0]);
         rt.sim.println("newLoc[0]: " + newLoc[0]);
         rt.sim.println("csLoc[0]: " + csLoc[0]);
-        newLoc[2] = r * Math.sin(pNewCSh) + csLoc[2];
+        newLoc[2] = csLoc[2] + r * Math.sin(pNewCSh);
         rt.sim.println("originalLoc[2]: " + originalLoc[2]);
         rt.sim.println("newLoc[2]: " + newLoc[2]);
         rt.sim.println("csLoc[2]: " + csLoc[2]);
