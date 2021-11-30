@@ -81,6 +81,20 @@ public class RTRideHeight {
 
     // Execution
 
+    public void debug(double rollAngle) {
+
+        for (int i = 0; i < 3; i++) {
+            rt.sim.println("Pre Change CFD Centroid [" + i + "]: " + preChangeCFDCentroid[i]);
+        }
+
+        double[] newLoc = this.newLocation(Math.toRadians(rollAngle), preChangeCFDCentroid);
+
+        for (int i = 0; i < 3; i++) {
+            rt.sim.println("Post Change CFD Centroid [" + i + "]: " + preChangeCFDCentroid[i]);
+        }
+
+    }
+
     /**
      * Get the numbers before RH changes
      */
@@ -338,12 +352,15 @@ public class RTRideHeight {
         double pOGCSh = Math.atan(opposite / adjacent);
         if (pOGCSh < 0)
             pOGCSh += Math.PI;
+        rt.sim.println("pOGCSh: " + pOGCSh);
 
         // angle formed by the point's new location, coordinate system location, and the horizontal direction
         double pNewCSh = pOGCSh + rotation;
+        rt.sim.println("pNewCSh: " + pNewCSh);
 
         // distance between the coordinate system location and the point parallel to vehicle center plane
         double r = Math.sqrt(Math.pow(csLoc[1] - originalLoc[1], 2) + Math.pow(csLoc[2] - originalLoc[2], 2));
+        rt.sim.println("r: " + r);
 
         // the new location of the point
         double[] newLoc = new double[3];
