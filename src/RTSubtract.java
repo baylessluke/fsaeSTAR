@@ -11,6 +11,11 @@ public class RTSubtract {
 
     private final RTTestComponent rt;
 
+    // Names
+    private final String SUBTRACT_NAME = "Subtract";
+    private final String FREESTREAM_NAME = "Freestream";
+    private final String WRAPPER_NAME = "Surface wrapper";
+
     // Star objects
     private SubtractPartsOperation subtract;
     private SimpleBlockPart freestreamPart;
@@ -23,12 +28,6 @@ public class RTSubtract {
     }
 
     private void initStarObjects() {
-        // Names
-        String SUBTRACT_NAME = "Subtract";
-        String FREESTREAM_NAME = "Freestream";
-        String WRAPPER_NAME = "Surface wrapper";
-
-        // init objects
         this.subtract = (SubtractPartsOperation) rt.sim.get(MeshOperationManager.class).getObject(SUBTRACT_NAME);
         this.freestreamPart = (SimpleBlockPart) rt.sim.get(SimulationPartManager.class).getObject(FREESTREAM_NAME);
         this.wrapperPart = (MeshOperationPart) rt.sim.get(SimulationPartManager.class).getObject(WRAPPER_NAME);

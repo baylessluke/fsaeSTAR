@@ -27,7 +27,10 @@ public class RTTestController extends StarMacro {
         // rollTest.debug(3);
 
         // Subtract check
-        new RTSubtract(rt);
+        // new RTSubtract(rt);
+
+        // Regions check
+        new RTRegions(rt);
 
     }
 
