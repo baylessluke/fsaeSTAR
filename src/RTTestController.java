@@ -17,6 +17,7 @@ public class RTTestController extends StarMacro {
 
         RTRideHeight rollTest = new RTRideHeight(rt);
         rollTest.preChange();
+        rollTest.testRoll(3);
         rollTest.postChange(3);
         // rollTest.debug(3);
 

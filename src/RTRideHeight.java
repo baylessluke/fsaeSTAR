@@ -4,11 +4,15 @@
   systems. After RH or roll change, another set of data is read. The two sets of data are compared to get a delta.
   If the delta matches the calculated delta, it passes the test.
  */
+import star.base.neo.DoubleVector;
+import star.base.neo.NeoObjectVector;
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
 import star.common.*;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class RTRideHeight {
 
@@ -489,9 +493,7 @@ public class RTRideHeight {
         }
     }
 
-    /* testing
-
-    public void testRotation(double frh, double rrh) {
+    public void testRH(double frh, double rrh) {
 
         double frontRot = Math.atan(rrh / rt.WHEEL_BASE);
         double rearRot = -Math.atan(frh / rt.WHEEL_BASE);
@@ -513,7 +515,26 @@ public class RTRideHeight {
         }
     }
 
+    public void testRoll(double rollAngle) {
+
+        double roll = Math.toRadians(rollAngle);
+
+        if (roll != 0) {
+            rotateParts(rt.cfdParts, rt.rollCartesian, roll);
+            rotateCoord(rt.radCartesian, rt.rollCartesian, roll);
+            rotateCoord(rt.fanCylindrical, rt.rollCartesian, roll);
+            rotateCoord(rt.dualRadCartesian, rt.rollCartesian, roll);
+            rotateCoord(rt.dualFanCylindrical, rt.rollCartesian, roll);
+        }
+
+    }
+
     private void rotateParts(Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        rt.sim.get(SimulationPartManager.class).rotateParts(parts, new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(rt.unitless, rt.unitless, rt.unitless), rotationAngle, rotationPoint);
+    }
+
+    private void rotateParts(Collection<GeometryPart> parts, CartesianCoordinateSystem rotationPoint, double rotationAngle)
     {
         rt.sim.get(SimulationPartManager.class).rotateParts(parts, new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(rt.unitless, rt.unitless, rt.unitless), rotationAngle, rotationPoint);
     }
@@ -522,5 +543,10 @@ public class RTRideHeight {
     {
         coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {0, 0, 1}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
     }
-    */
+
+    private void rotateCoord(CoordinateSystem coord, CartesianCoordinateSystem rotationPoint, double rotationAngle)
+    {
+        coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {0, 0, 1}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
+    }
+
 }
