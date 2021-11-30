@@ -278,7 +278,10 @@ public class RTRideHeight {
             newLoc[1] = originalLoc[1];
             newLoc[2] = originalLoc[2];
         } else {
-            newLoc = this.getRotationDeltaAboutCS(rt.rollCartesian, originalLoc, roll);
+            double[] delta = this.getRotationDeltaAboutCS(rt.rollCartesian, originalLoc, roll);
+            newLoc[0] = originalLoc[0] + delta[0];
+            newLoc[1] = originalLoc[1] + delta[1];
+            newLoc[2] = originalLoc[2] + delta[2];
         }
         return newLoc;
     }
