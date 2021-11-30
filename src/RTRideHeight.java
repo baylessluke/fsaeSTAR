@@ -412,6 +412,11 @@ public class RTRideHeight {
         newDir[1] = Math.cos(newDirAngle);
         newDir[2] = Math.sin(newDirAngle);
 
+        // normalize the vector
+        double mag = Math.sqrt(Math.pow(newDir[0], 2) + Math.pow(newDir[1], 2) + Math.pow(newDir[2], 2));
+        for (int i = 0; i < 3; i++)
+            newDir[i] /= mag;
+
         return newDir;
 
     }
