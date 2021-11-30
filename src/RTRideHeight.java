@@ -536,7 +536,7 @@ public class RTRideHeight {
 
     private void rotateParts(Collection<GeometryPart> parts, CartesianCoordinateSystem rotationPoint, double rotationAngle)
     {
-        rt.sim.get(SimulationPartManager.class).rotateParts(parts, new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(rt.unitless, rt.unitless, rt.unitless), rotationAngle, rotationPoint);
+        rt.sim.get(SimulationPartManager.class).rotateParts(parts, new DoubleVector(new double[] {1, 0, 0}), Arrays.asList(rt.unitless, rt.unitless, rt.unitless), rotationAngle, rotationPoint);
     }
 
     private void rotateCoord(CoordinateSystem coord, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
@@ -546,7 +546,7 @@ public class RTRideHeight {
 
     private void rotateCoord(CoordinateSystem coord, CartesianCoordinateSystem rotationPoint, double rotationAngle)
     {
-        coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {0, 0, 1}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
+        coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {1, 0, 0}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
     }
 
 }
