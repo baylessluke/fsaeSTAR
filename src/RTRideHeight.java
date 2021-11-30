@@ -1,22 +1,18 @@
-/**
- * This class should be ran both before and after a RH change. Before the RH change, the class reads the centroid
- * location of CFD parts and tires individually, and the location and direction of radiator and fan coordinate
- * systems. After RH change, another set of data is read. The two sets of data are compared to get a delta. If the delta
- * matches the calculated delta, it passes the test.
+/*
+  This class should be ran both before and after a RH change. Before the RH change, the class reads the centroid
+  location of CFD parts and tires individually, and the location and direction of radiator and fan coordinate
+  systems. After RH change, another set of data is read. The two sets of data are compared to get a delta. If the delta
+  matches the calculated delta, it passes the test.
  */
-import star.base.neo.DoubleVector;
-import star.base.neo.NeoObjectVector;
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
 import star.common.*;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 public class RTRideHeight {
 
-    private RTTestComponent rt;
+    private final RTTestComponent rt;
 
     // Names
     String CENTROID_X_REPORT_NAME = "Centroid X";
@@ -84,22 +80,6 @@ public class RTRideHeight {
     }
 
     // Execution
-
-    /**
-     * Temporary debug method
-     */
-    public void debug() {
-
-        double frhOffset = -1;
-        double rrhOffset = 0;
-
-        double[] dir = RTTestComponent.getCSDirection(rt.radCartesian, true);
-        double[] temp = this.newCSDirection(dir, frhOffset,rrhOffset);
-        for (int i = 0; i < 3; i++) {
-            rt.sim.println(temp[i]);
-        }
-
-    }
 
     /**
      * Get the numbers before RH changes
@@ -229,7 +209,7 @@ public class RTRideHeight {
      */
     private void setReportPartToCFD() {
 
-        Collection<PartSurface> surfaces = rt.getAllSurfacesByPartGroup(rt.cfdParts);
+        Collection<PartSurface> surfaces = RTTestComponent.getAllSurfacesByPartGroup(rt.cfdParts);
 
         this.sumXPosArea.getParts().setObjects(surfaces);
         this.sumYPosArea.getParts().setObjects(surfaces);
@@ -243,7 +223,7 @@ public class RTRideHeight {
      */
     private void setReportPartToTire() {
 
-        Collection<PartSurface> surfaces = rt.getAllSurfacesByPartGroup(rt.tireParts);
+        Collection<PartSurface> surfaces = RTTestComponent.getAllSurfacesByPartGroup(rt.tireParts);
 
         this.sumXPosArea.getParts().setObjects(surfaces);
         this.sumYPosArea.getParts().setObjects(surfaces);
@@ -299,8 +279,7 @@ public class RTRideHeight {
      */
     private double getRotationAngle(double rhOffset) {
 
-        double angle = Math.atan(rhOffset / rt.WHEEL_BASE);
-        return angle;
+        return Math.atan(rhOffset / rt.WHEEL_BASE);
 
     }
 
@@ -371,7 +350,7 @@ public class RTRideHeight {
 
     }
 
-    // testing
+    /* testing
 
     public void testRotation(double frh, double rrh) {
 
@@ -404,5 +383,5 @@ public class RTRideHeight {
     {
         coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {0, 0, 1}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
     }
-
+    */
 }
