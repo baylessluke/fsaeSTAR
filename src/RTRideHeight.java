@@ -406,7 +406,7 @@ public class RTRideHeight {
         double originalDirAngle = Math.atan(originalCSDir[2] / originalCSDir[1]);
         double newDirAngle = originalDirAngle + roll;
 
-        // find the vector in the car center plane
+        // find the vector in the car mid-plane
         double[] newDir = new double[3];
         newDir[0] = originalCSDir[0];
         newDir[1] = Math.cos(newDirAngle);
