@@ -4,15 +4,11 @@
   systems. After RH or roll change, another set of data is read. The two sets of data are compared to get a delta.
   If the delta matches the calculated delta, it passes the test.
  */
-import star.base.neo.DoubleVector;
-import star.base.neo.NeoObjectVector;
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
 import star.common.*;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 
 public class RTRideHeight {
 
@@ -423,6 +419,9 @@ public class RTRideHeight {
 
     }
 
+    /**
+     * Print out results based on a ton of arrays
+     */
     private void printResults(double[] expNewCFDCentroid, double[] expNewTireCentroid, double[] expNewRadCSLoc,
                                   double[] expNewDualRadCSLoc, double[] expNewFanLoc, double[] expNewDualFanLoc,
                                   double[] expNewRadCSDir, double[] expNewDualRadCSDir, double[] expNewFanCSDir,
@@ -500,6 +499,8 @@ public class RTRideHeight {
         }
     }
 
+    /* testing stuff
+
     public void testRH(double frh, double rrh) {
 
         double frontRot = Math.atan(rrh / rt.WHEEL_BASE);
@@ -555,5 +556,5 @@ public class RTRideHeight {
     {
         coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {1, 0, 0}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
     }
-
+    */
 }
