@@ -373,31 +373,32 @@ public class RTRideHeight {
 
     // testing
 
-    private void rotateAboutAxis(SimComponents sim, double rotationAngle, CylindricalCoordinateSystem coordSys)
-    {
-        rotateParts(sim, sim.aeroParts, coordSys, rotationAngle);
-        rotateParts(sim, sim.nonAeroParts, coordSys, rotationAngle);
-        rotateCoord(sim, sim.radiatorCoord, coordSys, rotationAngle);
-        rotateCoord(sim, sim.fanAxis, coordSys, rotationAngle);
-        if (sim.dualRadFlag)
-            rotateCoord(sim, sim.dualRadCoord, coordSys, rotationAngle);
-        if (sim.dualFanFlag)
-            rotateCoord(sim, sim.dualFanAxis, coordSys, rotationAngle);
+    public void testRotation(double frh, double rrh) {
+
+        double frontRot = Math.atan(rrh / rt.WHEEL_BASE);
+        double rearRot = -Math.atan(frh / rt.WHEEL_BASE);
+
+        rotateParts(rt.cfdParts, rt.frontWheelCylindrical, frontRot);
+        rotateCoord(rt.radCartesian, rt.frontWheelCylindrical, frontRot);
+        rotateCoord(rt.fanCylindrical, rt.frontWheelCylindrical, frontRot);
+        rotateCoord(rt.dualRadCartesian, rt.frontWheelCylindrical, frontRot);
+        rotateCoord(rt.dualFanCylindrical, rt.frontWheelCylindrical, frontRot);
+
+        rotateParts(rt.cfdParts, rt.rearWheelCylindrical, rearRot);
+        rotateCoord(rt.radCartesian, rt.rearWheelCylindrical, rearRot);
+        rotateCoord(rt.fanCylindrical, rt.rearWheelCylindrical, rearRot);
+        rotateCoord(rt.dualRadCartesian, rt.rearWheelCylindrical, rearRot);
+        rotateCoord(rt.dualFanCylindrical, rt.rearWheelCylindrical, rearRot);
     }
 
-    private void rotateParts(SimComponents activeSim, Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    private void rotateParts(Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
     {
-        activeSim.activeSim.get(SimulationPartManager.class).rotateParts(parts,
-                new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(activeSim.noUnit, activeSim.noUnit, activeSim.noUnit), rotationAngle, rotationPoint);
+        rt.sim.get(SimulationPartManager.class).rotateParts(parts, new DoubleVector(new double[] {0, 0, 1}), Arrays.asList(rt.unitless, rt.unitless, rt.unitless), rotationAngle, rotationPoint);
     }
 
-    private void rotateCoord(SimComponents activeSim, CoordinateSystem coord, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
+    private void rotateCoord(CoordinateSystem coord, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
     {
-        coord.getLocalCoordinateSystemManager().
-                rotateLocalCoordinateSystems(Collections.singletonList(coord),
-                        new DoubleVector(new double[] {0, 0, 1}),
-                        new NeoObjectVector(new Units[]{activeSim.noUnit,
-                                activeSim.noUnit, activeSim.noUnit}), rotationAngle, rotationPoint);
+        coord.getLocalCoordinateSystemManager().rotateLocalCoordinateSystems(Collections.singletonList(coord), new DoubleVector(new double[] {0, 0, 1}), new NeoObjectVector(new Units[]{rt.unitless, rt.unitless, rt.unitless}), rotationAngle, rotationPoint);
     }
 
 }
