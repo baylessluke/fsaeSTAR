@@ -34,6 +34,7 @@ public class RTTestComponent {
     public final String DUAL_RAD_CS_NAME = "Dual Radiator Cartesian";
     public final String FAN_CS_NAME = "Fan Cylindrical";
     public final String DUAL_FAN_CS_NAME = "Dual Fan Cylindrical";
+    public final String ROLL_CS_NAME = "Roll axis";
 
     // Coordinate systems
     public CylindricalCoordinateSystem frontWheelCylindrical; // Coordinate system used for both tire rotation and front left steering
@@ -43,6 +44,7 @@ public class RTTestComponent {
     public CartesianCoordinateSystem dualRadCartesian;
     public CylindricalCoordinateSystem fanCylindrical;
     public CylindricalCoordinateSystem dualFanCylindrical;
+    public CartesianCoordinateSystem rollCartesian;
 
     // units
     public Units unitless;
@@ -147,6 +149,7 @@ public class RTTestComponent {
         this.dualRadCartesian = (CartesianCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(DUAL_RAD_CS_NAME);
         this.fanCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(FAN_CS_NAME);
         this.dualFanCylindrical = (CylindricalCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(DUAL_FAN_CS_NAME);
+        this.rollCartesian = (CartesianCoordinateSystem) sim.getCoordinateSystemManager().getCoordinateSystem(ROLL_CS_NAME);
 
         // units
         this.unitless = sim.getUnitsManager().getObject("");

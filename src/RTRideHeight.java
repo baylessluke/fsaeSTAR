@@ -1,8 +1,8 @@
 /*
-  This class should be ran both before and after a RH change. Before the RH change, the class reads the centroid
+  This class should be ran both before and after a RH or roll change. Before the RH change, the class reads the centroid
   location of CFD parts and tires individually, and the location and direction of radiator and fan coordinate
-  systems. After RH change, another set of data is read. The two sets of data are compared to get a delta. If the delta
-  matches the calculated delta, it passes the test.
+  systems. After RH or roll change, another set of data is read. The two sets of data are compared to get a delta.
+  If the delta matches the calculated delta, it passes the test.
  */
 import star.base.report.ExpressionReport;
 import star.base.report.SumReport;
@@ -140,61 +140,165 @@ public class RTRideHeight {
         try {
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeCFDCentroid, expNewCFDCentroid, 0.01),
-                    "CFD Part Centroid",
+                    "RH - CFD Part Centroid",
                     RTTestComponent.buildResultStringFromArray(postChangeCFDCentroid, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewCFDCentroid, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeTireCentroid, expNewTireCentroid, 0.01),
-                    "Tire Part Centroid",
+                    "RH - Tire Part Centroid",
                     RTTestComponent.buildResultStringFromArray(postChangeTireCentroid, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewTireCentroid, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeRadCSLoc, expNewRadCSLoc, 0.01),
-                    "Radiator Cartesian Origin",
+                    "RH - Radiator Cartesian Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeRadCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewRadCSLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSLoc, expNewDualRadCSLoc, 0.01),
-                    "Dual Radiator Cartesian Origin",
+                    "RH - Dual Radiator Cartesian Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeDualRadCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewDualRadCSLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeFanCSLoc, expNewFanLoc, 0.01),
-                    "Fan Cylindrical Origin",
+                    "RH - Fan Cylindrical Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeFanCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewFanLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSLoc, expNewDualFanLoc, 0.01),
-                    "Dual Fan Cylindrical Origin",
+                    "RH - Dual Fan Cylindrical Origin",
                     RTTestComponent.buildResultStringFromArray(postChangeDualFanCSLoc, "in"),
                     RTTestComponent.buildResultStringFromArray(expNewDualFanLoc, " in")
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeRadCSDir, expNewRadCSDir, 0.01),
-                    "Radiator Cartesian Direction",
+                    "RH - Radiator Cartesian Direction",
                     RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeRadCSDir),
                     RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewDualRadCSDir, 0.01),
-                    "Dual Radiator Cartesian Direction",
+                    "RH - Dual Radiator Cartesian Direction",
                     RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeDualRadCSDir),
                     RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewDualRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeFanCSDir, expNewFanCSDir, 0.01),
-                    "Fan Cylindrical Direction",
+                    "RH - Fan Cylindrical Direction",
                     RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeFanCSDir),
                     RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewFanCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanCSDir, 0.01),
-                    "Dual Fan Cylindrical Direction",
+                    "RH - Dual Fan Cylindrical Direction",
+                    RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeDualFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewDualFanCSDir)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Overloading this method to make it work for roll set
+     * @param rollAngle roll angle in DEGREES
+     */
+    public void postChange(double rollAngle) {
+
+        double roll = Math.toRadians(rollAngle); // roll angle in radians
+
+        // find what the new locations are supposed to
+        double[] expNewCFDCentroid = this.newLocation(roll, preChangeCFDCentroid);
+        double[] expNewTireCentroid = this.preChangeTireCentroid;
+        double[] expNewRadCSLoc = this.newLocation(roll, preChangeRadCSLoc);
+        double[] expNewDualRadCSLoc = this.newLocation(roll, preChangeDualRadCSLoc);
+        double[] expNewFanLoc = this.newLocation(roll, preChangeFanCSLoc);
+        double[] expNewDualFanLoc = this.newLocation(roll, preChangeDualFanCSLoc);
+
+        // find the new direction of coordinate system axes
+        double[] expNewRadCSDir = this.newCSDirection(preChangeRadCSDir, roll);
+        double[] expNewDualRadCSDir = this.newCSDirection(preChangeDualRadCSDir, roll);
+        double[] expNewFanCSDir = this.newCSDirection(preChangeFanCSDir, roll);
+        double[] expNewDualFanCSDir = this.newCSDirection(preChangeDualFanCSDir, roll);
+
+        // get the actual new locations
+        setReportPartToCFD();
+        postChangeCFDCentroid = this.getCentroid();
+        setReportPartToTire();
+        postChangeTireCentroid = this.getCentroid();
+        postChangeRadCSLoc = RTTestComponent.getCSLocation(rt.radCartesian);
+        postChangeDualRadCSLoc = RTTestComponent.getCSLocation(rt.dualRadCartesian);
+        postChangeFanCSLoc = RTTestComponent.getCSLocation(rt.fanCylindrical);
+        postChangeDualFanCSLoc = RTTestComponent.getCSLocation(rt.dualFanCylindrical);
+        postChangeRadCSDir = RTTestComponent.getCSDirection(rt.radCartesian, true);
+        postChangeDualRadCSDir = RTTestComponent.getCSDirection(rt.dualRadCartesian, true);
+        postChangeFanCSDir = RTTestComponent.getCSDirection(rt.fanCylindrical, false);
+        postChangeDualFanCSDir = RTTestComponent.getCSDirection(rt.dualFanCylindrical, false);
+
+        // print the results
+        try {
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeCFDCentroid, expNewCFDCentroid, 0.01),
+                    "Roll - CFD Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeCFDCentroid, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewCFDCentroid, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeTireCentroid, expNewTireCentroid, 0.01),
+                    "Roll - Tire Part Centroid",
+                    RTTestComponent.buildResultStringFromArray(postChangeTireCentroid, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewTireCentroid, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeRadCSLoc, expNewRadCSLoc, 0.01),
+                    "Roll - Radiator Cartesian Origin",
+                    RTTestComponent.buildResultStringFromArray(postChangeRadCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewRadCSLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualRadCSLoc, expNewDualRadCSLoc, 0.01),
+                    "Roll - Dual Radiator Cartesian Origin",
+                    RTTestComponent.buildResultStringFromArray(postChangeDualRadCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewDualRadCSLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeFanCSLoc, expNewFanLoc, 0.01),
+                    "Roll - Fan Cylindrical Origin",
+                    RTTestComponent.buildResultStringFromArray(postChangeFanCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewFanLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualFanCSLoc, expNewDualFanLoc, 0.01),
+                    "Roll - Dual Fan Cylindrical Origin",
+                    RTTestComponent.buildResultStringFromArray(postChangeDualFanCSLoc, "in"),
+                    RTTestComponent.buildResultStringFromArray(expNewDualFanLoc, " in")
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeRadCSDir, expNewRadCSDir, 0.01),
+                    "Roll - Radiator Cartesian Direction",
+                    RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewRadCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewDualRadCSDir, 0.01),
+                    "Roll - Dual Radiator Cartesian Direction",
+                    RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeDualRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewDualRadCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeFanCSDir, expNewFanCSDir, 0.01),
+                    "Roll - Fan Cylindrical Direction",
+                    RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewFanCSDir)
+            );
+            rt.printTestResults(
+                    RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanCSDir, 0.01),
+                    "Roll - Dual Fan Cylindrical Direction",
                     RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeDualFanCSDir),
                     RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewDualFanCSDir)
             );
@@ -273,6 +377,25 @@ public class RTRideHeight {
     }
 
     /**
+     * Overloading the new location method for roll checker
+     * @param roll roll angle in radians
+     * @param originalLoc the location of the part before the roll change
+     * @return new location in inches
+     */
+    private double[] newLocation(double roll, double[] originalLoc) {
+
+        double[] newLoc = new double[3];
+        if (roll == 0) {
+            newLoc[0] = originalLoc[0];
+            newLoc[1] = originalLoc[1];
+            newLoc[2] = originalLoc[2];
+        } else {
+            newLoc = this.getRotationDeltaAboutCS(rt.rollCartesian, originalLoc, roll);
+        }
+        return newLoc;
+    }
+
+    /**
      * Get the angle the vehicle rotated through in radians
      * @param rhOffset the ride height offset corresponding to this change
      * @return angle in radians
@@ -324,6 +447,46 @@ public class RTRideHeight {
     }
 
     /**
+     * Overloading this method to work with roll test
+     * @param cs roll axis coordinate system
+     * @param originalLoc location before roll change
+     * @param rotation the angle that the car rolled in radians
+     * @return the delta in y and z directions
+     */
+    public double[] getRotationDeltaAboutCS(CartesianCoordinateSystem cs, double[] originalLoc, double rotation) {
+
+        // get the location of the coordinate system
+        double[] csLoc = RTTestComponent.getCSLocation(cs);
+
+        // angle formed by the point's original location, coordinate system location, and the horizontal direction
+        double opposite = originalLoc[2] - csLoc[2];
+        double adjacent = originalLoc[1] - csLoc[1];
+        double pOGCSh = Math.atan(opposite / adjacent);
+        if (pOGCSh < 0)
+            pOGCSh += Math.PI;
+
+        // angle formed by the point's new location, coordinate system location, and the horizontal direction
+        double pNewCSh = pOGCSh + rotation;
+
+        // distance between the coordinate system location and the point parallel to vehicle center plane
+        double r = Math.sqrt(Math.pow(csLoc[1] - originalLoc[1], 2) + Math.pow(csLoc[2] - originalLoc[2], 2));
+
+        // the new location of the point
+        double[] newLoc = new double[3];
+        newLoc[1] = csLoc[1] + r * Math.cos(pNewCSh);
+        newLoc[2] = csLoc[2] + r * Math.sin(pNewCSh);
+
+        // get the delta
+        double[] delta = new double[3];
+        delta[0] = 0;
+        delta[1] = newLoc[1] - originalLoc[1];
+        delta[2] = newLoc[2] - originalLoc[2];
+
+        return delta;
+
+    }
+
+    /**
      * Find the new direction of the coordinate system after RH change
      * @param originalCSDir coordinate system
      * @param frh Front RH delta
@@ -344,6 +507,28 @@ public class RTRideHeight {
         double[] newDir = new double[3];
         newDir[0] = Math.cos(newDirAngle);
         newDir[1] = originalCSDir[1];
+        newDir[2] = Math.sin(newDirAngle);
+
+        return newDir;
+
+    }
+
+    /**
+     * Overloading this method to work with roll test
+     * @param originalCSDir the original direction of the coordiante systems
+     * @param roll the roll angle in radians
+     * @return new coordinate system direction
+     */
+    private double[] newCSDirection(double[] originalCSDir, double roll) {
+
+        // changes to the coordinate system direction
+        double originalDirAngle = Math.atan(originalCSDir[2] / originalCSDir[1]);
+        double newDirAngle = originalDirAngle + roll;
+
+        // find the vector in the car center plane
+        double[] newDir = new double[3];
+        newDir[0] = originalCSDir[0];
+        newDir[1] = Math.cos(newDirAngle);
         newDir[2] = Math.sin(newDirAngle);
 
         return newDir;
