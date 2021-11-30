@@ -11,15 +11,23 @@ public class RTTestController extends StarMacro {
 
         rt = new RTTestComponent(getActiveSimulation());
 
+        // steering check
+        // new RTSteering(rt);
+
+        // Ride height check
         // RTRideHeight rtRideHeight = new RTRideHeight(rt);
         // rtRideHeight.preChange();
         // rtRideHeight.postChange(-1, 0);
 
-        RTRideHeight rollTest = new RTRideHeight(rt);
-        rollTest.preChange();
+        // Roll check
+        // RTRideHeight rollTest = new RTRideHeight(rt);
+        // rollTest.preChange();
         // rollTest.testRoll(3);
-        rollTest.postChange(3);
+        // rollTest.postChange(3);
         // rollTest.debug(3);
+
+        // Subtract check
+        new RTSubtract(rt);
 
     }
 

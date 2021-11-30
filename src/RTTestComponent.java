@@ -1,5 +1,6 @@
 import star.common.*;
 import star.meshing.LatestMeshProxyRepresentation;
+import star.surfacewrapper.SurfaceWrapperAutoMeshOperation;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -301,6 +302,33 @@ public class RTTestComponent {
      */
     public static String buildResultStringFromArray(String prefix, double[] array) {
         return buildResultStringFromArray(prefix, array, "");
+    }
+
+    /**
+     * Build the result output string from a geometry object array
+     * @param array geometry objects
+     * @return results output string
+     */
+    public static String buildResultStringFromArray(String prefix, GeometryObject[] array, String postfix) {
+        StringBuilder output = new StringBuilder();
+        output.append(prefix);
+        output.append(" [");
+        for (int i = 0; i < array.length; i++)
+            output.append(array[i].getPresentationName()).append(", ");
+        output.delete(output.length() - 2, output.length());
+        output.append("] ");
+        output.append(postfix);
+
+        return output.toString();
+    }
+
+    /**
+     * Build the result output string from a geometry object array
+     * @param array geometry objects
+     * @return results output string
+     */
+    public static String buildResultStringFromArray(GeometryObject[] array) {
+        return buildResultStringFromArray("", array, "");
     }
 
     /**
