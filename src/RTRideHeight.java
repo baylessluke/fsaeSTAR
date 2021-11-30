@@ -480,26 +480,26 @@ public class RTRideHeight {
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeRadCSDir, expNewRadCSDir, 0.01),
                     testNamePrefix + "Radiator Cartesian Direction",
-                    RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeRadCSDir),
-                    RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewRadCSDir)
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualRadCSDir, expNewDualRadCSDir, 0.01),
                     testNamePrefix + "Dual Radiator Cartesian Direction",
-                    RTTestComponent.buildResultStringFromArray("Y-Axis:", postChangeDualRadCSDir),
-                    RTTestComponent.buildResultStringFromArray("Y-Axis:", expNewDualRadCSDir)
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", postChangeDualRadCSDir),
+                    RTTestComponent.buildResultStringFromArray("X-Axis:", expNewDualRadCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeFanCSDir, expNewFanCSDir, 0.01),
                     testNamePrefix + "Fan Cylindrical Direction",
-                    RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeFanCSDir),
-                    RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewFanCSDir)
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", postChangeFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", expNewFanCSDir)
             );
             rt.printTestResults(
                     RTTestComponent.numericalCompare(postChangeDualFanCSDir, expNewDualFanCSDir, 0.01),
                     testNamePrefix + "Dual Fan Cylindrical Direction",
-                    RTTestComponent.buildResultStringFromArray("Z-Axis:", postChangeDualFanCSDir),
-                    RTTestComponent.buildResultStringFromArray("Z-Axis:", expNewDualFanCSDir)
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", postChangeDualFanCSDir),
+                    RTTestComponent.buildResultStringFromArray("R-Axis:", expNewDualFanCSDir)
             );
         } catch (Exception e) {
             e.printStackTrace();

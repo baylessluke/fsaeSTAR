@@ -243,7 +243,7 @@ public class RTTestComponent {
     }
 
     /**
-     * Get the y direction of cartesian coordinate or the z direction of cylindrical direction
+     * Get the x direction of cartesian coordinate or the r direction of cylindrical direction
      */
     public static double[] getCSDirection(CoordinateSystem cs, boolean isCartesian) {
 
@@ -251,11 +251,11 @@ public class RTTestComponent {
         if (isCartesian) {
             CartesianCoordinateSystem cartesian = (CartesianCoordinateSystem) cs;
             for (int i = 0; i < 3; i++)
-                direction[i] = cartesian.getBasis1().getComponent(i);
+                direction[i] = cartesian.getBasis0().getComponent(i);
         } else {
             CylindricalCoordinateSystem cylindrical = (CylindricalCoordinateSystem) cs;
             for (int i = 0; i < 3; i++)
-                direction[i] = cylindrical.getBasis2().getComponent(i);
+                direction[i] = cylindrical.getBasis0().getComponent(i);
         }
         return direction;
 
