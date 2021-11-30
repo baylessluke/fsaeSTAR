@@ -90,7 +90,7 @@ public class RTRideHeight {
         double[] newLoc = this.newLocation(Math.toRadians(rollAngle), preChangeCFDCentroid);
 
         for (int i = 0; i < 3; i++) {
-            rt.sim.println("Post Change CFD Centroid [" + i + "]: " + preChangeCFDCentroid[i]);
+            rt.sim.println("Post Change CFD Centroid [" + i + "]: " + newLoc[i]);
         }
 
     }
