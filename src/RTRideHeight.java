@@ -403,19 +403,21 @@ public class RTRideHeight {
     private double[] newCSDirection(double[] originalCSDir, double roll) {
 
         // changes to the coordinate system direction
-        double originalDirAngle = Math.atan(originalCSDir[2] / originalCSDir[1]);
-        double newDirAngle = originalDirAngle + roll;
+        double originalYZAngle = Math.atan(originalCSDir[2] / originalCSDir[1]);
+        double newYZAngle = originalYZAngle + roll;
 
         // find the vector in the car mid-plane
         double[] newDir = new double[3];
         newDir[0] = originalCSDir[0];
-        newDir[1] = Math.cos(newDirAngle);
-        newDir[2] = Math.sin(newDirAngle);
+        newDir[1] = Math.sqrt((1 - Math.pow(newDir[0], 2)) / (1 + Math.pow(Math.tan(newYZAngle), 2)));
+        newDir[2] = Math.sqrt(1 - Math.pow(newDir[0], 2) - Math.pow(newDir[1], 2));
 
-        // normalize the vector
-        double mag = Math.sqrt(Math.pow(newDir[0], 2) + Math.pow(newDir[1], 2) + Math.pow(newDir[2], 2));
-        for (int i = 0; i < 3; i++)
-            newDir[i] /= mag;
+        // Putting the correct signs on the vector components
+        if (originalCSDir[2] < 0) {
+            newDir[2] = -newDir[2];
+        } else if (originalCSDir[1] < 0 && originalYZAngle < 0) {
+            newDir[1] = -newDir[1];
+        }
 
         return newDir;
 
