@@ -378,17 +378,21 @@ public class RTRideHeight {
         double frontRot = Math.atan(rrh / rt.WHEEL_BASE);
         double rearRot = -Math.atan(frh / rt.WHEEL_BASE);
 
-        rotateParts(rt.cfdParts, rt.frontWheelCylindrical, frontRot);
-        rotateCoord(rt.radCartesian, rt.frontWheelCylindrical, frontRot);
-        rotateCoord(rt.fanCylindrical, rt.frontWheelCylindrical, frontRot);
-        rotateCoord(rt.dualRadCartesian, rt.frontWheelCylindrical, frontRot);
-        rotateCoord(rt.dualFanCylindrical, rt.frontWheelCylindrical, frontRot);
+        if (frontRot != 0) {
+            rotateParts(rt.cfdParts, rt.frontWheelCylindrical, frontRot);
+            rotateCoord(rt.radCartesian, rt.frontWheelCylindrical, frontRot);
+            rotateCoord(rt.fanCylindrical, rt.frontWheelCylindrical, frontRot);
+            rotateCoord(rt.dualRadCartesian, rt.frontWheelCylindrical, frontRot);
+            rotateCoord(rt.dualFanCylindrical, rt.frontWheelCylindrical, frontRot);
+        }
 
-        rotateParts(rt.cfdParts, rt.rearWheelCylindrical, rearRot);
-        rotateCoord(rt.radCartesian, rt.rearWheelCylindrical, rearRot);
-        rotateCoord(rt.fanCylindrical, rt.rearWheelCylindrical, rearRot);
-        rotateCoord(rt.dualRadCartesian, rt.rearWheelCylindrical, rearRot);
-        rotateCoord(rt.dualFanCylindrical, rt.rearWheelCylindrical, rearRot);
+        if (rearRot != 0) {
+            rotateParts(rt.cfdParts, rt.rearWheelCylindrical, rearRot);
+            rotateCoord(rt.radCartesian, rt.rearWheelCylindrical, rearRot);
+            rotateCoord(rt.fanCylindrical, rt.rearWheelCylindrical, rearRot);
+            rotateCoord(rt.dualRadCartesian, rt.rearWheelCylindrical, rearRot);
+            rotateCoord(rt.dualFanCylindrical, rt.rearWheelCylindrical, rearRot);
+        }
     }
 
     private void rotateParts(Collection<GeometryPart> parts, CylindricalCoordinateSystem rotationPoint, double rotationAngle)
