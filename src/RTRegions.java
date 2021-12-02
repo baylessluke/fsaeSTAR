@@ -193,7 +193,7 @@ public class RTRegions {
         if (Double.parseDouble(actVelComponents[1]) != 0 || Double.parseDouble(actVelComponents[2]) != 0)
             velocity = false;
         boolean unit = profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().equals(rt.mps);
-        rt.printTestResults(velocity, "Ground - Sliding Velocity", actVel, expVel);
+        rt.printTestResults(velocity, "Ground - Sliding Velocity", actVel, "[${Freestream}, 0, 1]");
         rt.printTestResults(unit, "Ground - Sliding Velocity Unit", profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().getPresentationName(), "m/s");
 
     }
