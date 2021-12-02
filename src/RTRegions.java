@@ -1,6 +1,8 @@
 import star.common.*;
 import star.flow.WallSlidingOption;
 
+import java.util.Locale;
+
 public class RTRegions {
 
     RTTestComponent rt;
@@ -175,7 +177,7 @@ public class RTRegions {
      */
     private void checkGroundSliding() {
 
-        boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().equals(WallSlidingOption.Type.VECTOR);
+        boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString().equals(WallSlidingOption.Type.VECTOR.toString());
         rt.printTestResults(tangentialVelSpec, "Ground - Tangential Velocity Spec", groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString(), WallSlidingOption.Type.VECTOR.toString());
 
     }
