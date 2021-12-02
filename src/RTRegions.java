@@ -1,4 +1,5 @@
 import star.common.*;
+import star.flow.WallRelativeRotationProfile;
 import star.flow.WallRelativeVelocityProfile;
 import star.flow.WallSlidingOption;
 
@@ -221,7 +222,7 @@ public class RTRegions {
 
         // tangential velocity specification type
         boolean velSpecType = true;
-        ArrayList<Boundary> wrongType = new ArrayList<>();
+        ArrayList<Boundary> wrongType = new ArrayList<>(); // list of boundaries with wrong tangential velocity spec
         for (Boundary boundary:frontTires) {
             WallSlidingOption.Type type = boundary.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected();
             if (!type.equals(WallSlidingOption.Type.LOCAL_ROTATION_RATE)) {
@@ -229,13 +230,11 @@ public class RTRegions {
                 wrongType.add(boundary);
             }
         }
-        if (velSpecType) {
-            for (Boundary boundary:rearTires) {
-                WallSlidingOption.Type type = boundary.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected();
-                if (!type.equals(WallSlidingOption.Type.LOCAL_ROTATION_RATE)) {
-                    velSpecType = false;
-                    wrongType.add(boundary);
-                }
+        for (Boundary boundary:rearTires) {
+            WallSlidingOption.Type type = boundary.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected();
+            if (!type.equals(WallSlidingOption.Type.LOCAL_ROTATION_RATE)) {
+                velSpecType = false;
+                wrongType.add(boundary);
             }
         }
         if (velSpecType)
@@ -248,6 +247,35 @@ public class RTRegions {
             rt.printTestResults(false, "Tire Rotation - Tangential Velocity Spec", results, "LOCAL_ROTATION_RATE");
         }
 
+        // tire rotation rate speed
+        double expAngularSpd = rt.FREESTREAM / rt.TIRE_RADIUS;
+        boolean tireRotationSpd = true;
+        ArrayList<Boundary> wrongSpd = new ArrayList<>(); // list of boundaries with wrong angular speed
+        for (Boundary boundary:frontTires) {
+            WallRelativeRotationProfile rotationProfile = boundary.getValues().get(WallRelativeRotationProfile.class);
+            double actAngularSpd = rotationProfile.getMethod(ConstantScalarProfileMethod.class).getQuantity().getRawValue();
+            if (actAngularSpd != expAngularSpd) {
+                tireRotationSpd = false;
+                wrongSpd.add(boundary);
+            }
+        }
+        for (Boundary boundary:rearTires) {
+            WallRelativeRotationProfile rotationProfile = boundary.getValues().get(WallRelativeRotationProfile.class);
+            double actAngularSpd = rotationProfile.getMethod(ConstantScalarProfileMethod.class).getQuantity().getRawValue();
+            if (actAngularSpd != expAngularSpd) {
+                tireRotationSpd = false;
+                wrongSpd.add(boundary);
+            }
+        }
+        if (tireRotationSpd)
+            rt.printTestResults(true, "Tire Rotation - Angular Speed", String.format("%.5f", expAngularSpd), String.format("%.5f", expAngularSpd));
+        else {
+            Boundary[] wrongSpdArr = new Boundary[wrongSpd.size()];
+            for (int i = 0; i < wrongType.size(); i++)
+                wrongSpdArr[i] = wrongType.get(i);
+            String results = RTTestComponent.buildResultStringFromArray("Boundaries with wrong angular speed:", wrongSpdArr);
+            rt.printTestResults(false, "Tire Rotation - Angular Speed", results, String.format("%.5f", expAngularSpd));
+        }
     }
 
 }

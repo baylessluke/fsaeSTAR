@@ -51,6 +51,7 @@ public class RTTestComponent {
     // units
     public Units unitless;
     public Units mps;
+    public Units radPerSec;
 
     // misc
     public LatestMeshProxyRepresentation latestSrfVol;
@@ -67,6 +68,7 @@ public class RTTestComponent {
 
     // vehicle dimensions
     public final int WHEEL_BASE = 61; // inches
+    public final double TIRE_RADIUS = 0.228599; // meters
 
     // initialization
 
@@ -157,6 +159,7 @@ public class RTTestComponent {
         // units
         this.unitless = sim.getUnitsManager().getObject("");
         this.mps = sim.getUnitsManager().getObject("m/s");
+        this.radPerSec = sim.getUnitsManager().getObject("radian/s");
 
         // misc
         this.latestSrfVol = (LatestMeshProxyRepresentation) sim.getRepresentationManager().getObject(LATEST_SRF_VOL_NAME);
