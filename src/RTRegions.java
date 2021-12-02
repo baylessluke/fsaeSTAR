@@ -59,7 +59,7 @@ public class RTRegions {
         this.initStarObjects();
 
         // perform tests
-
+        this.domainBoundaryTypeTest();
     }
 
     /**
@@ -111,6 +111,24 @@ public class RTRegions {
      *                  All rad and fan: wall
      */
     private void domainBoundaryTypeTest() {
+
+        boolean ground = groundBdry.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(ground, "FS.Ground Boundary Type", groundBdry.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean inlet = inletBdry.getBoundaryType().equals(velInletBdryType);
+        rt.printTestResults(inlet, "FS.Inlet Boundary Type", inletBdry.getBoundaryType().getPresentationName(), velInletBdryType.getPresentationName());
+
+        boolean outlet = outletBdry.getBoundaryType().equals(presOutletBdryType);
+        rt.printTestResults(outlet, "FS.Outlet Boundary Type", outletBdry.getBoundaryType().getPresentationName(), presOutletBdryType.getPresentationName());
+
+        boolean left = leftBdry.getBoundaryType().equals(symBdryType);
+        rt.printTestResults(left, "FS.Left Boundary Type", leftBdry.getBoundaryType().getPresentationName(), symBdryType.getPresentationName());
+
+        boolean sym = symBdry.getBoundaryType().equals(symBdryType);
+        rt.printTestResults(sym, "FS.Symmetry Boundary Type", symBdry.getBoundaryType().getPresentationName(), symBdryType.getPresentationName());
+
+        boolean top = topBdry.getBoundaryType().getPresentationName().equals(symBdryType);
+        rt.printTestResults(top, "FS.Top Boundary Type", topBdry.getBoundaryType().getPresentationName(), topBdry.getPresentationName());
 
     }
 
