@@ -1,4 +1,5 @@
 import star.common.*;
+import star.flow.WallRelativeVelocityProfile;
 import star.flow.WallSlidingOption;
 
 import java.util.Locale;
@@ -177,8 +178,23 @@ public class RTRegions {
      */
     private void checkGroundSliding() {
 
+        // Ground sliding velocity type
         boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected().equals(WallSlidingOption.Type.VECTOR);
         rt.printTestResults(tangentialVelSpec, "Ground - Tangential Velocity Spec", groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected().toString(), WallSlidingOption.Type.VECTOR.name());
+
+        // Ground sliding velocity
+        WallRelativeVelocityProfile profile = groundBdry.getValues().get(WallRelativeVelocityProfile.class);
+        String expVel = "[${Freestream},0, 1]";
+        String[] expVelComponent = expVel.split(",");
+        boolean velocity = true;
+        if (!expVelComponent[0].strip().equals("${Freestream}"))
+            velocity = false;
+        if (Double.parseDouble(expVelComponent[1]) != 0 || Double.parseDouble(expVelComponent[2]) != 0)
+            velocity = false;
+        String actVel = profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getDefinition();
+        boolean unit = profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().equals(rt.mps);
+        rt.printTestResults(velocity, "Ground - Sliding Velocity", actVel, expVel);
+        rt.printTestResults(unit, "Ground - Sliding Velocity Unit", profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().getPresentationName(), "m/s");
 
     }
 

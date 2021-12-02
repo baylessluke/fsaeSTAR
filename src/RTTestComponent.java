@@ -49,6 +49,7 @@ public class RTTestComponent {
 
     // units
     public Units unitless;
+    public Units mps;
 
     // misc
     public LatestMeshProxyRepresentation latestSrfVol;
@@ -154,6 +155,7 @@ public class RTTestComponent {
 
         // units
         this.unitless = sim.getUnitsManager().getObject("");
+        this.mps = sim.getUnitsManager().getObject("m/s");
 
         // misc
         this.latestSrfVol = (LatestMeshProxyRepresentation) sim.getRepresentationManager().getObject(LATEST_SRF_VOL_NAME);
