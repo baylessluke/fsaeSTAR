@@ -177,7 +177,7 @@ public class RTRegions {
      */
     private void checkGroundSliding() {
 
-        boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString().equals(WallSlidingOption.Type.VECTOR.toString());
+        boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString().equals(WallSlidingOption.Type.VECTOR.name());
         rt.printTestResults(tangentialVelSpec, "Ground - Tangential Velocity Spec", groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString(), WallSlidingOption.Type.VECTOR.toString());
 
     }
