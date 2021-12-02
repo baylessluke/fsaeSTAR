@@ -23,6 +23,7 @@ public class RTTestComponent {
     private boolean rhFlag;
     private boolean fanFlag;
     private boolean fullRunFlag;
+    public final double FREESTREAM = 17.88; // m/s
 
     // Names
     public final String SURFACE_WRAPPER_NAME = "Surface wrapper";
@@ -331,6 +332,33 @@ public class RTTestComponent {
      */
     public static String buildResultStringFromArray(GeometryObject[] array) {
         return buildResultStringFromArray("", array, "");
+    }
+
+    /**
+     * Build the result output string from a boundary array
+     * @param array geometry objects
+     * @return results output string
+     */
+    public static String buildResultStringFromArray(String prefix, Boundary[] array, String postfix) {
+        StringBuilder output = new StringBuilder();
+        output.append(prefix);
+        output.append(" [");
+        for (int i = 0; i < array.length; i++)
+            output.append(array[i].getPresentationName()).append(", ");
+        output.delete(output.length() - 2, output.length());
+        output.append("] ");
+        output.append(postfix);
+
+        return output.toString();
+    }
+
+    /**
+     * Build the result output string from a boundary array
+     * @param array geometry objects
+     * @return results output string
+     */
+    public static String buildResultStringFromArray(String prefix, Boundary[] array) {
+        return buildResultStringFromArray(prefix, array, "");
     }
 
     /**

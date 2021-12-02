@@ -2,6 +2,8 @@ import star.common.*;
 import star.flow.WallRelativeVelocityProfile;
 import star.flow.WallSlidingOption;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Locale;
 
 public class RTRegions {
@@ -51,6 +53,8 @@ public class RTRegions {
     private Boundary domainRadDefault;
     private Boundary domainRadInlet;
     private Boundary domainRadOutlet;
+    private Collection<Boundary> frontTires;
+    private Collection<Boundary> rearTires;
 
     // Boundary types
     SymmetryBoundary symBdryType;
@@ -64,7 +68,8 @@ public class RTRegions {
 
         // perform tests
         // this.domainBoundaryTypeTest();
-        this.checkGroundSliding();
+        // this.checkGroundSliding();
+        this.checkTireRotation();
     }
 
     /**
@@ -94,6 +99,17 @@ public class RTRegions {
         this.domainRadDefault = subtractRegion.getBoundaryManager().getBoundary(DOMAIN_RAD_DEFAULT_NAME);
         this.domainRadInlet = subtractRegion.getBoundaryManager().getBoundary(DOMAIN_RAD_INLET_NAME);
         this.domainRadOutlet = subtractRegion.getBoundaryManager().getBoundary(DOMAIN_RAD_OUTLET_NAME);
+        // Add tire parts to tires collections
+        this.frontTires = new ArrayList<>();
+        this.rearTires = new ArrayList<>();
+        Collection<Boundary> allBoundaries = subtractRegion.getBoundaryManager().getBoundaries();
+        for (Boundary boundary:allBoundaries) {
+            String presentationName = boundary.getPresentationName();
+            if (presentationName.contains("Front Left") || presentationName.contains(("Front Right")))
+                this.frontTires.add(boundary);
+            else if (presentationName.contains("Rear Left") || presentationName.contains("Rear Right"))
+                this.rearTires.add(boundary);
+        }
 
         // Boundary types
         this.symBdryType = rt.sim.get(ConditionTypeManager.class).get(SymmetryBoundary.class);
@@ -195,6 +211,42 @@ public class RTRegions {
         boolean unit = profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().equals(rt.mps);
         rt.printTestResults(velocity, "Ground - Sliding Velocity", actVel, "[${Freestream}, 0, 1]");
         rt.printTestResults(unit, "Ground - Sliding Velocity Unit", profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getUnits().getPresentationName(), "m/s");
+
+    }
+
+    /**
+     * Check tire rotation
+     */
+    private void checkTireRotation() {
+
+        // tangential velocity specification type
+        boolean velSpecType = true;
+        ArrayList<Boundary> wrongType = new ArrayList<>();
+        for (Boundary boundary:frontTires) {
+            WallSlidingOption.Type type = boundary.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected();
+            if (!type.equals(WallSlidingOption.Type.LOCAL_ROTATION_RATE)) {
+                velSpecType = false;
+                wrongType.add(boundary);
+            }
+        }
+        if (velSpecType) {
+            for (Boundary boundary:rearTires) {
+                WallSlidingOption.Type type = boundary.getConditions().get(WallSlidingOption.class).getSelectedInput().getSelected();
+                if (!type.equals(WallSlidingOption.Type.LOCAL_ROTATION_RATE)) {
+                    velSpecType = false;
+                    wrongType.add(boundary);
+                }
+            }
+        }
+        if (velSpecType)
+            rt.printTestResults(true, "Tire Rotation - Tangential Velocity Spec", "LOCAL_ROTATION_RATE", "LOCAL_ROTATION_RATE");
+        else {
+            Boundary[] wrongTypeArr = new Boundary[wrongType.size()];
+            for (int i = 0; i < wrongType.size(); i++)
+                wrongTypeArr[i] = wrongType.get(i);
+            String results = RTTestComponent.buildResultStringFromArray("Boundaries with wrong tangential velocity spec: ", wrongTypeArr);
+            rt.printTestResults(false, "Tire Rotation - Tangential Velocity Spec", results, "LOCAL_ROTATION_RATE");
+        }
 
     }
 
