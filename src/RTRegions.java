@@ -127,8 +127,8 @@ public class RTRegions {
         boolean sym = symBdry.getBoundaryType().equals(symBdryType);
         rt.printTestResults(sym, "FS.Symmetry Boundary Type", symBdry.getBoundaryType().getPresentationName(), symBdryType.getPresentationName());
 
-        boolean top = topBdry.getBoundaryType().getPresentationName().equals(symBdryType);
-        rt.printTestResults(top, "FS.Top Boundary Type", topBdry.getBoundaryType().getPresentationName(), topBdry.getPresentationName());
+        boolean top = topBdry.getBoundaryType().equals(symBdryType);
+        rt.printTestResults(top, "FS.Top Boundary Type", topBdry.getBoundaryType().getPresentationName(), symBdryType.getPresentationName());
 
     }
 
