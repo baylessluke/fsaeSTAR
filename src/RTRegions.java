@@ -60,7 +60,8 @@ public class RTRegions {
         this.initStarObjects();
 
         // perform tests
-        this.domainBoundaryTypeTest();
+        // this.domainBoundaryTypeTest();
+        this.checkGroundSliding();
     }
 
     /**
@@ -172,7 +173,7 @@ public class RTRegions {
     /**
      * Check the velocity specification and ground speed
      */
-    private void checkGroundSpeed() {
+    private void checkGroundSliding() {
 
         boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().equals(WallSlidingOption.Type.VECTOR);
         rt.printTestResults(tangentialVelSpec, "Ground - Tangential Velocity Spec", groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString(), WallSlidingOption.Type.VECTOR.toString());
