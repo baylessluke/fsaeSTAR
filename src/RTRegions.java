@@ -1,4 +1,5 @@
 import star.common.*;
+import star.flow.WallSlidingOption;
 
 public class RTRegions {
 
@@ -165,6 +166,16 @@ public class RTRegions {
 
         boolean dualFanOutlet = domainDualFanOutletBdry.getBoundaryType().equals(wallBdryType);
         rt.printTestResults(dualFanOutlet, "FS.Dual Fan Default Boundary Type", domainDualFanOutletBdry.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+    }
+
+    /**
+     * Check the velocity specification and ground speed
+     */
+    private void checkGroundSpeed() {
+
+        boolean tangentialVelSpec = groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().equals(WallSlidingOption.Type.VECTOR);
+        rt.printTestResults(tangentialVelSpec, "Ground - Tangential Velocity Spec", groundBdry.getConditions().get(WallSlidingOption.class).getSelectedInput().toString(), WallSlidingOption.Type.VECTOR.toString());
 
     }
 
