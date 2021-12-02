@@ -130,6 +130,42 @@ public class RTRegions {
         boolean top = topBdry.getBoundaryType().equals(symBdryType);
         rt.printTestResults(top, "FS.Top Boundary Type", topBdry.getBoundaryType().getPresentationName(), symBdryType.getPresentationName());
 
+        boolean radDefault = domainRadDefault.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(radDefault, "FS.Dual Fan Default Boundary Type", domainRadDefault.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean radInlet = domainRadInlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(radInlet, "FS.Dual Fan Default Boundary Type", domainRadInlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean radOutlet = domainRadOutlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(radOutlet, "FS.Dual Fan Default Boundary Type", domainRadOutlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualRadDefault = domainDualRadDefault.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualRadDefault, "FS.Dual Fan Default Boundary Type", domainDualRadDefault.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualRadInlet = domainDualRadInlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualRadInlet, "FS.Dual Fan Default Boundary Type", domainDualRadInlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualRadOutlet = domainDualRadOutlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualRadOutlet, "FS.Dual Fan Default Boundary Type", domainDualRadOutlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean fanDefault = domainFanDefault.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(fanDefault, "FS.Dual Fan Default Boundary Type", domainFanDefault.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean fanInlet = domainFanInlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(fanInlet, "FS.Dual Fan Default Boundary Type", domainFanInlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean fanOutlet = domainFanOutlet.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(fanOutlet, "FS.Dual Fan Default Boundary Type", domainFanOutlet.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualFanDefault = domainDualFanDefaultBdry.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualFanDefault, "FS.Dual Fan Default Boundary Type", domainDualFanDefaultBdry.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualFanInlet = domainDualFanInletBdry.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualFanInlet, "FS.Dual Fan Default Boundary Type", domainDualFanInletBdry.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
+        boolean dualFanOutlet = domainDualFanOutletBdry.getBoundaryType().equals(wallBdryType);
+        rt.printTestResults(dualFanOutlet, "FS.Dual Fan Default Boundary Type", domainDualFanOutletBdry.getBoundaryType().getPresentationName(), wallBdryType.getPresentationName());
+
     }
 
 }
