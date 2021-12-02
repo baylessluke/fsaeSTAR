@@ -41,11 +41,11 @@ public class rpmMap extends StarMacro {
 
         boolean keep_going = true;
         String filePath = sim.getSessionPath() + File.separator;
+        ScalarGlobalParameter rpm = (ScalarGlobalParameter) sim.get(GlobalParameterManager.class).getObject("RPM");
 
         while (keep_going)
         {
             sim.clearSolution();
-            ScalarGlobalParameter rpm = (ScalarGlobalParameter) sim.get(GlobalParameterManager.class).getObject("RPM");
             rpm.getQuantity().setValue(currentRPM);
             sim.getSimulationIterator().step(1);
             timeStopLimit.getLimit().setValue((final_time - System.currentTimeMillis()) / 1000);
