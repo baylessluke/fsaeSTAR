@@ -186,6 +186,7 @@ public class RTRegions {
         WallRelativeVelocityProfile profile = groundBdry.getValues().get(WallRelativeVelocityProfile.class);
         String actVel = profile.getMethod(ConstantVectorProfileMethod.class).getQuantity().getDefinition();
         actVel.substring(1, actVel.length() - 1);
+        rt.sim.println(actVel);
         String[] actVelComponents = actVel.split(",");
         boolean velocity = true;
         if (!actVelComponents[0].equals("${Freestream}"))
