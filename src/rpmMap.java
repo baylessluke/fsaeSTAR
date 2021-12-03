@@ -40,7 +40,7 @@ public class rpmMap extends StarMacro {
         MonitorPlot time = (MonitorPlot) sim.getPlotManager().getPlot("Reports Plot - Time");
 
         boolean keep_going = true;
-        String filePath = sim.getSessionPath() + File.separator;
+        String filePath = sim.getSessionDir() + File.separator;
         ScalarGlobalParameter rpm = (ScalarGlobalParameter) sim.get(GlobalParameterManager.class).getObject("RPM");
 
         while (keep_going)
