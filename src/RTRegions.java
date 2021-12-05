@@ -1,4 +1,5 @@
 import star.common.*;
+import star.flow.ReferenceAltitude;
 import star.flow.WallRelativeRotationProfile;
 import star.flow.WallRelativeVelocityProfile;
 import star.flow.WallSlidingOption;
@@ -276,6 +277,36 @@ public class RTRegions {
             String results = RTTestComponent.buildResultStringFromArray("Boundaries with wrong angular speed:", wrongSpdArr);
             rt.printTestResults(false, "Tire Rotation - Angular Speed", results, String.format("%.5f", expAngularSpd));
         }
+
+        // tire rotation reference frame
+        boolean tireRotationframe = true;
+        ArrayList<Boundary> wrongFrame = new ArrayList<>();
+        for (Boundary boundary:frontTires) {
+            ReferenceFrame frame = boundary.getValues().get(ReferenceFrame.class);
+            CylindricalCoordinateSystem actCS = (CylindricalCoordinateSystem) frame.getCoordinateSystem();
+            if (!(actCS.getObjectId() == rt.frontWheelCylindrical.getObjectId())) { // no idea if this would work. i just want to compare something more permanent than presentation name without comparing memory location (because I think that would not work)
+                tireRotationframe = false;
+                wrongFrame.add(boundary);
+            }
+        }
+        for (Boundary boundary:rearTires) {
+            ReferenceFrame frame = boundary.getValues().get(ReferenceFrame.class);
+            CylindricalCoordinateSystem actCS = (CylindricalCoordinateSystem) frame.getCoordinateSystem();
+            if (!(actCS.getObjectId() == rt.rearWheelCylindrical.getObjectId())) { // no idea if this would work. i just want to compare something more permanent than presentation name without comparing memory location (because I think that would not work)
+                tireRotationframe = false;
+                wrongFrame.add(boundary);
+            }
+        }
+        if (tireRotationframe)
+            rt.printTestResults(true, "Tire Rotation - Coordinate System", "Front/Rear Wheel Cylindrical", "Front/Rear Wheel Cylindrical");
+        else {
+            Boundary[] wrongCSArr = new Boundary[wrongFrame.size()];
+            for (int i = 0; i < wrongFrame.size(); i++)
+                wrongCSArr[i] = wrongFrame.get(i);
+            String results = RTTestComponent.buildResultStringFromArray("Boundaries with wrong coordinate system", wrongCSArr);
+            rt.printTestResults(false, "Tire Rotation - Coordinate System", results, "Front/Rear Wheel Cylindrical");
+        }
     }
+
 
 }
