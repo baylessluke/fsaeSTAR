@@ -271,8 +271,8 @@ public class RTRegions {
             rt.printTestResults(true, "Tire Rotation - Angular Speed", String.format("%.5f", expAngularSpd), String.format("%.5f", expAngularSpd));
         else {
             Boundary[] wrongSpdArr = new Boundary[wrongSpd.size()];
-            for (int i = 0; i < wrongType.size(); i++)
-                wrongSpdArr[i] = wrongType.get(i);
+            for (int i = 0; i < wrongSpd.size(); i++)
+                wrongSpdArr[i] = wrongSpd.get(i);
             String results = RTTestComponent.buildResultStringFromArray("Boundaries with wrong angular speed:", wrongSpdArr);
             rt.printTestResults(false, "Tire Rotation - Angular Speed", results, String.format("%.5f", expAngularSpd));
         }
