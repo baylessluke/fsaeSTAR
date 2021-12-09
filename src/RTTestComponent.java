@@ -1,5 +1,7 @@
 import star.common.*;
 import star.meshing.LatestMeshProxyRepresentation;
+import star.meshing.PartRepresentation;
+import star.meshing.PartSubRepresentation;
 import star.surfacewrapper.SurfaceWrapperAutoMeshOperation;
 
 import java.io.File;
@@ -32,6 +34,8 @@ public class RTTestComponent {
     public final String REAR_WHEEL_CYLINDRICAL_NAME = "Rear Wheel Cylindrical";
     public final String AUTO_MESH_NAME = "Automated Mesh";
     public final String LATEST_SRF_VOL_NAME = "Latest Surface/Volume";
+    public final String LATEST_SRF_NAME = "Latest Surface";
+    public final String GEOMETRY_PRESENTATION_NAME = "Geometry";
     public final String RAD_CS_NAME = "Radiator Cartesian";
     public final String DUAL_RAD_CS_NAME = "Dual Radiator Cartesian";
     public final String FAN_CS_NAME = "Fan Cylindrical";
@@ -55,6 +59,7 @@ public class RTTestComponent {
 
     // misc
     public LatestMeshProxyRepresentation latestSrfVol;
+    public PartSubRepresentation latestSurface; // why is siemens so bad at naming things
 
     // Part collections
     public Collection<GeometryPart> cfdParts = new ArrayList<>();
@@ -163,7 +168,7 @@ public class RTTestComponent {
 
         // misc
         this.latestSrfVol = (LatestMeshProxyRepresentation) sim.getRepresentationManager().getObject(LATEST_SRF_VOL_NAME);
-
+        this.latestSurface = (PartSubRepresentation) ((PartRepresentation) (sim.getRepresentationManager().getObject(GEOMETRY_PRESENTATION_NAME))).getSubRepresentations().getObject(LATEST_SRF_NAME);
     }
 
     // public methods

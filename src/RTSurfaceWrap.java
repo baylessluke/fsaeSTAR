@@ -2,6 +2,8 @@
  * TO-DO: surface wrapper 3D scene export
  */
 
+import star.base.report.AreaAverageReport;
+import star.base.report.SurfaceAreaAverageReport;
 import star.common.*;
 import star.meshing.MeshOperationManager;
 import star.meshing.SurfaceCustomMeshControl;
@@ -23,6 +25,7 @@ public class RTSurfaceWrap {
         gapClosure(wrapper);
         partsSelected(wrapper);
         aeroControl(wrapper);
+        aeroSurfaceWrap();
     }
 
     /**
@@ -145,6 +148,20 @@ public class RTSurfaceWrap {
             rt.printTestResults(true, aeroControlAvailabilityTest, aeroControlAvailabilityExpected, aeroControlAvailabilityExpected);
         else
             rt.printTestResults(false, aeroControlAvailabilityTest, "Aero control disabled", aeroControlAvailabilityExpected);
+    }
+
+    /**
+     * Check for the average surface cell area for surface wrapped aero parts
+     */
+    private void aeroSurfaceWrap() {
+
+        // Get the report
+        AreaAverageReport averageCellSizeReport = (AreaAverageReport) rt.sim.getReportManager().getReport("Average Surface Cell Area");
+
+        // set representation
+        averageCellSizeReport.setRepresentation(rt.latestSurface);
+
+
     }
 
 }
