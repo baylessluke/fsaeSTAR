@@ -2,10 +2,10 @@ import pandas
 import os
 import matplotlib.pyplot as plt
 
-data_path = r"D:\OneDrive\Formula SAE\2022\Muffler CFD\Straight_Pipe_Data"
-output_file = r"D:\OneDrive\Formula SAE\2022\Muffler CFD\Straight_Pipe_Data\RPM_Data.xlsx"
+data_path = r"/Users/raunaqkumaran/OneDrive/Formula SAE/2022/Muffler CFD/UFD_Data"
+output_file = r"/Users/raunaqkumaran/OneDrive/Formula SAE/2022/Muffler CFD/UFD_Data/UFD_RPM_Data.xlsx"
 string_contains = "avg exhaust.text"
-outlet_plot = r"D:\OneDrive\Formula SAE\2022\Muffler CFD\Straight_Pipe_Data\outlet_plot.png"
+outlet_plot = r"/Users/raunaqkumaran/OneDrive/Formula SAE/2022/Muffler CFD/UFD_Data/UFD_outlet_plot.png"
 rpm_data = pandas.DataFrame(columns=["RPM", "Average Exhaust Mdot (kg/s)"])
 
 for filename in os.listdir(data_path):
